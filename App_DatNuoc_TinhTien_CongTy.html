@@ -1666,10 +1666,19 @@
       }
     }
 
+    // Hàm lấy địa chỉ gốc API (Đảm bảo dù mở bằng file:/// hay http://localhost hay http://192.168... đều đồng bộ chung vào data_app.json)
+    function getApiBase() {
+      if (window.location.protocol.startsWith('http')) {
+        return '';
+      }
+      return 'http://localhost:8080';
+    }
+
     /* Làm mới và đồng bộ đơn hàng từ máy chủ mạng nội bộ */
     async function refreshDataFromServer() {
+      const apiBase = getApiBase();
       try {
-        const res = await fetch('/api/data');
+        const res = await fetch(`${apiBase}/api/data`);
         if (res.ok) {
           const data = await res.json();
           appState.ordersData = data.ordersData || appState.ordersData;
@@ -1714,15 +1723,10 @@
 
     /* Khởi tạo đồng bộ mạng LAN từ máy chủ nội bộ */
     async function initServerSync() {
-      if (!window.location.protocol.startsWith('http')) {
-        const bannerText = document.getElementById('lanOrderUrlText');
-        if (bannerText) bannerText.innerText = 'Chạy file "Chay_App_Dat_Nuoc.bat" để chia sẻ link qua mạng công ty!';
-        return;
-      }
-
+      const apiBase = getApiBase();
       try {
         // 1. Lấy thông tin URL mạng LAN
-        const infoRes = await fetch('/api/info');
+        const infoRes = await fetch(`${apiBase}/api/info`);
         if (infoRes.ok) {
           const info = await infoRes.json();
           const bannerText = document.getElementById('lanOrderUrlText');
@@ -1730,7 +1734,7 @@
         }
 
         // 2. Tải dữ liệu server mới nhất
-        const dataRes = await fetch('/api/data');
+        const dataRes = await fetch(`${apiBase}/api/data`);
         if (dataRes.ok) {
           const sData = await dataRes.json();
           if (sData.ordersData) appState.ordersData = sData.ordersData;
@@ -1748,20 +1752,23 @@
 
       } catch (err) {
         console.warn('Lỗi kết nối server LAN:', err);
+        const bannerText = document.getElementById('lanOrderUrlText');
+        if (bannerText) bannerText.innerText = 'Chạy file "Chay_App_Dat_Nuoc.bat" để bật máy chủ đồng bộ!';
       }
     }
 
     function startBackgroundPoll() {
       if (pollInterval) clearInterval(pollInterval);
+      const apiBase = getApiBase();
       pollInterval = setInterval(async () => {
         try {
-          const res = await fetch('/api/poll');
+          const res = await fetch(`${apiBase}/api/poll`);
           if (res.ok) {
             const data = await res.json();
             if (data.dataVersion && data.dataVersion !== currentServerVersion) {
               currentServerVersion = data.dataVersion;
               // Có dữ liệu mới từ người khác đặt -> Tải lại ngay
-              const refreshRes = await fetch('/api/data');
+              const refreshRes = await fetch(`${apiBase}/api/data`);
               if (refreshRes.ok) {
                 const refreshed = await refreshRes.json();
                 appState.ordersData = refreshed.ordersData || appState.ordersData;
@@ -1820,22 +1827,21 @@
       localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(appState.config));
       localStorage.setItem('COBA_CAFE_SALARY_PAID_V2', JSON.stringify(appState.salaryCyclesPaid));
 
-      // Đồng bộ trực tiếp lên Server LAN data_app.json nếu chạy qua web server
-      if (window.location.protocol.startsWith('http')) {
-        fetch('/api/save_all', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            members: appState.members,
-            menu: appState.menu,
-            toppings: appState.toppings,
-            favorites: appState.favorites,
-            ordersData: appState.ordersData,
-            config: appState.config,
-            salaryCyclesPaid: appState.salaryCyclesPaid
-          })
-        }).catch(() => {});
-      }
+      // Luôn luôn đồng bộ trực tiếp lên Server data_app.json (kể cả khi mở bằng file:// hay http://)
+      const apiBase = getApiBase();
+      fetch(`${apiBase}/api/save_all`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          members: appState.members,
+          menu: appState.menu,
+          toppings: appState.toppings,
+          favorites: appState.favorites,
+          ordersData: appState.ordersData,
+          config: appState.config,
+          salaryCyclesPaid: appState.salaryCyclesPaid
+        })
+      }).catch(() => {});
     }
 
     function initDates() {

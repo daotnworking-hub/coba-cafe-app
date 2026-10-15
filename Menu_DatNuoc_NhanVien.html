@@ -480,10 +480,18 @@
       document.getElementById('displayDateText').innerText = `Hôm nay: ${dd}/${mm}/${yyyy}`;
     }
 
+    function getApiBase() {
+      if (window.location.protocol.startsWith('http')) {
+        return '';
+      }
+      return 'http://localhost:8080';
+    }
+
     /* Đọc dữ liệu: Thử fetch từ API server LAN trước, nếu không có server thì fallback sang localStorage */
     async function loadInitialData() {
+      const apiBase = getApiBase();
       try {
-        const res = await fetch('/api/data');
+        const res = await fetch(`${apiBase}/api/data`);
         if (res.ok) {
           const data = await res.json();
           appData.members = data.members || [];
@@ -1008,9 +1016,9 @@
       };
 
       let isSuccess = false;
-
       try {
-        const res = await fetch('/api/order', {
+        const apiBase = getApiBase();
+        const res = await fetch(`${apiBase}/api/order`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)

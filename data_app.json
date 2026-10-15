@@ -1,1134 +1,1206 @@
-{
-  "members": [
-    "C.Chou",
-    "Ngân Mập",
-    "Ngân GD",
-    "Ngân Nui",
-    "Chế Bao",
-    "A.Duy",
-    "Hà",
-    "Khoa",
-    "Nga",
-    "Nhi",
-    "Thuỷ",
-    "Ngọc",
-    "Yến",
-    "Manh",
-    "Nhân",
-    "Bee",
-    "Trưởng",
-    "Đạo",
-    "A.Hùng",
-    "Vian"
-  ],
-  "menu": [
-    {
-      "id": "cf_1",
-      "name": "Cf sữa đá",
-      "category": "CAFE",
-      "price": 18000
-    },
-    {
-      "id": "cf_2",
-      "name": "Cf sữa nóng",
-      "category": "CAFE",
-      "price": 17000
-    },
-    {
-      "id": "cf_3",
-      "name": "Cf đen đá",
-      "category": "CAFE",
-      "price": 15000
-    },
-    {
-      "id": "cf_4",
-      "name": "Cf đen nóng",
-      "category": "CAFE",
-      "price": 15000
-    },
-    {
-      "id": "cf_5",
-      "name": "Bạc xỉu đá",
-      "category": "CAFE",
-      "price": 18000
-    },
-    {
-      "id": "cf_6",
-      "name": "Sữa tươi cf",
-      "category": "CAFE",
-      "price": 20000
-    },
-    {
-      "id": "cf_7",
-      "name": "Ca cao sữa đá",
-      "category": "CAFE",
-      "price": 20000
-    },
-    {
-      "id": "cf_8",
-      "name": "Ca cao sữa nóng",
-      "category": "CAFE",
-      "price": 18000
-    },
-    {
-      "id": "cf_9",
-      "name": "Ca cao sữa gấu",
-      "category": "CAFE",
-      "price": 30000
-    },
-    {
-      "id": "cf_10",
-      "name": "Milo sữa đá",
-      "category": "CAFE",
-      "price": 20000
-    },
-    {
-      "id": "cf_11",
-      "name": "Milo dầm",
-      "category": "CAFE",
-      "price": 25000
-    },
-    {
-      "id": "cf_12",
-      "name": "Bạc xỉu kem muối",
-      "category": "CAFE",
-      "price": 25000
-    },
-    {
-      "id": "cf_13",
-      "name": "Cacao kem muối",
-      "category": "CAFE",
-      "price": 25000
-    },
-    {
-      "id": "cf_14",
-      "name": "Latte Cacao Cafe",
-      "category": "CAFE",
-      "price": 25000
-    },
-    {
-      "id": "cf_15",
-      "name": "Latte Socola Giòn Kem Cheese",
-      "category": "CAFE",
-      "price": 30000
-    },
-    {
-      "id": "ts_1",
-      "name": "Trà Sữa Khoai Môn Dẻo",
-      "category": "TRA_SUA",
-      "price": 25000
-    },
-    {
-      "id": "ts_2",
-      "name": "Trà Sữa Gạo Rang",
-      "category": "TRA_SUA",
-      "price": 25000
-    },
-    {
-      "id": "ts_3",
-      "name": "Trà Sữa Truyền Thống",
-      "category": "TRA_SUA",
-      "price": 20000
-    },
-    {
-      "id": "ts_4",
-      "name": "Trà Sữa Thái Xanh",
-      "category": "TRA_SUA",
-      "price": 20000
-    },
-    {
-      "id": "ts_5",
-      "name": "Trà Sữa Socola",
-      "category": "TRA_SUA",
-      "price": 25000
-    },
-    {
-      "id": "ts_6",
-      "name": "Trà Sữa Kem Matcha",
-      "category": "TRA_SUA",
-      "price": 30000
-    },
-    {
-      "id": "ts_7",
-      "name": "Trà Sữa Kem Phômai",
-      "category": "TRA_SUA",
-      "price": 30000
-    },
-    {
-      "id": "ts_8",
-      "name": "Trà Sữa Kem Trứng",
-      "category": "TRA_SUA",
-      "price": 30000
-    },
-    {
-      "id": "ts_9",
-      "name": "Matcha Latte Nguyên Vị",
-      "category": "TRA_SUA",
-      "price": 22000
-    },
-    {
-      "id": "ts_10",
-      "name": "Latte Khoai Môn",
-      "category": "TRA_SUA",
-      "price": 22000
-    },
-    {
-      "id": "ts_11",
-      "name": "Latte Hoa Anh Đào",
-      "category": "TRA_SUA",
-      "price": 22000
-    },
-    {
-      "id": "ts_12",
-      "name": "Matcha Latte Cafe",
-      "category": "TRA_SUA",
-      "price": 25000
-    },
-    {
-      "id": "ts_13",
-      "name": "Matcha Cool Whish",
-      "category": "TRA_SUA",
-      "price": 30000
-    },
-    {
-      "id": "ts_14",
-      "name": "Matcha Sữa Gấu",
-      "category": "TRA_SUA",
-      "price": 30000
-    },
-    {
-      "id": "ts_15",
-      "name": "Matcha Kem Phômai",
-      "category": "TRA_SUA",
-      "price": 30000
-    },
-    {
-      "id": "ts_16",
-      "name": "Matcha Latte Dâu",
-      "category": "TRA_SUA",
-      "price": 25000
-    },
-    {
-      "id": "ts_17",
-      "name": "Matcha Latte Đào",
-      "category": "TRA_SUA",
-      "price": 25000
-    },
-    {
-      "id": "ts_18",
-      "name": "Matcha Latte Việt Quốc",
-      "category": "TRA_SUA",
-      "price": 25000
-    },
-    {
-      "id": "ts_19",
-      "name": "Matcha Latte Sữa Dừa",
-      "category": "TRA_SUA",
-      "price": 30000
-    },
-    {
-      "id": "ts_20",
-      "name": "Matcha Latte Mây Hồng",
-      "category": "TRA_SUA",
-      "price": 30000
-    },
-    {
-      "id": "ts_21",
-      "name": "Matcha Đá Xay",
-      "category": "TRA_SUA",
-      "price": 30000
-    },
-    {
-      "id": "ts_22",
-      "name": "Socola Kem Matcha",
-      "category": "TRA_SUA",
-      "price": 30000
-    },
-    {
-      "id": "ts_23",
-      "name": "Socola Sữa Kem Matcha",
-      "category": "TRA_SUA",
-      "price": 30000
-    },
-    {
-      "id": "tea_1",
-      "name": "Trà Olong Sen Vàng",
-      "category": "TEA",
-      "price": 30000
-    },
-    {
-      "id": "tea_2",
-      "name": "Trà Ổi Hồng",
-      "category": "TEA",
-      "price": 20000
-    },
-    {
-      "id": "tea_3",
-      "name": "Trà Tắc Thái Xanh",
-      "category": "TEA",
-      "price": 20000
-    },
-    {
-      "id": "tea_4",
-      "name": "Trà Me Thốt Nốt",
-      "category": "TEA",
-      "price": 25000
-    },
-    {
-      "id": "tea_5",
-      "name": "Trà Dưa Lưới",
-      "category": "TEA",
-      "price": 25000
-    },
-    {
-      "id": "tea_6",
-      "name": "Trà Quýt",
-      "category": "TEA",
-      "price": 25000
-    },
-    {
-      "id": "tea_7",
-      "name": "Trà Mãng Cầu",
-      "category": "TEA",
-      "price": 25000
-    },
-    {
-      "id": "tea_8",
-      "name": "Trà Lài Đác Thơm",
-      "category": "TEA",
-      "price": 25000
-    },
-    {
-      "id": "tea_9",
-      "name": "Trà Đào",
-      "category": "TEA",
-      "price": 20000
-    },
-    {
-      "id": "tea_10",
-      "name": "Trà Nhãn",
-      "category": "TEA",
-      "price": 20000
-    },
-    {
-      "id": "tea_11",
-      "name": "Trà Vải",
-      "category": "TEA",
-      "price": 20000
-    },
-    {
-      "id": "tea_12",
-      "name": "Trà Atiso",
-      "category": "TEA",
-      "price": 20000
-    },
-    {
-      "id": "tea_13",
-      "name": "Trà Dâu Tằm Hạt Đác",
-      "category": "TEA",
-      "price": 25000
-    },
-    {
-      "id": "tea_14",
-      "name": "Trà Chanh Dây Hạt Đác",
-      "category": "TEA",
-      "price": 25000
-    },
-    {
-      "id": "tea_15",
-      "name": "Trà Tắc Xí Muội",
-      "category": "TEA",
-      "price": 15000
-    },
-    {
-      "id": "tea_16",
-      "name": "Trà Chanh",
-      "category": "TEA",
-      "price": 15000
-    },
-    {
-      "id": "tea_17",
-      "name": "Trà Lipton Chanh",
-      "category": "TEA",
-      "price": 15000
-    },
-    {
-      "id": "tea_18",
-      "name": "Nhài Dừa Kem Hạt Dẻ Cười",
-      "category": "TEA",
-      "price": 30000
-    },
-    {
-      "id": "tea_19",
-      "name": "Trà Nhài Kem Hạt Dẻ Cười",
-      "category": "TEA",
-      "price": 30000
-    },
-    {
-      "id": "tea_20",
-      "name": "Trà đường",
-      "category": "TEA",
-      "price": 10000
-    },
-    {
-      "id": "gk_1",
-      "name": "Dừa Tươi Long Nhãn (700ml)",
-      "category": "YAOURT",
-      "price": 20000
-    },
-    {
-      "id": "gk_2",
-      "name": "Dừa Tươi Long Nhãn (1 Lít 3)",
-      "category": "YAOURT",
-      "price": 30000
-    },
-    {
-      "id": "gk_3",
-      "name": "Dừa Tươi Hạt Sen (700ml)",
-      "category": "YAOURT",
-      "price": 20000
-    },
-    {
-      "id": "gk_4",
-      "name": "Dừa Tươi Hạt Sen (1 Lít 3)",
-      "category": "YAOURT",
-      "price": 30000
-    },
-    {
-      "id": "gk_5",
-      "name": "Dừa Tươi Quế Hoa (700ml)",
-      "category": "YAOURT",
-      "price": 20000
-    },
-    {
-      "id": "gk_6",
-      "name": "Dừa Tươi Quế Hoa (1 Lít 3)",
-      "category": "YAOURT",
-      "price": 30000
-    },
-    {
-      "id": "gk_7",
-      "name": "Nước Dừa Tươi",
-      "category": "YAOURT",
-      "price": 20000
-    },
-    {
-      "id": "gk_8",
-      "name": "Rau má",
-      "category": "YAOURT",
-      "price": 12000
-    },
-    {
-      "id": "gk_9",
-      "name": "Rau má đậu xanh",
-      "category": "YAOURT",
-      "price": 15000
-    },
-    {
-      "id": "gk_10",
-      "name": "Rau má sữa dừa",
-      "category": "YAOURT",
-      "price": 15000
-    },
-    {
-      "id": "gk_11",
-      "name": "Đá me",
-      "category": "YAOURT",
-      "price": 15000
-    },
-    {
-      "id": "gk_12",
-      "name": "Đá me hạt đác",
-      "category": "YAOURT",
-      "price": 20000
-    },
-    {
-      "id": "gk_13",
-      "name": "Đá me thốt nốt",
-      "category": "YAOURT",
-      "price": 25000
-    },
-    {
-      "id": "gk_14",
-      "name": "Nước mía",
-      "category": "YAOURT",
-      "price": 10000
-    },
-    {
-      "id": "gk_15",
-      "name": "Nước mía sầu riêng",
-      "category": "YAOURT",
-      "price": 15000
-    },
-    {
-      "id": "gk_16",
-      "name": "Mía Mix (thơm, cam, tắc)",
-      "category": "YAOURT",
-      "price": 10000
-    },
-    {
-      "id": "gk_17",
-      "name": "Nước chanh",
-      "category": "YAOURT",
-      "price": 12000
-    },
-    {
-      "id": "gk_24",
-      "name": "Nước chanh đường",
-      "category": "YAOURT",
-      "price": 12000
-    },
-    {
-      "id": "gk_18",
-      "name": "Soda Đào (Việt Quất/Bạc Hà/Blue)",
-      "category": "YAOURT",
-      "price": 20000
-    },
-    {
-      "id": "gk_19",
-      "name": "Yaourt Trái Cây",
-      "category": "YAOURT",
-      "price": 30000
-    },
-    {
-      "id": "gk_20",
-      "name": "Yaourt Dâu Sấy",
-      "category": "YAOURT",
-      "price": 30000
-    },
-    {
-      "id": "gk_21",
-      "name": "Yaourt Đá",
-      "category": "YAOURT",
-      "price": 15000
-    },
-    {
-      "id": "gk_22",
-      "name": "Yaourt Đào",
-      "category": "YAOURT",
-      "price": 20000
-    },
-    {
-      "id": "gk_23",
-      "name": "Yaourt Dâu",
-      "category": "YAOURT",
-      "price": 20000
-    },
-    {
-      "id": "ep_1",
-      "name": "Nước ép Thơm",
-      "category": "NUOC_EP",
-      "price": 18000
-    },
-    {
-      "id": "ep_2",
-      "name": "Nước ép Thơm + Cam",
-      "category": "NUOC_EP",
-      "price": 20000
-    },
-    {
-      "id": "ep_3",
-      "name": "Nước ép Thơm + Cà Rốt",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "ep_4",
-      "name": "Nước ép Thơm + Táo",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "ep_5",
-      "name": "Nước ép Táo",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "ep_6",
-      "name": "Nước ép Táo + Cà Rốt",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "ep_7",
-      "name": "Nước ép Dưa Hấu",
-      "category": "NUOC_EP",
-      "price": 20000
-    },
-    {
-      "id": "ep_8",
-      "name": "Nước ép Dưa Lưới",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "ep_9",
-      "name": "Nước ép Lê",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "ep_10",
-      "name": "Nước ép Lê + Thơm",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "ep_11",
-      "name": "Nước ép Cam + Cà Rốt",
-      "category": "NUOC_EP",
-      "price": 20000
-    },
-    {
-      "id": "ep_12",
-      "name": "Nước ép Lựu",
-      "category": "NUOC_EP",
-      "price": 30000
-    },
-    {
-      "id": "ep_13",
-      "name": "Nước ép Cam",
-      "category": "NUOC_EP",
-      "price": 15000
-    },
-    {
-      "id": "ep_14",
-      "name": "Nước ép Thập Cẩm",
-      "category": "NUOC_EP",
-      "price": 30000
-    },
-    {
-      "id": "st_1",
-      "name": "Sinh tố Bơ",
-      "category": "NUOC_EP",
-      "price": 30000
-    },
-    {
-      "id": "st_2",
-      "name": "Sinh tố Bơ Già Dừa Non",
-      "category": "NUOC_EP",
-      "price": 30000
-    },
-    {
-      "id": "st_3",
-      "name": "Bơ Sốt Ca Cao",
-      "category": "NUOC_EP",
-      "price": 30000
-    },
-    {
-      "id": "st_4",
-      "name": "Sinh tố Dừa Non",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "st_5",
-      "name": "Sinh tố Dâu",
-      "category": "NUOC_EP",
-      "price": 30000
-    },
-    {
-      "id": "st_6",
-      "name": "Sinh tố Mãng Cầu",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "st_7",
-      "name": "Sinh tố Samboche",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "st_8",
-      "name": "Sinh tố Cam + Nha Đam",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "st_9",
-      "name": "Sinh tố Xoài",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "st_10",
-      "name": "Sinh tố Kiwi",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "st_11",
-      "name": "Sinh tố Việt Quốc",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "st_12",
-      "name": "Sinh tố Phúc Bồn Tử",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "st_13",
-      "name": "Sinh tố Đào",
-      "category": "NUOC_EP",
-      "price": 25000
-    },
-    {
-      "id": "st_14",
-      "name": "Sinh tố Thơm",
-      "category": "NUOC_EP",
-      "price": 20000
-    }
-  ],
-  "toppings": [
-    {
-      "id": "top_1",
-      "name": "Khoai dẻo (môn, lang)",
-      "price": 5000
-    },
-    {
-      "id": "top_2",
-      "name": "Khoai dẻo phô mai (3 viên)",
-      "price": 10000
-    },
-    {
-      "id": "top_3",
-      "name": "Trân châu (đen/trắng/olong)",
-      "price": 5000
-    },
-    {
-      "id": "top_4",
-      "name": "Phô mai viên (3 viên)",
-      "price": 10000
-    },
-    {
-      "id": "top_5",
-      "name": "Hạt nổ (đậu đỏ, củ năng)",
-      "price": 5000
-    },
-    {
-      "id": "top_6",
-      "name": "Thạch quế hoa",
-      "price": 5000
-    },
-    {
-      "id": "top_7",
-      "name": "Hạt sen",
-      "price": 5000
-    },
-    {
-      "id": "top_8",
-      "name": "Kem cheese / Kem phômai",
-      "price": 6000
-    },
-    {
-      "id": "top_9",
-      "name": "Kem matcha / Kem muối",
-      "price": 6000
-    },
-    {
-      "id": "top_10",
-      "name": "Hạt đác (thơm/dâu tằm/chanh dây)",
-      "price": 6000
-    },
-    {
-      "id": "top_11",
-      "name": "Thốt nốt rim đường",
-      "price": 6000
-    }
-  ],
-  "favorites": {
-    "C.Chou": [
-      {
-        "id": "fav_chou_1",
-        "name": "Cf sữa đá",
-        "price": 18000,
-        "toppings": [],
-        "toppingsPrice": 0,
-        "note": "Ít sữa ít đá"
-      },
-      {
-        "id": "fav_chou_2",
-        "name": "Nước chanh đường",
-        "price": 12000,
-        "toppings": [],
-        "toppingsPrice": 0,
-        "note": ""
-      }
-    ],
-    "Ngân Mập": [
-      {
-        "id": "fav_2",
-        "name": "Trà Sữa Khoai Môn Dẻo",
-        "price": 25000,
-        "toppings": [
-          "Trân châu (đen/trắng/olong)"
-        ],
-        "toppingsPrice": 5000,
-        "note": "50% đường ít đá"
-      },
-      {
-        "id": "fav_ngan_1",
-        "name": "Đá me",
-        "price": 15000,
-        "toppings": [],
-        "toppingsPrice": 0,
-        "note": ""
-      }
-    ],
-    "Chế Bao": [
-      {
-        "id": "fav_bao_1",
-        "name": "Trà đường",
-        "price": 10000,
-        "toppings": [],
-        "toppingsPrice": 0,
-        "note": ""
-      },
-      {
-        "id": "fav_7",
-        "name": "Ca cao sữa gấu",
-        "price": 30000,
-        "toppings": [],
-        "toppingsPrice": 0,
-        "note": "Uống lạnh"
-      }
-    ],
-    "A.Duy": [
-      {
-        "id": "fav_duy_1",
-        "name": "Cf sữa đá",
-        "price": 18000,
-        "toppings": [],
-        "toppingsPrice": 0,
-        "note": "Ít sữa"
-      }
-    ],
-    "Hà": [
-      {
-        "id": "fav_4",
-        "name": "Trà Olong Sen Vàng",
-        "price": 30000,
-        "toppings": [],
-        "toppingsPrice": 0,
-        "note": "Ít đá"
-      }
-    ],
-    "Khoa": [
-      {
-        "id": "fav_5",
-        "name": "Bạc xỉu đá",
-        "price": 18000,
-        "toppings": [],
-        "toppingsPrice": 0,
-        "note": "Nhiều sữa ít đá"
-      }
-    ],
-    "Nga": [
-      {
-        "id": "fav_6",
-        "name": "Nước ép Dưa Lưới",
-        "price": 25000,
-        "toppings": [],
-        "toppingsPrice": 0,
-        "note": "Ít đá nguyên chất"
-      }
-    ],
-    "Đạo": [
-      {
-        "id": "fav_1791944116956",
-        "name": "Latte Cacao Cafe",
-        "price": 25000,
-        "toppings": [],
-        "toppingsPrice": 0,
-        "note": "Bình thường, Ngọt"
-      }
-    ]
-  },
-  "ordersData": {
-    "2026-10": {
-      "A.Duy": {
-        "paid": false,
-        "days": {
-          "12": 18000,
-          "13": 18000,
-          "14": 18000
-        },
-        "items": {
-          "12": [
-            {
-              "id": "ord_12_duy",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít sữa",
-              "total": 18000,
-              "createdAt": "2026-10-12T08:30:00.000Z"
-            }
-          ],
-          "13": [
-            {
-              "id": "ord_13_duy",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít sữa",
-              "total": 18000,
-              "createdAt": "2026-10-13T08:30:00.000Z"
-            }
-          ],
-          "14": [
-            {
-              "id": "ord_1791944033932_tgn7",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít sữa",
-              "total": 18000,
-              "createdAt": "2026-10-14T02:13:53.932Z"
-            }
-          ]
-        }
-      },
-      "Ngân Mập": {
-        "paid": false,
-        "days": {
-          "12": 15000,
-          "13": 18000
-        },
-        "items": {
-          "12": [
-            {
-              "id": "ord_12_ngan",
-              "name": "Đá me",
-              "basePrice": 15000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 15000,
-              "qty": 1,
-              "note": "",
-              "total": 15000,
-              "createdAt": "2026-10-12T08:31:00.000Z"
-            }
-          ],
-          "13": [
-            {
-              "id": "ord_13_ngan",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "",
-              "total": 18000,
-              "createdAt": "2026-10-13T08:31:00.000Z"
-            }
-          ]
-        }
-      },
-      "Chế Bao": {
-        "paid": false,
-        "days": {
-          "12": 10000
-        },
-        "items": {
-          "12": [
-            {
-              "id": "ord_12_bao",
-              "name": "Trà đường",
-              "basePrice": 10000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 10000,
-              "qty": 1,
-              "note": "",
-              "total": 10000,
-              "createdAt": "2026-10-12T08:32:00.000Z"
-            }
-          ]
-        }
-      },
-      "C.Chou": {
-        "paid": false,
-        "days": {
-          "12": 30000,
-          "13": 30000,
-          "14": 30000
-        },
-        "items": {
-          "12": [
-            {
-              "id": "ord_12_chou_1",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít sữa ít đá",
-              "total": 18000,
-              "createdAt": "2026-10-12T08:33:00.000Z"
-            },
-            {
-              "id": "ord_12_chou_2",
-              "name": "Nước chanh đường",
-              "basePrice": 12000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 12000,
-              "qty": 1,
-              "note": "",
-              "total": 12000,
-              "createdAt": "2026-10-12T08:34:00.000Z"
-            }
-          ],
-          "13": [
-            {
-              "id": "ord_13_chou_1",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít sữa ít đá",
-              "total": 18000,
-              "createdAt": "2026-10-13T08:33:00.000Z"
-            },
-            {
-              "id": "ord_13_chou_2",
-              "name": "Nước chanh đường",
-              "basePrice": 12000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 12000,
-              "qty": 1,
-              "note": "",
-              "total": 12000,
-              "createdAt": "2026-10-13T08:34:00.000Z"
-            }
-          ],
-          "14": [
-            {
-              "id": "ord_1791944078550_nd5s",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít sữa ít đá",
-              "total": 18000,
-              "createdAt": "2026-10-14T02:14:38.550Z"
-            },
-            {
-              "id": "ord_1791944079238_uc5l",
-              "name": "Nước chanh đường",
-              "basePrice": 12000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 12000,
-              "qty": 1,
-              "note": "",
-              "total": 12000,
-              "createdAt": "2026-10-14T02:14:39.238Z"
-            }
-          ]
-        }
-      },
-      "Ngọc": {
-        "paid": false,
-        "days": {
-          "14": 18000
-        },
-        "items": {
-          "14": [
-            {
-              "id": "ord_1791944043168_odwn",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Bình thường, Bth",
-              "total": 18000,
-              "createdAt": "2026-10-14T02:14:03.168Z"
-            }
-          ]
-        }
-      },
-      "Đạo": {
-        "paid": false,
-        "days": {
-          "13": 25000,
-          "14": 25000
-        },
-        "items": {
-          "13": [
-            {
-              "id": "ord_13_dao",
-              "name": "Latte Cacao Cafe",
-              "basePrice": 25000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 25000,
-              "qty": 1,
-              "note": "",
-              "total": 25000,
-              "createdAt": "2026-10-13T08:35:00.000Z"
-            }
-          ],
-          "14": [
-            {
-              "id": "ord_1791944116956_fst2",
-              "name": "Latte Cacao Cafe",
-              "basePrice": 25000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 25000,
-              "qty": 1,
-              "note": "Bình thường, Ngọt",
-              "total": 25000,
-              "createdAt": "2026-10-14T02:15:16.956Z"
-            }
-          ]
-        }
-      }
-    }
-  },
-  "config": {
-    "bankCode": "MB",
-    "accountNo": "0974121693",
-    "accountName": "CO BA CAFE"
-  },
-  "memberAliases": {
-    "Chế Bao": [
-      "BB",
-      "Bánh Bao"
-    ],
-    "Ngân Mập": [
-      "Đen"
-    ],
-    "C.Chou": [
-      "Châu"
-    ],
-    "A.Duy": [
-      "Duy"
-    ]
-  },
-  "salaryCyclesPaid": {}
+﻿{
+    "members":  [
+                    "C.Chou",
+                    "NgÃ¢n Máº­p",
+                    "NgÃ¢n GD",
+                    "NgÃ¢n Nui",
+                    "Cháº¿ Bao",
+                    "A.Duy",
+                    "HÃ ",
+                    "Khoa",
+                    "Nga",
+                    "Nhi",
+                    "Thuá»·",
+                    "Ngá»c",
+                    "Yáº¿n",
+                    "Manh",
+                    "NhÃ¢n",
+                    "Bee",
+                    "TrÆ°á»Ÿng",
+                    "Äáº¡o",
+                    "A.HÃ¹ng",
+                    "Vian"
+                ],
+    "menu":  [
+                 {
+                     "id":  "cf_1",
+                     "name":  "Cf sá»¯a Ä‘Ã¡",
+                     "category":  "CAFE",
+                     "price":  18000
+                 },
+                 {
+                     "id":  "cf_2",
+                     "name":  "Cf sá»¯a nÃ³ng",
+                     "category":  "CAFE",
+                     "price":  17000
+                 },
+                 {
+                     "id":  "cf_3",
+                     "name":  "Cf Ä‘en Ä‘Ã¡",
+                     "category":  "CAFE",
+                     "price":  15000
+                 },
+                 {
+                     "id":  "cf_4",
+                     "name":  "Cf Ä‘en nÃ³ng",
+                     "category":  "CAFE",
+                     "price":  15000
+                 },
+                 {
+                     "id":  "cf_5",
+                     "name":  "Báº¡c xá»‰u Ä‘Ã¡",
+                     "category":  "CAFE",
+                     "price":  18000
+                 },
+                 {
+                     "id":  "cf_6",
+                     "name":  "Sá»¯a tÆ°Æ¡i cf",
+                     "category":  "CAFE",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "cf_7",
+                     "name":  "Ca cao sá»¯a Ä‘Ã¡",
+                     "category":  "CAFE",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "cf_8",
+                     "name":  "Ca cao sá»¯a nÃ³ng",
+                     "category":  "CAFE",
+                     "price":  18000
+                 },
+                 {
+                     "id":  "cf_9",
+                     "name":  "Ca cao sá»¯a gáº¥u",
+                     "category":  "CAFE",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "cf_10",
+                     "name":  "Milo sá»¯a Ä‘Ã¡",
+                     "category":  "CAFE",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "cf_11",
+                     "name":  "Milo dáº§m",
+                     "category":  "CAFE",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "cf_12",
+                     "name":  "Báº¡c xá»‰u kem muá»‘i",
+                     "category":  "CAFE",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "cf_13",
+                     "name":  "Cacao kem muá»‘i",
+                     "category":  "CAFE",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "cf_14",
+                     "name":  "Latte Cacao Cafe",
+                     "category":  "CAFE",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "cf_15",
+                     "name":  "Latte Socola GiÃ²n Kem Cheese",
+                     "category":  "CAFE",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "ts_1",
+                     "name":  "TrÃ  Sá»¯a Khoai MÃ´n Dáº»o",
+                     "category":  "TRA_SUA",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "ts_2",
+                     "name":  "TrÃ  Sá»¯a Gáº¡o Rang",
+                     "category":  "TRA_SUA",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "ts_3",
+                     "name":  "TrÃ  Sá»¯a Truyá»n Thá»‘ng",
+                     "category":  "TRA_SUA",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "ts_4",
+                     "name":  "TrÃ  Sá»¯a ThÃ¡i Xanh",
+                     "category":  "TRA_SUA",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "ts_5",
+                     "name":  "TrÃ  Sá»¯a Socola",
+                     "category":  "TRA_SUA",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "ts_6",
+                     "name":  "TrÃ  Sá»¯a Kem Matcha",
+                     "category":  "TRA_SUA",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "ts_7",
+                     "name":  "TrÃ  Sá»¯a Kem PhÃ´mai",
+                     "category":  "TRA_SUA",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "ts_8",
+                     "name":  "TrÃ  Sá»¯a Kem Trá»©ng",
+                     "category":  "TRA_SUA",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "ts_9",
+                     "name":  "Matcha Latte NguyÃªn Vá»‹",
+                     "category":  "TRA_SUA",
+                     "price":  22000
+                 },
+                 {
+                     "id":  "ts_10",
+                     "name":  "Latte Khoai MÃ´n",
+                     "category":  "TRA_SUA",
+                     "price":  22000
+                 },
+                 {
+                     "id":  "ts_11",
+                     "name":  "Latte Hoa Anh ÄÃ o",
+                     "category":  "TRA_SUA",
+                     "price":  22000
+                 },
+                 {
+                     "id":  "ts_12",
+                     "name":  "Matcha Latte Cafe",
+                     "category":  "TRA_SUA",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "ts_13",
+                     "name":  "Matcha Cool Whish",
+                     "category":  "TRA_SUA",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "ts_14",
+                     "name":  "Matcha Sá»¯a Gáº¥u",
+                     "category":  "TRA_SUA",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "ts_15",
+                     "name":  "Matcha Kem PhÃ´mai",
+                     "category":  "TRA_SUA",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "ts_16",
+                     "name":  "Matcha Latte DÃ¢u",
+                     "category":  "TRA_SUA",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "ts_17",
+                     "name":  "Matcha Latte ÄÃ o",
+                     "category":  "TRA_SUA",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "ts_18",
+                     "name":  "Matcha Latte Viá»‡t Quá»‘c",
+                     "category":  "TRA_SUA",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "ts_19",
+                     "name":  "Matcha Latte Sá»¯a Dá»«a",
+                     "category":  "TRA_SUA",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "ts_20",
+                     "name":  "Matcha Latte MÃ¢y Há»“ng",
+                     "category":  "TRA_SUA",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "ts_21",
+                     "name":  "Matcha ÄÃ¡ Xay",
+                     "category":  "TRA_SUA",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "ts_22",
+                     "name":  "Socola Kem Matcha",
+                     "category":  "TRA_SUA",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "ts_23",
+                     "name":  "Socola Sá»¯a Kem Matcha",
+                     "category":  "TRA_SUA",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "tea_1",
+                     "name":  "TrÃ  Olong Sen VÃ ng",
+                     "category":  "TEA",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "tea_2",
+                     "name":  "TrÃ  á»”i Há»“ng",
+                     "category":  "TEA",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "tea_3",
+                     "name":  "TrÃ  Táº¯c ThÃ¡i Xanh",
+                     "category":  "TEA",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "tea_4",
+                     "name":  "TrÃ  Me Thá»‘t Ná»‘t",
+                     "category":  "TEA",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "tea_5",
+                     "name":  "TrÃ  DÆ°a LÆ°á»›i",
+                     "category":  "TEA",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "tea_6",
+                     "name":  "TrÃ  QuÃ½t",
+                     "category":  "TEA",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "tea_7",
+                     "name":  "TrÃ  MÃ£ng Cáº§u",
+                     "category":  "TEA",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "tea_8",
+                     "name":  "TrÃ  LÃ i ÄÃ¡c ThÆ¡m",
+                     "category":  "TEA",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "tea_9",
+                     "name":  "TrÃ  ÄÃ o",
+                     "category":  "TEA",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "tea_10",
+                     "name":  "TrÃ  NhÃ£n",
+                     "category":  "TEA",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "tea_11",
+                     "name":  "TrÃ  Váº£i",
+                     "category":  "TEA",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "tea_12",
+                     "name":  "TrÃ  Atiso",
+                     "category":  "TEA",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "tea_13",
+                     "name":  "TrÃ  DÃ¢u Táº±m Háº¡t ÄÃ¡c",
+                     "category":  "TEA",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "tea_14",
+                     "name":  "TrÃ  Chanh DÃ¢y Háº¡t ÄÃ¡c",
+                     "category":  "TEA",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "tea_15",
+                     "name":  "TrÃ  Táº¯c XÃ­ Muá»™i",
+                     "category":  "TEA",
+                     "price":  15000
+                 },
+                 {
+                     "id":  "tea_16",
+                     "name":  "TrÃ  Chanh",
+                     "category":  "TEA",
+                     "price":  15000
+                 },
+                 {
+                     "id":  "tea_17",
+                     "name":  "TrÃ  Lipton Chanh",
+                     "category":  "TEA",
+                     "price":  15000
+                 },
+                 {
+                     "id":  "tea_18",
+                     "name":  "NhÃ i Dá»«a Kem Háº¡t Dáº» CÆ°á»i",
+                     "category":  "TEA",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "tea_19",
+                     "name":  "TrÃ  NhÃ i Kem Háº¡t Dáº» CÆ°á»i",
+                     "category":  "TEA",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "tea_20",
+                     "name":  "TrÃ  Ä‘Æ°á»ng",
+                     "category":  "TEA",
+                     "price":  10000
+                 },
+                 {
+                     "id":  "gk_1",
+                     "name":  "Dá»«a TÆ°Æ¡i Long NhÃ£n (700ml)",
+                     "category":  "YAOURT",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "gk_2",
+                     "name":  "Dá»«a TÆ°Æ¡i Long NhÃ£n (1 LÃ­t 3)",
+                     "category":  "YAOURT",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "gk_3",
+                     "name":  "Dá»«a TÆ°Æ¡i Háº¡t Sen (700ml)",
+                     "category":  "YAOURT",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "gk_4",
+                     "name":  "Dá»«a TÆ°Æ¡i Háº¡t Sen (1 LÃ­t 3)",
+                     "category":  "YAOURT",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "gk_5",
+                     "name":  "Dá»«a TÆ°Æ¡i Quáº¿ Hoa (700ml)",
+                     "category":  "YAOURT",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "gk_6",
+                     "name":  "Dá»«a TÆ°Æ¡i Quáº¿ Hoa (1 LÃ­t 3)",
+                     "category":  "YAOURT",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "gk_7",
+                     "name":  "NÆ°á»›c Dá»«a TÆ°Æ¡i",
+                     "category":  "YAOURT",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "gk_8",
+                     "name":  "Rau mÃ¡",
+                     "category":  "YAOURT",
+                     "price":  12000
+                 },
+                 {
+                     "id":  "gk_9",
+                     "name":  "Rau mÃ¡ Ä‘áº­u xanh",
+                     "category":  "YAOURT",
+                     "price":  15000
+                 },
+                 {
+                     "id":  "gk_10",
+                     "name":  "Rau mÃ¡ sá»¯a dá»«a",
+                     "category":  "YAOURT",
+                     "price":  15000
+                 },
+                 {
+                     "id":  "gk_11",
+                     "name":  "ÄÃ¡ me",
+                     "category":  "YAOURT",
+                     "price":  15000
+                 },
+                 {
+                     "id":  "gk_12",
+                     "name":  "ÄÃ¡ me háº¡t Ä‘Ã¡c",
+                     "category":  "YAOURT",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "gk_13",
+                     "name":  "ÄÃ¡ me thá»‘t ná»‘t",
+                     "category":  "YAOURT",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "gk_14",
+                     "name":  "NÆ°á»›c mÃ­a",
+                     "category":  "YAOURT",
+                     "price":  10000
+                 },
+                 {
+                     "id":  "gk_15",
+                     "name":  "NÆ°á»›c mÃ­a sáº§u riÃªng",
+                     "category":  "YAOURT",
+                     "price":  15000
+                 },
+                 {
+                     "id":  "gk_16",
+                     "name":  "MÃ­a Mix (thÆ¡m, cam, táº¯c)",
+                     "category":  "YAOURT",
+                     "price":  10000
+                 },
+                 {
+                     "id":  "gk_17",
+                     "name":  "NÆ°á»›c chanh",
+                     "category":  "YAOURT",
+                     "price":  12000
+                 },
+                 {
+                     "id":  "gk_24",
+                     "name":  "NÆ°á»›c chanh Ä‘Æ°á»ng",
+                     "category":  "YAOURT",
+                     "price":  12000
+                 },
+                 {
+                     "id":  "gk_18",
+                     "name":  "Soda ÄÃ o (Viá»‡t Quáº¥t/Báº¡c HÃ /Blue)",
+                     "category":  "YAOURT",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "gk_19",
+                     "name":  "Yaourt TrÃ¡i CÃ¢y",
+                     "category":  "YAOURT",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "gk_20",
+                     "name":  "Yaourt DÃ¢u Sáº¥y",
+                     "category":  "YAOURT",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "gk_21",
+                     "name":  "Yaourt ÄÃ¡",
+                     "category":  "YAOURT",
+                     "price":  15000
+                 },
+                 {
+                     "id":  "gk_22",
+                     "name":  "Yaourt ÄÃ o",
+                     "category":  "YAOURT",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "gk_23",
+                     "name":  "Yaourt DÃ¢u",
+                     "category":  "YAOURT",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "ep_1",
+                     "name":  "NÆ°á»›c Ã©p ThÆ¡m",
+                     "category":  "NUOC_EP",
+                     "price":  18000
+                 },
+                 {
+                     "id":  "ep_2",
+                     "name":  "NÆ°á»›c Ã©p ThÆ¡m + Cam",
+                     "category":  "NUOC_EP",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "ep_3",
+                     "name":  "NÆ°á»›c Ã©p ThÆ¡m + CÃ  Rá»‘t",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "ep_4",
+                     "name":  "NÆ°á»›c Ã©p ThÆ¡m + TÃ¡o",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "ep_5",
+                     "name":  "NÆ°á»›c Ã©p TÃ¡o",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "ep_6",
+                     "name":  "NÆ°á»›c Ã©p TÃ¡o + CÃ  Rá»‘t",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "ep_7",
+                     "name":  "NÆ°á»›c Ã©p DÆ°a Háº¥u",
+                     "category":  "NUOC_EP",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "ep_8",
+                     "name":  "NÆ°á»›c Ã©p DÆ°a LÆ°á»›i",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "ep_9",
+                     "name":  "NÆ°á»›c Ã©p LÃª",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "ep_10",
+                     "name":  "NÆ°á»›c Ã©p LÃª + ThÆ¡m",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "ep_11",
+                     "name":  "NÆ°á»›c Ã©p Cam + CÃ  Rá»‘t",
+                     "category":  "NUOC_EP",
+                     "price":  20000
+                 },
+                 {
+                     "id":  "ep_12",
+                     "name":  "NÆ°á»›c Ã©p Lá»±u",
+                     "category":  "NUOC_EP",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "ep_13",
+                     "name":  "NÆ°á»›c Ã©p Cam",
+                     "category":  "NUOC_EP",
+                     "price":  15000
+                 },
+                 {
+                     "id":  "ep_14",
+                     "name":  "NÆ°á»›c Ã©p Tháº­p Cáº©m",
+                     "category":  "NUOC_EP",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "st_1",
+                     "name":  "Sinh tá»‘ BÆ¡",
+                     "category":  "NUOC_EP",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "st_2",
+                     "name":  "Sinh tá»‘ BÆ¡ GiÃ  Dá»«a Non",
+                     "category":  "NUOC_EP",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "st_3",
+                     "name":  "BÆ¡ Sá»‘t Ca Cao",
+                     "category":  "NUOC_EP",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "st_4",
+                     "name":  "Sinh tá»‘ Dá»«a Non",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "st_5",
+                     "name":  "Sinh tá»‘ DÃ¢u",
+                     "category":  "NUOC_EP",
+                     "price":  30000
+                 },
+                 {
+                     "id":  "st_6",
+                     "name":  "Sinh tá»‘ MÃ£ng Cáº§u",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "st_7",
+                     "name":  "Sinh tá»‘ Samboche",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "st_8",
+                     "name":  "Sinh tá»‘ Cam + Nha Äam",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "st_9",
+                     "name":  "Sinh tá»‘ XoÃ i",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "st_10",
+                     "name":  "Sinh tá»‘ Kiwi",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "st_11",
+                     "name":  "Sinh tá»‘ Viá»‡t Quá»‘c",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "st_12",
+                     "name":  "Sinh tá»‘ PhÃºc Bá»“n Tá»­",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "st_13",
+                     "name":  "Sinh tá»‘ ÄÃ o",
+                     "category":  "NUOC_EP",
+                     "price":  25000
+                 },
+                 {
+                     "id":  "st_14",
+                     "name":  "Sinh tá»‘ ThÆ¡m",
+                     "category":  "NUOC_EP",
+                     "price":  20000
+                 }
+             ],
+    "toppings":  [
+                     {
+                         "id":  "top_1",
+                         "name":  "Khoai dáº»o (mÃ´n, lang)",
+                         "price":  5000
+                     },
+                     {
+                         "id":  "top_2",
+                         "name":  "Khoai dáº»o phÃ´ mai (3 viÃªn)",
+                         "price":  10000
+                     },
+                     {
+                         "id":  "top_3",
+                         "name":  "TrÃ¢n chÃ¢u (Ä‘en/tráº¯ng/olong)",
+                         "price":  5000
+                     },
+                     {
+                         "id":  "top_4",
+                         "name":  "PhÃ´ mai viÃªn (3 viÃªn)",
+                         "price":  10000
+                     },
+                     {
+                         "id":  "top_5",
+                         "name":  "Háº¡t ná»• (Ä‘áº­u Ä‘á», cá»§ nÄƒng)",
+                         "price":  5000
+                     },
+                     {
+                         "id":  "top_6",
+                         "name":  "Tháº¡ch quáº¿ hoa",
+                         "price":  5000
+                     },
+                     {
+                         "id":  "top_7",
+                         "name":  "Háº¡t sen",
+                         "price":  5000
+                     },
+                     {
+                         "id":  "top_8",
+                         "name":  "Kem cheese / Kem phÃ´mai",
+                         "price":  6000
+                     },
+                     {
+                         "id":  "top_9",
+                         "name":  "Kem matcha / Kem muá»‘i",
+                         "price":  6000
+                     },
+                     {
+                         "id":  "top_10",
+                         "name":  "Háº¡t Ä‘Ã¡c (thÆ¡m/dÃ¢u táº±m/chanh dÃ¢y)",
+                         "price":  6000
+                     },
+                     {
+                         "id":  "top_11",
+                         "name":  "Thá»‘t ná»‘t rim Ä‘Æ°á»ng",
+                         "price":  6000
+                     }
+                 ],
+    "favorites":  {
+                      "C.Chou":  [
+                                     {
+                                         "id":  "fav_1",
+                                         "name":  "Cf sá»¯a Ä‘Ã¡",
+                                         "price":  18000,
+                                         "toppings":  [
+
+                                                      ],
+                                         "toppingsPrice":  0,
+                                         "note":  "Ãt ngá»t nhiá»u Ä‘Ã¡"
+                                     },
+                                     {
+                                         "id":  "fav_chou_1",
+                                         "name":  "Cf sá»¯a Ä‘Ã¡",
+                                         "price":  18000,
+                                         "toppings":  [
+
+                                                      ],
+                                         "toppingsPrice":  0,
+                                         "note":  "Ãt sá»¯a Ã­t Ä‘Ã¡"
+                                     },
+                                     {
+                                         "id":  "fav_chou_2",
+                                         "name":  "NÆ°á»›c chanh Ä‘Æ°á»ng",
+                                         "price":  12000,
+                                         "toppings":  [
+
+                                                      ],
+                                         "toppingsPrice":  0,
+                                         "note":  ""
+                                     }
+                                 ],
+                      "NgÃ¢n Máº­p":  [
+                                          {
+                                              "id":  "fav_2",
+                                              "name":  "TrÃ  Sá»¯a Khoai MÃ´n Dáº»o",
+                                              "price":  25000,
+                                              "toppings":  [
+                                                               "TrÃ¢n chÃ¢u (Ä‘en/tráº¯ng/olong)"
+                                                           ],
+                                              "toppingsPrice":  5000,
+                                              "note":  "50% Ä‘Æ°á»ng Ã­t Ä‘Ã¡"
+                                          },
+                                          {
+                                              "id":  "fav_ngan_1",
+                                              "name":  "ÄÃ¡ me",
+                                              "price":  15000,
+                                              "toppings":  [
+
+                                                           ],
+                                              "toppingsPrice":  0,
+                                              "note":  ""
+                                          }
+                                      ],
+                      "Cháº¿ Bao":  [
+                                        {
+                                            "id":  "fav_bao_1",
+                                            "name":  "TrÃ  Ä‘Æ°á»ng",
+                                            "price":  10000,
+                                            "toppings":  [
+
+                                                         ],
+                                            "toppingsPrice":  0,
+                                            "note":  ""
+                                        },
+                                        {
+                                            "id":  "fav_7",
+                                            "name":  "Ca cao sá»¯a gáº¥u",
+                                            "price":  30000,
+                                            "toppings":  [
+
+                                                         ],
+                                            "toppingsPrice":  0,
+                                            "note":  "Uá»‘ng láº¡nh"
+                                        }
+                                    ],
+                      "A.Duy":  [
+                                    {
+                                        "id":  "fav_3",
+                                        "name":  "Cf Ä‘en Ä‘Ã¡",
+                                        "price":  15000,
+                                        "toppings":  [
+
+                                                     ],
+                                        "toppingsPrice":  0,
+                                        "note":  "Äáº­m vá»‹ khÃ´ng Ä‘Æ°á»ng"
+                                    },
+                                    {
+                                        "id":  "fav_duy_1",
+                                        "name":  "Cf sá»¯a Ä‘Ã¡",
+                                        "price":  18000,
+                                        "toppings":  [
+
+                                                     ],
+                                        "toppingsPrice":  0,
+                                        "note":  "Ãt sá»¯a"
+                                    }
+                                ],
+                      "HÃ ":  [
+                                  {
+                                      "id":  "fav_4",
+                                      "name":  "TrÃ  Olong Sen VÃ ng",
+                                      "price":  30000,
+                                      "toppings":  [
+
+                                                   ],
+                                      "toppingsPrice":  0,
+                                      "note":  "Ãt Ä‘Ã¡"
+                                  }
+                              ],
+                      "Khoa":  [
+                                   {
+                                       "id":  "fav_5",
+                                       "name":  "Báº¡c xá»‰u Ä‘Ã¡",
+                                       "price":  18000,
+                                       "toppings":  [
+
+                                                    ],
+                                       "toppingsPrice":  0,
+                                       "note":  "Nhiá»u sá»¯a Ã­t Ä‘Ã¡"
+                                   }
+                               ],
+                      "Nga":  [
+                                  {
+                                      "id":  "fav_6",
+                                      "name":  "NÆ°á»›c Ã©p DÆ°a LÆ°á»›i",
+                                      "price":  25000,
+                                      "toppings":  [
+
+                                                   ],
+                                      "toppingsPrice":  0,
+                                      "note":  "Ãt Ä‘Ã¡ nguyÃªn cháº¥t"
+                                  }
+                              ],
+                      "Äáº¡o":  [
+                                     {
+                                         "id":  "fav_1791944116956",
+                                         "name":  "Latte Cacao Cafe",
+                                         "price":  25000,
+                                         "toppings":  [
+
+                                                      ],
+                                         "toppingsPrice":  0,
+                                         "note":  "BÃ¬nh thÆ°á»ng, Ngá»t"
+                                     }
+                                 ]
+                  },
+    "ordersData":  {
+                       "2026-10":  {
+                                       "A.Duy":  {
+                                                     "paid":  false,
+                                                     "days":  {
+                                                                  "12":  18000,
+                                                                  "13":  18000,
+                                                                  "14":  18000
+                                                              },
+                                                     "items":  {
+                                                                   "12":  [
+                                                                              {
+                                                                                  "id":  "ord_12_duy",
+                                                                                  "name":  "Cf sá»¯a Ä‘Ã¡",
+                                                                                  "basePrice":  18000,
+                                                                                  "toppings":  [
+
+                                                                                               ],
+                                                                                  "toppingsPrice":  0,
+                                                                                  "singlePrice":  18000,
+                                                                                  "qty":  1,
+                                                                                  "note":  "Ãt sá»¯a",
+                                                                                  "total":  18000,
+                                                                                  "createdAt":  "2026-10-12T08:30:00.000Z"
+                                                                              }
+                                                                          ],
+                                                                   "13":  [
+                                                                              {
+                                                                                  "id":  "ord_13_duy",
+                                                                                  "name":  "Cf sá»¯a Ä‘Ã¡",
+                                                                                  "basePrice":  18000,
+                                                                                  "toppings":  [
+
+                                                                                               ],
+                                                                                  "toppingsPrice":  0,
+                                                                                  "singlePrice":  18000,
+                                                                                  "qty":  1,
+                                                                                  "note":  "Ãt sá»¯a",
+                                                                                  "total":  18000,
+                                                                                  "createdAt":  "2026-10-13T08:30:00.000Z"
+                                                                              }
+                                                                          ],
+                                                                   "14":  [
+                                                                              {
+                                                                                  "id":  "ord_1791944033932_tgn7",
+                                                                                  "name":  "Cf sá»¯a Ä‘Ã¡",
+                                                                                  "basePrice":  18000,
+                                                                                  "toppings":  [
+
+                                                                                               ],
+                                                                                  "toppingsPrice":  0,
+                                                                                  "singlePrice":  18000,
+                                                                                  "qty":  1,
+                                                                                  "note":  "Ãt sá»¯a",
+                                                                                  "total":  18000,
+                                                                                  "createdAt":  "2026-10-14T02:13:53.932Z"
+                                                                              }
+                                                                          ]
+                                                               }
+                                                 },
+                                       "Ngá»c":  {
+                                                      "paid":  false,
+                                                      "days":  {
+                                                                   "14":  18000
+                                                               },
+                                                      "items":  {
+                                                                    "14":  [
+                                                                               {
+                                                                                   "id":  "ord_1791944043168_odwn",
+                                                                                   "name":  "Cf sá»¯a Ä‘Ã¡",
+                                                                                   "basePrice":  18000,
+                                                                                   "toppings":  [
+
+                                                                                                ],
+                                                                                   "toppingsPrice":  0,
+                                                                                   "singlePrice":  18000,
+                                                                                   "qty":  1,
+                                                                                   "note":  "BÃ¬nh thÆ°á»ng, Bth",
+                                                                                   "total":  18000,
+                                                                                   "createdAt":  "2026-10-14T02:14:03.168Z"
+                                                                               }
+                                                                           ]
+                                                                }
+                                                  },
+                                       "C.Chou":  {
+                                                      "paid":  false,
+                                                      "days":  {
+                                                                   "12":  30000,
+                                                                   "13":  30000,
+                                                                   "14":  30000
+                                                               },
+                                                      "items":  {
+                                                                    "12":  [
+                                                                               {
+                                                                                   "id":  "ord_12_chou_1",
+                                                                                   "name":  "Cf sá»¯a Ä‘Ã¡",
+                                                                                   "basePrice":  18000,
+                                                                                   "toppings":  [
+
+                                                                                                ],
+                                                                                   "toppingsPrice":  0,
+                                                                                   "singlePrice":  18000,
+                                                                                   "qty":  1,
+                                                                                   "note":  "Ãt sá»¯a Ã­t Ä‘Ã¡",
+                                                                                   "total":  18000,
+                                                                                   "createdAt":  "2026-10-12T08:33:00.000Z"
+                                                                               },
+                                                                               {
+                                                                                   "id":  "ord_12_chou_2",
+                                                                                   "name":  "NÆ°á»›c chanh Ä‘Æ°á»ng",
+                                                                                   "basePrice":  12000,
+                                                                                   "toppings":  [
+
+                                                                                                ],
+                                                                                   "toppingsPrice":  0,
+                                                                                   "singlePrice":  12000,
+                                                                                   "qty":  1,
+                                                                                   "note":  "",
+                                                                                   "total":  12000,
+                                                                                   "createdAt":  "2026-10-12T08:34:00.000Z"
+                                                                               }
+                                                                           ],
+                                                                    "13":  [
+                                                                               {
+                                                                                   "id":  "ord_13_chou_1",
+                                                                                   "name":  "Cf sá»¯a Ä‘Ã¡",
+                                                                                   "basePrice":  18000,
+                                                                                   "toppings":  [
+
+                                                                                                ],
+                                                                                   "toppingsPrice":  0,
+                                                                                   "singlePrice":  18000,
+                                                                                   "qty":  1,
+                                                                                   "note":  "Ãt sá»¯a Ã­t Ä‘Ã¡",
+                                                                                   "total":  18000,
+                                                                                   "createdAt":  "2026-10-13T08:33:00.000Z"
+                                                                               },
+                                                                               {
+                                                                                   "id":  "ord_13_chou_2",
+                                                                                   "name":  "NÆ°á»›c chanh Ä‘Æ°á»ng",
+                                                                                   "basePrice":  12000,
+                                                                                   "toppings":  [
+
+                                                                                                ],
+                                                                                   "toppingsPrice":  0,
+                                                                                   "singlePrice":  12000,
+                                                                                   "qty":  1,
+                                                                                   "note":  "",
+                                                                                   "total":  12000,
+                                                                                   "createdAt":  "2026-10-13T08:34:00.000Z"
+                                                                               }
+                                                                           ],
+                                                                    "14":  [
+                                                                               {
+                                                                                   "id":  "ord_1791944078550_nd5s",
+                                                                                   "name":  "Cf sá»¯a Ä‘Ã¡",
+                                                                                   "basePrice":  18000,
+                                                                                   "toppings":  [
+
+                                                                                                ],
+                                                                                   "toppingsPrice":  0,
+                                                                                   "singlePrice":  18000,
+                                                                                   "qty":  1,
+                                                                                   "note":  "Ãt sá»¯a Ã­t Ä‘Ã¡",
+                                                                                   "total":  18000,
+                                                                                   "createdAt":  "2026-10-14T02:14:38.550Z"
+                                                                               },
+                                                                               {
+                                                                                   "id":  "ord_1791944079238_uc5l",
+                                                                                   "name":  "NÆ°á»›c chanh Ä‘Æ°á»ng",
+                                                                                   "basePrice":  12000,
+                                                                                   "toppings":  [
+
+                                                                                                ],
+                                                                                   "toppingsPrice":  0,
+                                                                                   "singlePrice":  12000,
+                                                                                   "qty":  1,
+                                                                                   "note":  "",
+                                                                                   "total":  12000,
+                                                                                   "createdAt":  "2026-10-14T02:14:39.238Z"
+                                                                               }
+                                                                           ]
+                                                                }
+                                                  },
+                                       "Äáº¡o":  {
+                                                      "paid":  false,
+                                                      "days":  {
+                                                                   "13":  25000,
+                                                                   "14":  25000
+                                                               },
+                                                      "items":  {
+                                                                    "13":  [
+                                                                               {
+                                                                                   "id":  "ord_13_dao",
+                                                                                   "name":  "Latte Cacao Cafe",
+                                                                                   "basePrice":  25000,
+                                                                                   "toppings":  [
+
+                                                                                                ],
+                                                                                   "toppingsPrice":  0,
+                                                                                   "singlePrice":  25000,
+                                                                                   "qty":  1,
+                                                                                   "note":  "",
+                                                                                   "total":  25000,
+                                                                                   "createdAt":  "2026-10-13T08:35:00.000Z"
+                                                                               }
+                                                                           ],
+                                                                    "14":  [
+                                                                               {
+                                                                                   "id":  "ord_1791944116956_fst2",
+                                                                                   "name":  "Latte Cacao Cafe",
+                                                                                   "basePrice":  25000,
+                                                                                   "toppings":  [
+
+                                                                                                ],
+                                                                                   "toppingsPrice":  0,
+                                                                                   "singlePrice":  25000,
+                                                                                   "qty":  1,
+                                                                                   "note":  "BÃ¬nh thÆ°á»ng, Ngá»t",
+                                                                                   "total":  25000,
+                                                                                   "createdAt":  "2026-10-14T02:15:16.956Z"
+                                                                               }
+                                                                           ]
+                                                                }
+                                                  },
+                                       "NgÃ¢n Máº­p":  {
+                                                           "paid":  false,
+                                                           "days":  {
+                                                                        "12":  15000,
+                                                                        "13":  18000
+                                                                    },
+                                                           "items":  {
+                                                                         "12":  [
+                                                                                    {
+                                                                                        "id":  "ord_12_ngan",
+                                                                                        "name":  "ÄÃ¡ me",
+                                                                                        "basePrice":  15000,
+                                                                                        "toppings":  [
+
+                                                                                                     ],
+                                                                                        "toppingsPrice":  0,
+                                                                                        "singlePrice":  15000,
+                                                                                        "qty":  1,
+                                                                                        "note":  "",
+                                                                                        "total":  15000,
+                                                                                        "createdAt":  "2026-10-12T08:31:00.000Z"
+                                                                                    }
+                                                                                ],
+                                                                         "13":  [
+                                                                                    {
+                                                                                        "id":  "ord_13_ngan",
+                                                                                        "name":  "Cf sá»¯a Ä‘Ã¡",
+                                                                                        "basePrice":  18000,
+                                                                                        "toppings":  [
+
+                                                                                                     ],
+                                                                                        "toppingsPrice":  0,
+                                                                                        "singlePrice":  18000,
+                                                                                        "qty":  1,
+                                                                                        "note":  "",
+                                                                                        "total":  18000,
+                                                                                        "createdAt":  "2026-10-13T08:31:00.000Z"
+                                                                                    }
+                                                                                ]
+                                                                     }
+                                                       },
+                                       "Cháº¿ Bao":  {
+                                                         "paid":  false,
+                                                         "days":  {
+                                                                      "12":  10000
+                                                                  },
+                                                         "items":  {
+                                                                       "12":  [
+                                                                                  {
+                                                                                      "id":  "ord_12_bao",
+                                                                                      "name":  "TrÃ  Ä‘Æ°á»ng",
+                                                                                      "basePrice":  10000,
+                                                                                      "toppings":  [
+
+                                                                                                   ],
+                                                                                      "toppingsPrice":  0,
+                                                                                      "singlePrice":  10000,
+                                                                                      "qty":  1,
+                                                                                      "note":  "",
+                                                                                      "total":  10000,
+                                                                                      "createdAt":  "2026-10-12T08:32:00.000Z"
+                                                                                  }
+                                                                              ]
+                                                                   }
+                                                     }
+                                   }
+                   },
+    "config":  {
+                   "bankCode":  "MB",
+                   "accountNo":  "0974121693",
+                   "accountName":  "CO BA CAFE"
+               },
+    "memberAliases":  {
+                          "Cháº¿ Bao":  [
+                                            "BB",
+                                            "BÃ¡nh Bao"
+                                        ],
+                          "NgÃ¢n Máº­p":  [
+                                              "Äen"
+                                          ],
+                          "C.Chou":  [
+                                         "ChÃ¢u"
+                                     ],
+                          "A.Duy":  [
+                                        "Duy"
+                                    ]
+                      },
+    "salaryCyclesPaid":  {
+
+                         }
 }
