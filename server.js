@@ -191,6 +191,11 @@ const server = http.createServer((req, res) => {
         const dayNum = parseInt(ddStr);
 
         const db = readDatabase();
+        if (!db.members) db.members = [];
+        if (!db.members.includes(member)) {
+          db.members.push(member);
+          console.log(`[TỰ ĐỘNG THÊM NHÂN VIÊN] Đã tự động thêm thành viên: ${member}`);
+        }
         if (!db.ordersData) db.ordersData = {};
         if (!db.ordersData[monthKey]) db.ordersData[monthKey] = {};
         if (!db.ordersData[monthKey][member]) {
@@ -270,6 +275,60 @@ const server = http.createServer((req, res) => {
       } catch (err) {
         console.error('Lỗi xử lý đơn hàng:', err);
         return sendJson(res, 500, { success: false, error: 'Lỗi server: ' + err.message });
+      }
+    });
+    return;
+  }
+
+  // --- 6.1. API: THÊM NHÂN VIÊN MỚI (POST /api/member/add) ---
+  if (pathname === '/api/member/add' && method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body);
+        const name = (payload.name || '').trim();
+        if (!name) return sendJson(res, 400, { success: false, error: 'Thiếu tên nhân viên' });
+
+        const db = readDatabase();
+        if (!db.members) db.members = [];
+        if (!db.members.includes(name)) {
+          db.members.push(name);
+          saveDatabase(db);
+          dataVersion = Date.now();
+          console.log(`[THÊM NHÂN VIÊN] Đã thêm thành viên: ${name}`);
+        }
+        return sendJson(res, 200, { success: true, member: name, members: db.members, dataVersion });
+      } catch (err) {
+        return sendJson(res, 500, { success: false, error: err.message });
+      }
+    });
+    return;
+  }
+
+  // --- 6.2. API: XÓA NHÂN VIÊN (POST /api/member/delete) ---
+  if (pathname === '/api/member/delete' && method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body);
+        const name = (payload.name || '').trim();
+        if (!name) return sendJson(res, 400, { success: false, error: 'Thiếu tên nhân viên' });
+
+        const db = readDatabase();
+        if (db.members) {
+          db.members = db.members.filter(m => m !== name);
+        }
+        if (db.favorites && db.favorites[name]) {
+          delete db.favorites[name];
+        }
+        saveDatabase(db);
+        dataVersion = Date.now();
+        console.log(`[XÓA NHÂN VIÊN] Đã xóa thành viên: ${name}`);
+        return sendJson(res, 200, { success: true, member: name, members: db.members, dataVersion });
+      } catch (err) {
+        return sendJson(res, 500, { success: false, error: err.message });
       }
     });
     return;

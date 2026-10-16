@@ -527,6 +527,7 @@
 
       const query = filterText.toLowerCase().trim();
 
+      let matchCount = 0;
       appData.members.forEach((m, idx) => {
         const aliases = appData.memberAliases[m] || [];
         const matchName = m.toLowerCase().includes(query);
@@ -534,6 +535,7 @@
 
         if (query && !matchName && !matchAlias) return;
 
+        matchCount++;
         const isSelected = (m === selectedMember);
         const btn = document.createElement('button');
         btn.type = 'button';
@@ -548,6 +550,46 @@
         btn.onclick = () => selectMember(m);
         container.appendChild(btn);
       });
+
+      // Nếu người dùng gõ tên chưa có trong danh sách -> Hiển thị nút Tự Động Thêm Thành Viên Mới
+      if (query.length > 0 && !appData.members.some(m => m.toLowerCase() === query)) {
+        const addCard = document.createElement('div');
+        addCard.className = 'w-full mt-2 p-3 rounded-2xl bg-orange-50/90 border border-orange-200 shadow-xs flex items-center justify-between gap-2';
+        const safeName = filterText.trim();
+        addCard.innerHTML = `
+          <div class="text-xs">
+            <span class="text-slate-500 block text-[11px]">Chưa có tên trong danh sách?</span>
+            <span class="font-bold text-orange-700">+ Thêm nhân viên: "<strong>${safeName}</strong>"</span>
+          </div>
+          <button type="button" id="btnAddMemberClient" class="px-3.5 py-1.5 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 shrink-0">
+            <i class="fa-solid fa-user-plus text-[11px]"></i>
+            <span>Thêm & Chọn</span>
+          </button>
+        `;
+        addCard.querySelector('#btnAddMemberClient').onclick = () => autoAddNewMemberClient(safeName);
+        container.appendChild(addCard);
+      }
+    }
+
+    async function autoAddNewMemberClient(name) {
+      const cleanName = (name || '').trim();
+      if (!cleanName) return;
+      if (!appData.members.includes(cleanName)) {
+        appData.members.push(cleanName);
+      }
+      selectMember(cleanName);
+      renderMemberBadges();
+      try {
+        const apiBase = getApiBase();
+        await fetch(`${apiBase}/api/member/add`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: cleanName })
+        });
+      } catch (e) {
+        console.warn('Lỗi kết nối server LAN, đã lưu tạm:', e);
+      }
+      showToast(`🎉 Đã thêm bạn "${cleanName}" vào danh sách!`, "success");
     }
 
     function filterMemberBadges() {

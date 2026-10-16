@@ -197,10 +197,39 @@
 
             <!-- BƯỚC 1: CHỌN NGƯỜI ĐẶT -->
             <div>
-              <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">
-                1. Người Đặt Nước <span class="text-red-500">*</span>
-              </label>
-              <!-- Danh sách click nhanh tên 20 người -->
+              <div class="flex items-center justify-between mb-2">
+                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">
+                  1. Người Đặt Nước <span class="text-red-500">*</span>
+                </label>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="openAddMemberInline()" class="text-[11px] font-bold text-orange-600 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 px-2.5 py-1 rounded-lg border border-orange-200 transition flex items-center gap-1 shadow-2xs">
+                    <i class="fa-solid fa-user-plus text-[10px]"></i>
+                    <span>+ Thêm Tên</span>
+                  </button>
+                  <button type="button" id="toggleDeleteMemberModeBtn" onclick="toggleDeleteMemberBadgesMode()" class="text-[11px] font-medium text-slate-500 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 px-2 py-1 rounded-lg border border-slate-200 transition flex items-center gap-1 shadow-2xs" title="Bật/tắt chế độ xóa nhanh nhân viên">
+                    <i class="fa-regular fa-trash-can text-[10px]"></i>
+                    <span id="lblToggleDeleteMode">Xóa bớt</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Ô NHẬP NHANH THÊM NHÂN VIÊN (ẨN/HIỆN KHI BẤM "+ Thêm Tên") -->
+              <div id="quickAddMemberBox" class="hidden mb-2.5 p-2.5 bg-orange-50/90 rounded-xl border border-orange-200 shadow-2xs space-y-1.5">
+                <div class="flex items-center justify-between text-[11px] font-bold text-orange-900">
+                  <span>Nhập tên nhân viên mới:</span>
+                  <button type="button" onclick="closeAddMemberInline()" class="text-slate-400 hover:text-slate-600 text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <input type="text" id="inlineNewMemberNameInput" placeholder="Ví dụ: Bé Na, Tuấn Anh, My..." class="flex-grow px-3 py-1.5 text-xs bg-white border border-orange-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 font-semibold text-slate-800" onkeydown="if(event.key==='Enter'){event.preventDefault();submitAddMemberInline();}">
+                  <button type="button" onclick="submitAddMemberInline()" class="px-3.5 py-1.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-lg transition shadow-xs shrink-0">
+                    Thêm & Chọn
+                  </button>
+                </div>
+              </div>
+
+              <!-- Danh sách click nhanh tên các bạn -->
               <div class="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto p-2 bg-slate-50/80 rounded-xl border border-slate-200" id="quickMemberBadges">
                 <!-- Javascript will render 20 members badges here -->
               </div>
@@ -480,6 +509,12 @@
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
+            <!-- Nút Thêm Nhân Viên Nhanh -->
+            <button onclick="openAddMemberModal()" class="px-3.5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm" title="Thêm nhân viên mới vào danh sách & sổ nợ">
+              <i class="fa-solid fa-user-plus"></i>
+              <span>+ Thêm Nhân Viên</span>
+            </button>
+
             <!-- Nút Đòi nợ cả nhóm -->
             <button onclick="openGroupDebtReminderModal()" class="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
               <i class="fa-solid fa-bullhorn"></i>
@@ -1785,6 +1820,11 @@
               const refreshRes = await fetch(`${apiBase}/api/data`);
               if (refreshRes.ok) {
                 const refreshed = await refreshRes.json();
+                if (refreshed.members && JSON.stringify(refreshed.members) !== JSON.stringify(appState.members)) {
+                  appState.members = refreshed.members;
+                  renderMemberControls();
+                  renderMembersGrid();
+                }
                 appState.ordersData = refreshed.ordersData || appState.ordersData;
                 appState.favorites = refreshed.favorites || appState.favorites;
                 renderTodayOrdersList();
@@ -2172,23 +2212,171 @@
     /* ==========================================================
        5. TAB 1: ORDER FORM & DAILY LOGIC
        ========================================================== */
+    let isDeleteMemberBadgesMode = false;
+
+    function toggleDeleteMemberBadgesMode() {
+      isDeleteMemberBadgesMode = !isDeleteMemberBadgesMode;
+      const btn = document.getElementById('toggleDeleteMemberModeBtn');
+      const lbl = document.getElementById('lblToggleDeleteMode');
+      if (isDeleteMemberBadgesMode) {
+        if (btn) btn.className = 'text-[11px] font-bold text-white bg-rose-600 hover:bg-rose-700 px-2.5 py-1 rounded-lg border border-rose-600 transition flex items-center gap-1 shadow-xs animate-pulse';
+        if (lbl) lbl.innerText = 'Xong (Đóng)';
+        showToast("Đang ở chế độ Xóa nhân viên: Bấm nút [×] màu đỏ trên tên nhân viên cần xóa!", "info");
+      } else {
+        if (btn) btn.className = 'text-[11px] font-medium text-slate-500 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 px-2 py-1 rounded-lg border border-slate-200 transition flex items-center gap-1 shadow-2xs';
+        if (lbl) lbl.innerText = 'Xóa bớt';
+      }
+      renderMemberControls();
+    }
+
+    function openAddMemberInline() {
+      const box = document.getElementById('quickAddMemberBox');
+      if (box) {
+        box.classList.remove('hidden');
+        const input = document.getElementById('inlineNewMemberNameInput');
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
+      }
+    }
+
+    function closeAddMemberInline() {
+      const box = document.getElementById('quickAddMemberBox');
+      if (box) box.classList.add('hidden');
+    }
+
+    function submitAddMemberInline() {
+      const input = document.getElementById('inlineNewMemberNameInput');
+      if (!input) return;
+      const rawName = input.value.trim();
+      if (!rawName) {
+        showToast("Vui lòng nhập tên nhân viên mới!", "warning");
+        return;
+      }
+      autoAddNewMember(rawName);
+      closeAddMemberInline();
+    }
+
+    /* Tự động thêm nhân viên mới (Đồng bộ cả Client và Server data_app.json) */
+    async function autoAddNewMember(rawName) {
+      const name = rawName.trim();
+      if (!name) return;
+
+      if (!appState.members.includes(name)) {
+        appState.members.push(name);
+        if (!appState.favorites[name]) {
+          appState.favorites[name] = [];
+        }
+        saveToStorage();
+
+        // Gửi API lên server LAN
+        try {
+          fetch(`${getApiBase()}/api/member/add`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+          }).catch(() => {});
+        } catch(e) {}
+
+        showToast(`Đã thêm nhân viên mới: "${name}"!`, "success");
+      }
+
+      appState.selectedMemberForOrder = name;
+      renderMemberControls();
+      renderMembersGrid();
+      renderMatrix();
+      renderMemberFavorites(name);
+    }
+
+    /* Kiểm tra nợ và xóa nhân viên an toàn */
+    async function promptDeleteMemberByName(name) {
+      if (!name) return;
+
+      // Tính tổng nợ chưa trả của nhân viên này trên toàn hệ thống
+      let totalDebt = 0;
+      let hasOrders = false;
+      Object.keys(appState.ordersData).forEach(mKey => {
+        const mObj = appState.ordersData[mKey]?.[name];
+        if (mObj && mObj.days) {
+          Object.values(mObj.days).forEach(val => {
+            if (val > 0) {
+              hasOrders = true;
+              if (!mObj.paid) totalDebt += val;
+            }
+          });
+        }
+      });
+
+      let confirmMsg = `Bạn có chắc muốn xóa nhân viên "${name}" khỏi danh sách?`;
+      if (totalDebt > 0) {
+        confirmMsg = `⚠️ CẢNH BÁO NỢ CHƯA TRẢ:\n\nNhân viên "${name}" hiện ĐANG CÒN NỢ tổng cộng: ${formatVND(totalDebt)}!\n\nNếu xóa, tên sẽ bị gỡ khỏi danh sách nhân viên công ty (dữ liệu lịch sử đơn cũ trong sổ nợ vẫn được lưu trữ an toàn).\n\nBạn có chắc chắn muốn xóa không?`;
+      } else if (hasOrders) {
+        confirmMsg = `Nhân viên "${name}" đã từng có lịch sử đặt nước.\n\nBạn có chắc muốn xóa khỏi danh sách chọn đặt nước không?`;
+      }
+
+      if (!confirm(confirmMsg)) return;
+
+      // Xóa khỏi danh sách thành viên
+      appState.members = appState.members.filter(m => m !== name);
+      if (appState.selectedMemberForOrder === name) {
+        appState.selectedMemberForOrder = '';
+        renderMemberFavorites('');
+      }
+
+      saveToStorage();
+
+      // Gửi API xóa lên server LAN
+      try {
+        fetch(`${getApiBase()}/api/member/delete`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        }).catch(() => {});
+      } catch(e) {}
+
+      renderMemberControls();
+      renderMembersGrid();
+      renderMatrix();
+      showToast(`Đã xóa nhân viên "${name}" khỏi danh sách!`, "info");
+    }
+
     function renderMemberControls() {
       // 1. Quick Badges
       const badgesContainer = document.getElementById('quickMemberBadges');
       badgesContainer.innerHTML = '';
       appState.members.forEach((m, idx) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.id = `badge_m_${idx}`;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'inline-flex items-center relative group';
+
         const isSelected = (appState.selectedMemberForOrder === m);
-        btn.className = `badge-user px-2.5 py-1 rounded-lg text-xs font-semibold border transition ${
-          isSelected ? 'bg-orange-600 text-white border-orange-600 shadow-sm' : 'bg-white hover:bg-orange-50 text-slate-700 border-slate-300'
-        }`;
         const aliasLabel = MEMBER_ALIASES[m] ? `<span class="opacity-75 text-[10px] ml-1 font-normal">(${MEMBER_ALIASES[m][0]})</span>` : '';
-        btn.innerHTML = `<span>${m}</span>${aliasLabel}`;
-        btn.title = MEMBER_ALIASES[m] ? `${m} (Biệt danh: ${MEMBER_ALIASES[m].join(', ')})` : m;
-        btn.onclick = () => selectMemberFromBadge(m, idx);
-        badgesContainer.appendChild(btn);
+
+        if (isDeleteMemberBadgesMode) {
+          // Khi ở chế độ xóa nhanh: hiện nút xóa đỏ
+          wrapper.innerHTML = `
+            <div class="px-2.5 py-1 rounded-lg text-xs font-semibold border bg-rose-50 text-rose-800 border-rose-300 flex items-center gap-1.5 shadow-2xs">
+              <span>${m}</span>${aliasLabel}
+              <button type="button" onclick="event.stopPropagation(); promptDeleteMemberByName('${m}')" class="w-4 h-4 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center text-[10px] font-bold transition ml-0.5" title="Xóa ${m}">
+                &times;
+              </button>
+            </div>
+          `;
+        } else {
+          // Chế độ bình thường
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.id = `badge_m_${idx}`;
+          btn.className = `badge-user px-2.5 py-1 rounded-lg text-xs font-semibold border transition ${
+            isSelected ? 'bg-orange-600 text-white border-orange-600 shadow-sm' : 'bg-white hover:bg-orange-50 text-slate-700 border-slate-300'
+          }`;
+          btn.innerHTML = `<span>${m}</span>${aliasLabel}`;
+          btn.title = MEMBER_ALIASES[m] ? `${m} (Biệt danh: ${MEMBER_ALIASES[m].join(', ')})` : m;
+          btn.onclick = () => selectMemberFromBadge(m, idx);
+          wrapper.appendChild(btn);
+        }
+
+        badgesContainer.appendChild(wrapper);
       });
 
       // 2. Dropdown
@@ -2817,6 +3005,23 @@
         return;
       }
 
+      // Tự động thêm vào danh sách nhân viên nếu là tên mới
+      if (!appState.members.includes(member)) {
+        appState.members.push(member);
+        if (!appState.favorites[member]) {
+          appState.favorites[member] = [];
+        }
+        renderMemberControls();
+        renderMembersGrid();
+        try {
+          fetch(`${getApiBase()}/api/member/add`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: member })
+          }).catch(() => {});
+        } catch(e) {}
+      }
+
       const itemName = document.getElementById('selectedItemName').value.trim();
       const itemPrice = parseInt(document.getElementById('selectedItemPrice').value) || 0;
       if (!itemName || itemPrice <= 0) {
@@ -3242,14 +3447,19 @@
         let rowHtml = `<td class="p-2 text-center text-slate-500 sticky left-0 z-10 bg-white border-r border-slate-200">${mIdx + 1}</td>`;
         // Tên con nợ
         const aliasTag = MEMBER_ALIASES[member] ? `<span class="text-[10px] text-orange-600 font-semibold block leading-tight">(${MEMBER_ALIASES[member].join('/')})</span>` : '';
-        rowHtml += `<td class="p-2 font-bold text-slate-800 sticky left-12 z-10 bg-white border-r border-slate-200">
-          <span class="cursor-pointer hover:text-orange-600 flex items-center justify-between gap-1.5" onclick="openMemberDebtDetail('${member}')">
-            <div>
-              <span>${member}</span>
-              ${aliasTag}
-            </div>
-            <i class="fa-solid fa-chevron-right text-[9px] text-slate-300"></i>
-          </span>
+        rowHtml += `<td class="p-2 font-bold text-slate-800 sticky left-12 z-10 bg-white border-r border-slate-200 group">
+          <div class="flex items-center justify-between gap-1">
+            <span class="cursor-pointer hover:text-orange-600 flex items-center justify-between gap-1.5 flex-grow" onclick="openMemberDebtDetail('${member}')">
+              <div>
+                <span>${member}</span>
+                ${aliasTag}
+              </div>
+              <i class="fa-solid fa-chevron-right text-[9px] text-slate-300"></i>
+            </span>
+            <button type="button" onclick="event.stopPropagation(); promptDeleteMemberByName('${member}')" class="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-rose-600 rounded transition shrink-0" title="Xóa nhân viên ${member}">
+              <i class="fa-regular fa-trash-can text-xs"></i>
+            </button>
+          </div>
         </td>`;
 
         // 31 Cột ngày
@@ -4249,6 +4459,13 @@
           return;
         }
         appState.members.push(name);
+        try {
+          fetch(`${getApiBase()}/api/member/add`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+          }).catch(() => {});
+        } catch(e) {}
       }
 
       saveToStorage();
@@ -4261,16 +4478,7 @@
 
     function deleteMember(idx) {
       const name = appState.members[idx];
-      if (!confirm(`Bạn có chắc muốn xóa nhân viên "${name}"?`)) return;
-      appState.members.splice(idx, 1);
-      if (appState.favorites[name]) {
-        delete appState.favorites[name];
-      }
-      saveToStorage();
-      renderMembersGrid();
-      renderMemberControls();
-      renderMatrix();
-      showToast(`Đã xóa ${name}!`, "info");
+      promptDeleteMemberByName(name);
     }
 
     function resetMembersToDefault() {
