@@ -67,9 +67,94 @@ function readDatabase() {
   };
 }
 
-// Ghi dữ liệu vào data_app.json
+const BACKUP_DIR = path.join(__dirname, 'backups_coba_cafe');
+if (!fs.existsSync(BACKUP_DIR)) {
+  try { fs.mkdirSync(BACKUP_DIR, { recursive: true }); } catch (e) {}
+}
+
+// Deep Merge ordersData an toàn - Chống ghi đè hủy diệt
+function mergeOrdersData(baseOrders, incOrders) {
+  if (!baseOrders || typeof baseOrders !== 'object') return incOrders || {};
+  if (!incOrders || typeof incOrders !== 'object') return baseOrders || {};
+
+  const merged = JSON.parse(JSON.stringify(baseOrders));
+
+  for (const monthKey of Object.keys(incOrders)) {
+    if (!merged[monthKey]) {
+      merged[monthKey] = JSON.parse(JSON.stringify(incOrders[monthKey]));
+      continue;
+    }
+    const incMonth = incOrders[monthKey];
+    for (const member of Object.keys(incMonth)) {
+      if (!merged[monthKey][member]) {
+        merged[monthKey][member] = JSON.parse(JSON.stringify(incMonth[member]));
+        continue;
+      }
+      const baseM = merged[monthKey][member];
+      const incM = incMonth[member];
+
+      if (!baseM.days) baseM.days = {};
+      if (!baseM.items) baseM.items = {};
+
+      if (incM.paid !== undefined && incM.paid) {
+        baseM.paid = true;
+      }
+
+      const incItems = incM.items || {};
+      for (const day of Object.keys(incItems)) {
+        if (!baseM.items[day] || baseM.items[day].length === 0) {
+          baseM.items[day] = JSON.parse(JSON.stringify(incItems[day]));
+        } else {
+          const existingIds = new Set(baseM.items[day].map(it => it.id).filter(Boolean));
+          for (const item of incItems[day]) {
+            if (item.id && existingIds.has(item.id)) continue;
+            baseM.items[day].push(JSON.parse(JSON.stringify(item)));
+            if (item.id) existingIds.add(item.id);
+          }
+        }
+
+        let daySum = 0;
+        baseM.items[day].forEach(it => daySum += (parseInt(it.total) || 0));
+        baseM.days[day] = daySum;
+      }
+
+      const incDays = incM.days || {};
+      for (const day of Object.keys(incDays)) {
+        if (!baseM.days[day] && incDays[day]) {
+          baseM.days[day] = incDays[day];
+        }
+      }
+    }
+  }
+  return merged;
+}
+
+// Ghi dữ liệu vào data_app.json kèm sao lưu xoay vòng tự động
 function saveDatabase(data) {
   try {
+    // 1. Tự động sao lưu dự phòng có timestamp
+    if (fs.existsSync(DATA_FILE)) {
+      try {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const backupPath = path.join(BACKUP_DIR, `data_app_${timestamp}.json`);
+        fs.copyFileSync(DATA_FILE, backupPath);
+
+        // Duy trì tối đa 50 bản backup gần nhất
+        const files = fs.readdirSync(BACKUP_DIR)
+          .filter(f => f.startsWith('data_app_') && f.endsWith('.json'))
+          .map(f => ({ name: f, time: fs.statSync(path.join(BACKUP_DIR, f)).mtime.getTime() }))
+          .sort((a, b) => b.time - a.time);
+
+        if (files.length > 50) {
+          for (let i = 50; i < files.length; i++) {
+            try { fs.unlinkSync(path.join(BACKUP_DIR, files[i].name)); } catch (e) {}
+          }
+        }
+      } catch (bkErr) {
+        console.warn('[BACKUP WARNING] Không thể tạo backup file:', bkErr.message);
+      }
+    }
+
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
     dataVersion = Date.now();
     return true;
@@ -343,13 +428,18 @@ const server = http.createServer((req, res) => {
         const payload = JSON.parse(body);
         const db = readDatabase();
 
-        if (payload.members) db.members = payload.members;
+        if (payload.members) {
+          db.members = Array.from(new Set([...(db.members || []), ...payload.members]));
+        }
         if (payload.menu) db.menu = payload.menu;
         if (payload.toppings) db.toppings = payload.toppings;
-        if (payload.favorites) db.favorites = payload.favorites;
-        if (payload.ordersData) db.ordersData = payload.ordersData;
+        if (payload.favorites) db.favorites = Object.assign({}, db.favorites, payload.favorites);
+        if (payload.ordersData) {
+          // SAFE DEEP MERGE - Chống ghi đè mất ngày cũ
+          db.ordersData = mergeOrdersData(db.ordersData, payload.ordersData);
+        }
         if (payload.config) db.config = payload.config;
-        if (payload.salaryCyclesPaid) db.salaryCyclesPaid = payload.salaryCyclesPaid;
+        if (payload.salaryCyclesPaid) db.salaryCyclesPaid = Object.assign({}, db.salaryCyclesPaid, payload.salaryCyclesPaid);
 
         saveDatabase(db);
         return sendJson(res, 200, { success: true, dataVersion });

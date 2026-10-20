@@ -2311,7 +2311,7 @@
       const savedFavorites = localStorage.getItem(STORAGE_KEY_FAVORITES);
       appState.favorites = savedFavorites ? JSON.parse(savedFavorites) : JSON.parse(JSON.stringify(DEFAULT_FAVORITES));
 
-      // Orders Matrix: Đọc từ localStorage hoặc khôi phục từ INITIAL_ORDERS_DATA
+      // Orders Matrix: Đọc từ localStorage và HỢP NHẤT AN TOÀN với INITIAL_ORDERS_DATA
       const savedOrders = localStorage.getItem(STORAGE_KEY_ORDERS);
       if (savedOrders) {
         try {
@@ -2322,6 +2322,9 @@
       } else {
         appState.ordersData = JSON.parse(JSON.stringify(INITIAL_ORDERS_DATA));
       }
+
+      // HỢP NHẤT AN TOÀN: Bảo toàn toàn bộ các ngày (12, 13, 14, 15, 16, 19, 20...) không bao giờ bị mất
+      appState.ordersData = mergeOrdersData(INITIAL_ORDERS_DATA, appState.ordersData);
 
       // Khôi phục an toàn sổ nợ ngày 12 và ngày 13 nếu bị thiếu trong localStorage
       const curOct = '2026-10';
@@ -2441,7 +2444,65 @@
     let pollInterval = null;
 
     // Âm thanh Ting Ting báo khi có người vừa đặt nước bằng Web Audio API
-    function playChimeSound() {
+    
+    // Deep Merge ordersData an toàn - Chống ghi đè hủy diệt
+    function mergeOrdersData(baseOrders, incOrders) {
+      if (!baseOrders || typeof baseOrders !== 'object') return incOrders || {};
+      if (!incOrders || typeof incOrders !== 'object') return baseOrders || {};
+
+      const merged = JSON.parse(JSON.stringify(baseOrders));
+
+      for (const monthKey of Object.keys(incOrders)) {
+        if (!merged[monthKey]) {
+          merged[monthKey] = JSON.parse(JSON.stringify(incOrders[monthKey]));
+          continue;
+        }
+        const incMonth = incOrders[monthKey];
+        for (const member of Object.keys(incMonth)) {
+          if (!merged[monthKey][member]) {
+            merged[monthKey][member] = JSON.parse(JSON.stringify(incMonth[member]));
+            continue;
+          }
+          const baseM = merged[monthKey][member];
+          const incM = incMonth[member];
+
+          if (!baseM.days) baseM.days = {};
+          if (!baseM.items) baseM.items = {};
+
+          if (incM.paid !== undefined && incM.paid) {
+            baseM.paid = true;
+          }
+
+          const incItems = incM.items || {};
+          for (const day of Object.keys(incItems)) {
+            if (!baseM.items[day] || baseM.items[day].length === 0) {
+              baseM.items[day] = JSON.parse(JSON.stringify(incItems[day]));
+            } else {
+              const existingIds = new Set(baseM.items[day].map(it => it.id).filter(Boolean));
+              for (const item of incItems[day]) {
+                if (item.id && existingIds.has(item.id)) continue;
+                baseM.items[day].push(JSON.parse(JSON.stringify(item)));
+                if (item.id) existingIds.add(item.id);
+              }
+            }
+
+            let daySum = 0;
+            baseM.items[day].forEach(it => daySum += (parseInt(it.total) || 0));
+            baseM.days[day] = daySum;
+          }
+
+          const incDays = incM.days || {};
+          for (const day of Object.keys(incDays)) {
+            if (!baseM.days[day] && incDays[day]) {
+              baseM.days[day] = incDays[day];
+            }
+          }
+        }
+      }
+      return merged;
+    }
+
+function playChimeSound() {
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = audioCtx.createOscillator();
@@ -2472,18 +2533,39 @@
           if (bannerText) bannerText.innerText = info.clientUrl;
         }
 
-        // 2. Tải dữ liệu server mới nhất
+        // 2. Tải dữ liệu server mới nhất và HỢP NHẤT AN TOÀN
         const dataRes = await fetch(`${apiBase}/api/data`);
         if (dataRes.ok) {
           const sData = await dataRes.json();
-          if (sData.ordersData) appState.ordersData = sData.ordersData;
-          if (sData.favorites) appState.favorites = sData.favorites;
+          if (sData.ordersData) {
+            // HỢP NHẤT AN TOÀN HAI CHIỀU - CHỐNG GHI ĐÈ MẤT ĐƠN CŨ
+            appState.ordersData = mergeOrdersData(appState.ordersData, sData.ordersData);
+            try { localStorage.setItem(STORAGE_KEY_ORDERS, JSON.stringify(appState.ordersData)); } catch(e){}
+          }
+          if (sData.favorites) appState.favorites = Object.assign({}, appState.favorites, sData.favorites);
           if (sData.menu) appState.menu = sData.menu;
-          if (sData.members) appState.members = sData.members;
+          if (sData.members) {
+            appState.members = Array.from(new Set([...appState.members, ...sData.members]));
+          }
           if (sData.toppings) appState.toppings = sData.toppings;
-          if (sData.salaryCyclesPaid) appState.salaryCyclesPaid = sData.salaryCyclesPaid;
+          if (sData.salaryCyclesPaid) appState.salaryCyclesPaid = Object.assign({}, appState.salaryCyclesPaid, sData.salaryCyclesPaid);
           currentServerVersion = sData.dataVersion || Date.now();
           renderAll();
+
+          // Tự động đẩy bản hợp nhất lên lại server để server luôn đủ mọi ngày
+          fetch(`${apiBase}/api/save_all`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              members: appState.members,
+              menu: appState.menu,
+              toppings: appState.toppings,
+              favorites: appState.favorites,
+              ordersData: appState.ordersData,
+              config: appState.config,
+              salaryCyclesPaid: appState.salaryCyclesPaid
+            })
+          }).catch(e => console.warn('Lỗi auto-sync lên server:', e));
         }
 
         // 3. Polling kiểm tra đơn mới mỗi 3 giây
@@ -2510,13 +2592,17 @@
               const refreshRes = await fetch(`${apiBase}/api/data`);
               if (refreshRes.ok) {
                 const refreshed = await refreshRes.json();
-                if (refreshed.members && JSON.stringify(refreshed.members) !== JSON.stringify(appState.members)) {
-                  appState.members = refreshed.members;
+                if (refreshed.members) {
+                  appState.members = Array.from(new Set([...appState.members, ...refreshed.members]));
                   renderMemberControls();
                   renderMembersGrid();
                 }
-                appState.ordersData = refreshed.ordersData || appState.ordersData;
-                appState.favorites = refreshed.favorites || appState.favorites;
+                if (refreshed.ordersData) {
+                  // HỢP NHẤT AN TOÀN KHI POLLING - KHÔNG GHI ĐÈ HỦY DIỆT
+                  appState.ordersData = mergeOrdersData(appState.ordersData, refreshed.ordersData);
+                  try { localStorage.setItem(STORAGE_KEY_ORDERS, JSON.stringify(appState.ordersData)); } catch(e){}
+                }
+                if (refreshed.favorites) appState.favorites = Object.assign({}, appState.favorites, refreshed.favorites);
                 renderTodayOrdersList();
                 renderMatrix();
                 playChimeSound();
@@ -2570,6 +2656,12 @@
       localStorage.setItem(STORAGE_KEY_ORDERS, JSON.stringify(appState.ordersData));
       localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(appState.config));
       localStorage.setItem('COBA_CAFE_SALARY_PAID_V2', JSON.stringify(appState.salaryCyclesPaid));
+
+      // Tự động sao lưu snapshot hàng ngày vào localStorage dự phòng
+      try {
+        const todayStr = new Date().toISOString().split('T')[0];
+        localStorage.setItem('COBA_BACKUP_' + todayStr, JSON.stringify(appState.ordersData));
+      } catch(e) {}
 
       // Luôn luôn đồng bộ trực tiếp lên Server data_app.json (kể cả khi mở bằng file:// hay http://)
       const apiBase = getApiBase();
