@@ -509,6 +509,12 @@
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
+            <!-- Nút Cuộn Nhanh Đến Ngày Hôm Nay -->
+            <button onclick="scrollToTodayColumn()" class="px-3 py-2 bg-orange-100 hover:bg-orange-200 text-orange-950 border border-orange-300 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-2xs" title="Cuộn nhanh bảng đến ngày hôm nay">
+              <i class="fa-solid fa-crosshairs text-orange-600"></i>
+              <span>Về Hôm Nay</span>
+            </button>
+
             <!-- Nút Thêm Nhân Viên Nhanh -->
             <button onclick="openAddMemberModal()" class="px-3.5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm" title="Thêm nhân viên mới vào danh sách & sổ nợ">
               <i class="fa-solid fa-user-plus"></i>
@@ -4012,6 +4018,18 @@
       footQtyRow += `<td colspan="2" class="p-2 text-center text-[10px] text-blue-900">-</td></tr>`;
 
       tfoot.innerHTML = footTotalRow + footQtyRow;
+
+      // Tự động cuộn bảng ngang đến cột Ngày Hôm Nay
+      setTimeout(scrollToTodayColumn, 120);
+    }
+
+    function scrollToTodayColumn() {
+      const subHeaderRow = document.getElementById('subDaysHeaderRow');
+      if (!subHeaderRow) return;
+      const todayTh = subHeaderRow.querySelector('.bg-orange-500');
+      if (todayTh) {
+        todayTh.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
     }
 
     function toggleMemberPaidStatus(memberName) {
