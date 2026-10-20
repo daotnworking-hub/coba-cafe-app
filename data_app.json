@@ -1625,11 +1625,7 @@
       }
     }
   },
-  "config": {
-    "bankCode": "MB",
-    "accountNo": "0974121693",
-    "accountName": "CO BA CAFE"
-  },
+  "config": {},
   "memberAliases": {
     "Chế Bao": [
       "BB",
