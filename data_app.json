@@ -17,7 +17,10 @@
     "Đạo",
     "A.Hùng",
     "Vian",
-    "Na Na"
+    "Na Na",
+    "Nhi",
+    "Thuỷ",
+    "Manh"
   ],
   "menu": [
     {
@@ -865,192 +868,6 @@
   },
   "ordersData": {
     "2026-10": {
-      "A.Duy": {
-        "paid": false,
-        "days": {
-          "12": 18000,
-          "13": 18000,
-          "14": 18000,
-          "15": 18000,
-          "16": 18000,
-          "19": 18000
-        },
-        "items": {
-          "12": [
-            {
-              "id": "ord_12_duy",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít sữa",
-              "total": 18000,
-              "createdAt": "2026-10-12T08:30:00.000Z"
-            }
-          ],
-          "13": [
-            {
-              "id": "ord_13_duy",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít sữa",
-              "total": 18000,
-              "createdAt": "2026-10-13T08:30:00.000Z"
-            }
-          ],
-          "14": [
-            {
-              "id": "ord_1791944033932_tgn7",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít sữa",
-              "total": 18000,
-              "createdAt": "2026-10-14T02:13:53.932Z"
-            }
-          ],
-          "15": [
-            {
-              "id": "ord_15_duy",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít ngọt nhiều đá",
-              "total": 18000,
-              "createdAt": "2026-10-15T03:50:00.000Z"
-            }
-          ],
-          "16": [
-            {
-              "id": "ord_1792116049792_f5e6",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít sữa",
-              "total": 18000,
-              "createdAt": "2026-10-16T02:00:49.792Z"
-            }
-          ],
-          "19": [
-            {
-              "id": "ord_1792375123594_fn97",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít sữa",
-              "total": 18000,
-              "createdAt": "2026-10-19T01:58:43.594Z"
-            }
-          ]
-        }
-      },
-      "Ngân Mập": {
-        "paid": false,
-        "days": {
-          "12": 15000,
-          "13": 18000,
-          "19": 18000
-        },
-        "items": {
-          "12": [
-            {
-              "id": "ord_12_ngan",
-              "name": "Đá me",
-              "basePrice": 15000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 15000,
-              "qty": 1,
-              "note": "",
-              "total": 15000,
-              "createdAt": "2026-10-12T08:31:00.000Z"
-            }
-          ],
-          "13": [
-            {
-              "id": "ord_13_ngan",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "",
-              "total": 18000,
-              "createdAt": "2026-10-13T08:31:00.000Z"
-            }
-          ],
-          "19": [
-            {
-              "id": "ord_1792375183025_4xo3",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Bình thường, Bth",
-              "total": 18000,
-              "createdAt": "2026-10-19T01:59:43.025Z"
-            }
-          ]
-        }
-      },
-      "Chế Bao": {
-        "paid": false,
-        "days": {
-          "12": 10000,
-          "16": 20000
-        },
-        "items": {
-          "12": [
-            {
-              "id": "ord_12_bao",
-              "name": "Trà đường",
-              "basePrice": 10000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 10000,
-              "qty": 1,
-              "note": "",
-              "total": 10000,
-              "createdAt": "2026-10-12T08:32:00.000Z"
-            }
-          ],
-          "16": [
-            {
-              "id": "ord_1792116078892_kkpa",
-              "name": "Trà Tắc Thái Xanh",
-              "basePrice": 20000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 20000,
-              "qty": 1,
-              "note": "Bình thường, Bth",
-              "total": 20000,
-              "createdAt": "2026-10-16T02:01:18.892Z"
-            }
-          ]
-        }
-      },
       "C.Chou": {
         "paid": false,
         "days": {
@@ -1059,7 +876,8 @@
           "14": 30000,
           "15": 30000,
           "16": 30000,
-          "19": 30000
+          "19": 30000,
+          "20": 30000
         },
         "items": {
           "12": [
@@ -1142,7 +960,19 @@
           ],
           "15": [
             {
-              "id": "ord_15_chou_1",
+              "id": "ord_1792030105292_q4kh",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Ít ngọt nhiều đá",
+              "total": 18000,
+              "createdAt": "2026-10-15T02:08:25.292Z"
+            },
+            {
+              "id": "ord_1792030106867_tjbv",
               "name": "Nước chanh đường",
               "basePrice": 12000,
               "toppings": [],
@@ -1151,19 +981,7 @@
               "qty": 1,
               "note": "",
               "total": 12000,
-              "createdAt": "2026-10-15T03:50:00.000Z"
-            },
-            {
-              "id": "ord_15_chou_2",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít sữa",
-              "total": 18000,
-              "createdAt": "2026-10-15T03:51:00.000Z"
+              "createdAt": "2026-10-15T02:08:26.867Z"
             }
           ],
           "16": [
@@ -1217,14 +1035,389 @@
               "total": 18000,
               "createdAt": "2026-10-19T02:00:11.374Z"
             }
+          ],
+          "20": [
+            {
+              "id": "ord_1792463412787_ovby",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Ít sữa ít đá",
+              "total": 18000,
+              "createdAt": "2026-10-20T02:30:12.787Z"
+            },
+            {
+              "id": "ord_1792463414018_u1yp",
+              "name": "Nước chanh đường",
+              "basePrice": 12000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 12000,
+              "qty": 1,
+              "note": "",
+              "total": 12000,
+              "createdAt": "2026-10-20T02:30:14.018Z"
+            }
           ]
         }
+      },
+      "Ngân Mập": {
+        "paid": false,
+        "days": {
+          "12": 15000,
+          "13": 18000,
+          "19": 18000,
+          "20": 15000
+        },
+        "items": {
+          "12": [
+            {
+              "id": "ord_12_ngan",
+              "name": "Đá me",
+              "basePrice": 15000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 15000,
+              "qty": 1,
+              "note": "",
+              "total": 15000,
+              "createdAt": "2026-10-12T08:31:00.000Z"
+            }
+          ],
+          "13": [
+            {
+              "id": "ord_13_ngan",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "",
+              "total": 18000,
+              "createdAt": "2026-10-13T08:31:00.000Z"
+            }
+          ],
+          "19": [
+            {
+              "id": "ord_1792375183025_4xo3",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Bình thường, Bth",
+              "total": 18000,
+              "createdAt": "2026-10-19T01:59:43.025Z"
+            }
+          ],
+          "20": [
+            {
+              "id": "ord_1792463248424_zsqf",
+              "name": "Rau má đậu xanh",
+              "basePrice": 15000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 15000,
+              "qty": 1,
+              "note": "Bình thường, Bth",
+              "total": 15000,
+              "createdAt": "2026-10-20T02:27:28.424Z"
+            }
+          ]
+        }
+      },
+      "Ngân GD": {
+        "paid": false,
+        "days": {
+          "20": 30000
+        },
+        "items": {
+          "20": [
+            {
+              "id": "ord_1792463381872_0i0a",
+              "name": "Dừa Tươi Quế Hoa (1 Lít 3)",
+              "basePrice": 30000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 30000,
+              "qty": 1,
+              "note": "Bình thường, Bth",
+              "total": 30000,
+              "createdAt": "2026-10-20T02:29:41.872Z"
+            }
+          ]
+        }
+      },
+      "Ngân Nui": {
+        "paid": false,
+        "days": {
+          "20": 18000
+        },
+        "items": {
+          "20": [
+            {
+              "id": "ord_1792463285273_5koy",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Ít đá, Bth",
+              "total": 18000,
+              "createdAt": "2026-10-20T02:28:05.273Z"
+            }
+          ]
+        }
+      },
+      "Chế Bao": {
+        "paid": false,
+        "days": {
+          "12": 10000,
+          "16": 20000
+        },
+        "items": {
+          "12": [
+            {
+              "id": "ord_12_bao",
+              "name": "Trà đường",
+              "basePrice": 10000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 10000,
+              "qty": 1,
+              "note": "",
+              "total": 10000,
+              "createdAt": "2026-10-12T08:32:00.000Z"
+            }
+          ],
+          "16": [
+            {
+              "id": "ord_1792116078892_kkpa",
+              "name": "Trà Tắc Thái Xanh",
+              "basePrice": 20000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 20000,
+              "qty": 1,
+              "note": "Bình thường, Bth",
+              "total": 20000,
+              "createdAt": "2026-10-16T02:01:18.892Z"
+            }
+          ]
+        }
+      },
+      "A.Duy": {
+        "paid": false,
+        "days": {
+          "12": 18000,
+          "13": 18000,
+          "14": 18000,
+          "15": 18000,
+          "16": 18000,
+          "19": 18000,
+          "20": 18000
+        },
+        "items": {
+          "12": [
+            {
+              "id": "ord_12_duy",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Ít sữa",
+              "total": 18000,
+              "createdAt": "2026-10-12T08:30:00.000Z"
+            }
+          ],
+          "13": [
+            {
+              "id": "ord_13_duy",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Ít sữa",
+              "total": 18000,
+              "createdAt": "2026-10-13T08:30:00.000Z"
+            }
+          ],
+          "14": [
+            {
+              "id": "ord_1791944033932_tgn7",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Ít sữa",
+              "total": 18000,
+              "createdAt": "2026-10-14T02:13:53.932Z"
+            }
+          ],
+          "15": [
+            {
+              "id": "ord_1792030096343_ugxl",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Ít sữa",
+              "total": 18000,
+              "createdAt": "2026-10-15T02:08:16.343Z"
+            }
+          ],
+          "16": [
+            {
+              "id": "ord_1792116049792_f5e6",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Ít sữa",
+              "total": 18000,
+              "createdAt": "2026-10-16T02:00:49.792Z"
+            }
+          ],
+          "19": [
+            {
+              "id": "ord_1792375123594_fn97",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Ít sữa",
+              "total": 18000,
+              "createdAt": "2026-10-19T01:58:43.594Z"
+            }
+          ],
+          "20": [
+            {
+              "id": "ord_1792463255181_67dg",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Ít sữa",
+              "total": 18000,
+              "createdAt": "2026-10-20T02:27:35.181Z"
+            }
+          ]
+        }
+      },
+      "Hà": {
+        "paid": false,
+        "days": {
+          "15": 38000
+        },
+        "items": {
+          "15": [
+            {
+              "id": "ord_1792030118297_mf9r",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Bình thường, Bth",
+              "total": 18000,
+              "createdAt": "2026-10-15T02:08:38.297Z"
+            },
+            {
+              "id": "ord_1792030132822_ykaf",
+              "name": "Trà Ổi Hồng",
+              "basePrice": 20000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 20000,
+              "qty": 1,
+              "note": "Bình thường, Bth",
+              "total": 20000,
+              "createdAt": "2026-10-15T02:08:52.822Z"
+            }
+          ]
+        }
+      },
+      "Khoa": {
+        "paid": false,
+        "days": {
+          "20": 18000
+        },
+        "items": {
+          "20": [
+            {
+              "id": "ord_1792463294279_22dv",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Bình thường, Bth",
+              "total": 18000,
+              "createdAt": "2026-10-20T02:28:14.279Z"
+            }
+          ]
+        }
+      },
+      "Nga": {
+        "paid": false,
+        "days": {
+          "20": 18000
+        },
+        "items": {
+          "20": [
+            {
+              "id": "ord_1792463235785_b7ct",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Ít đá, Bth",
+              "total": 18000,
+              "createdAt": "2026-10-20T02:27:15.785Z"
+            }
+          ]
+        }
+      },
+      "Nhi": {
+        "paid": false,
+        "days": {},
+        "items": {}
+      },
+      "Thuỷ": {
+        "paid": false,
+        "days": {},
+        "items": {}
       },
       "Ngọc": {
         "paid": false,
         "days": {
           "14": 18000,
-          "15": 20000
+          "15": 20000,
+          "20": 20000
         },
         "items": {
           "14": [
@@ -1254,32 +1447,75 @@
               "total": 20000,
               "createdAt": "2026-10-15T03:50:00.000Z"
             }
+          ],
+          "20": [
+            {
+              "id": "ord_1792463324879_9o48",
+              "name": "Trà Tắc Thái Xanh",
+              "basePrice": 20000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 20000,
+              "qty": 1,
+              "note": "Bình thường, Bth",
+              "total": 20000,
+              "createdAt": "2026-10-20T02:28:44.879Z"
+            }
           ]
         }
+      },
+      "Yến": {
+        "paid": false,
+        "days": {
+          "20": 20000
+        },
+        "items": {
+          "20": [
+            {
+              "id": "ord_1792463352142_2tz1",
+              "name": "Trà Tắc Thái Xanh",
+              "basePrice": 20000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 20000,
+              "qty": 1,
+              "note": "Bình thường, Bth",
+              "total": 20000,
+              "createdAt": "2026-10-20T02:29:12.142Z"
+            }
+          ]
+        }
+      },
+      "Manh": {
+        "paid": false,
+        "days": {},
+        "items": {}
+      },
+      "Nhân": {
+        "paid": false,
+        "days": {},
+        "items": {}
+      },
+      "Bee": {
+        "paid": false,
+        "days": {},
+        "items": {}
+      },
+      "Trưởng": {
+        "paid": false,
+        "days": {},
+        "items": {}
       },
       "Đạo": {
         "paid": false,
         "days": {
-          "13": 25000,
+          "13": 25,
           "14": 25000,
           "15": 25000,
-          "16": 25000
+          "16": 25000,
+          "20": 25000
         },
         "items": {
-          "13": [
-            {
-              "id": "ord_13_dao",
-              "name": "Latte Cacao Cafe",
-              "basePrice": 25000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 25000,
-              "qty": 1,
-              "note": "",
-              "total": 25000,
-              "createdAt": "2026-10-13T08:35:00.000Z"
-            }
-          ],
           "14": [
             {
               "id": "ord_1791944116956_fst2",
@@ -1296,16 +1532,16 @@
           ],
           "15": [
             {
-              "id": "ord_15_dao",
+              "id": "ord_1792030187682_es95",
               "name": "Latte Cacao Cafe",
               "basePrice": 25000,
               "toppings": [],
               "toppingsPrice": 0,
               "singlePrice": 25000,
               "qty": 1,
-              "note": "ngọt",
+              "note": "",
               "total": 25000,
-              "createdAt": "2026-10-15T03:50:00.000Z"
+              "createdAt": "2026-10-15T02:09:47.682Z"
             }
           ],
           "16": [
@@ -1321,49 +1557,19 @@
               "total": 25000,
               "createdAt": "2026-10-16T02:17:23.631Z"
             }
-          ]
-        }
-      },
-      "Hà": {
-        "paid": false,
-        "days": {
-          "15": 18000
-        },
-        "items": {
-          "15": [
+          ],
+          "20": [
             {
-              "id": "ord_15_ha",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
+              "id": "ord_1792463421467_r8a3",
+              "name": "Latte Cacao Cafe",
+              "basePrice": 25000,
               "toppings": [],
               "toppingsPrice": 0,
-              "singlePrice": 18000,
+              "singlePrice": 25000,
               "qty": 1,
-              "note": "Bình thường",
-              "total": 18000,
-              "createdAt": "2026-10-15T03:50:00.000Z"
-            }
-          ]
-        }
-      },
-      "Na Na": {
-        "paid": false,
-        "days": {
-          "16": 20000
-        },
-        "items": {
-          "16": [
-            {
-              "id": "ord_1792116959513_46ik",
-              "name": "Nước ép Thơm + Cam",
-              "basePrice": 20000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 20000,
-              "qty": 1,
-              "note": "Bình thường, Bth",
-              "total": 20000,
-              "createdAt": "2026-10-16T02:15:59.513Z"
+              "note": "Ngọt",
+              "total": 25000,
+              "createdAt": "2026-10-20T02:30:21.467Z"
             }
           ]
         }
@@ -1386,6 +1592,33 @@
               "note": "Bình thường, Bth, ít sữa",
               "total": 18000,
               "createdAt": "2026-10-19T01:59:25.425Z"
+            }
+          ]
+        }
+      },
+      "Vian": {
+        "paid": false,
+        "days": {},
+        "items": {}
+      },
+      "Na Na": {
+        "paid": false,
+        "days": {
+          "16": 20000
+        },
+        "items": {
+          "16": [
+            {
+              "id": "ord_1792116959513_46ik",
+              "name": "Nước ép Thơm + Cam",
+              "basePrice": 20000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 20000,
+              "qty": 1,
+              "note": "Bình thường, Bth",
+              "total": 20000,
+              "createdAt": "2026-10-16T02:15:59.513Z"
             }
           ]
         }
@@ -1412,5 +1645,6 @@
       "Duy"
     ]
   },
-  "salaryCyclesPaid": {}
+  "salaryCyclesPaid": {},
+  "dataVersion": 1792481926113
 }
