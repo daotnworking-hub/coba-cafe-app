@@ -50,7 +50,9 @@ function readDatabase() {
   try {
     if (fs.existsSync(DATA_FILE)) {
       const content = fs.readFileSync(DATA_FILE, 'utf8');
-      return JSON.parse(content);
+      const parsed = JSON.parse(content);
+      if (!parsed.deletedItemIds) parsed.deletedItemIds = [];
+      return parsed;
     }
   } catch (err) {
     console.error('Lỗi khi đọc file data_app.json:', err.message);
@@ -63,7 +65,8 @@ function readDatabase() {
     ordersData: {},
     config: {},
     memberAliases: {},
-    salaryCyclesPaid: {}
+    salaryCyclesPaid: {},
+    deletedItemIds: []
   };
 }
 
@@ -72,23 +75,22 @@ if (!fs.existsSync(BACKUP_DIR)) {
   try { fs.mkdirSync(BACKUP_DIR, { recursive: true }); } catch (e) {}
 }
 
-// Deep Merge ordersData an toàn - Chống ghi đè hủy diệt
-function mergeOrdersData(baseOrders, incOrders) {
+// Deep Merge ordersData an toàn - Chống ghi đè hủy diệt nhưng tôn trọng các món đã chủ động xóa
+function mergeOrdersData(baseOrders, incOrders, deletedItemIds = []) {
   if (!baseOrders || typeof baseOrders !== 'object') return incOrders || {};
   if (!incOrders || typeof incOrders !== 'object') return baseOrders || {};
 
   const merged = JSON.parse(JSON.stringify(baseOrders));
+  const deletedSet = new Set((deletedItemIds || []).filter(Boolean));
 
   for (const monthKey of Object.keys(incOrders)) {
     if (!merged[monthKey]) {
       merged[monthKey] = JSON.parse(JSON.stringify(incOrders[monthKey]));
-      continue;
     }
     const incMonth = incOrders[monthKey];
     for (const member of Object.keys(incMonth)) {
       if (!merged[monthKey][member]) {
         merged[monthKey][member] = JSON.parse(JSON.stringify(incMonth[member]));
-        continue;
       }
       const baseM = merged[monthKey][member];
       const incM = incMonth[member];
@@ -100,32 +102,67 @@ function mergeOrdersData(baseOrders, incOrders) {
         baseM.paid = true;
       }
 
+      // Xóa trước các món nằm trong deletedSet khỏi baseM
+      for (const day of Object.keys(baseM.items || {})) {
+        if (Array.isArray(baseM.items[day])) {
+          baseM.items[day] = baseM.items[day].filter(it => !it.id || !deletedSet.has(it.id));
+        }
+      }
+
       const incItems = incM.items || {};
       for (const day of Object.keys(incItems)) {
-        if (!baseM.items[day] || baseM.items[day].length === 0) {
-          baseM.items[day] = JSON.parse(JSON.stringify(incItems[day]));
-        } else {
-          const existingIds = new Set(baseM.items[day].map(it => it.id).filter(Boolean));
-          for (const item of incItems[day]) {
-            if (item.id && existingIds.has(item.id)) continue;
-            baseM.items[day].push(JSON.parse(JSON.stringify(item)));
-            if (item.id) existingIds.add(item.id);
-          }
+        if (!baseM.items[day]) baseM.items[day] = [];
+        const existingIds = new Set(baseM.items[day].map(it => it.id).filter(Boolean));
+        for (const item of incItems[day]) {
+          if (item.id && (deletedSet.has(item.id) || existingIds.has(item.id))) continue;
+          baseM.items[day].push(JSON.parse(JSON.stringify(item)));
+          if (item.id) existingIds.add(item.id);
         }
 
         let daySum = 0;
         baseM.items[day].forEach(it => daySum += (parseInt(it.total) || 0));
-        baseM.days[day] = daySum;
+        if (daySum > 0) {
+          baseM.days[day] = daySum;
+        } else {
+          delete baseM.days[day];
+          delete baseM.items[day];
+        }
       }
 
       const incDays = incM.days || {};
       for (const day of Object.keys(incDays)) {
-        if (!baseM.days[day] && incDays[day]) {
+        if (!baseM.days[day] && incDays[day] && (!baseM.items[day] || baseM.items[day].length > 0)) {
           baseM.days[day] = incDays[day];
         }
       }
     }
   }
+
+  // Quét lại toàn bộ merged để dọn dẹp các món đã bị xóa
+  if (deletedSet.size > 0) {
+    for (const mKey of Object.keys(merged)) {
+      for (const mem of Object.keys(merged[mKey] || {})) {
+        const memObj = merged[mKey][mem];
+        if (memObj.items) {
+          for (const d of Object.keys(memObj.items)) {
+            if (Array.isArray(memObj.items[d])) {
+              memObj.items[d] = memObj.items[d].filter(it => !it.id || !deletedSet.has(it.id));
+              let s = 0;
+              memObj.items[d].forEach(it => s += (parseInt(it.total) || 0));
+              if (s > 0) {
+                if (!memObj.days) memObj.days = {};
+                memObj.days[d] = s;
+              } else {
+                if (memObj.days) delete memObj.days[d];
+                delete memObj.items[d];
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   return merged;
 }
 
@@ -419,6 +456,93 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // --- 6.3. API: XÓA 1 MÓN ĐÃ ĐẶT (POST /api/order/delete_item) ---
+  if (pathname === '/api/order/delete_item' && method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body);
+        const { monthKey, member, dayNum, itemId } = payload;
+        if (!monthKey || !member || !dayNum || !itemId) {
+          return sendJson(res, 400, { success: false, error: 'Thiếu thông tin món cần xóa' });
+        }
+
+        const db = readDatabase();
+        if (!db.deletedItemIds) db.deletedItemIds = [];
+        if (!db.deletedItemIds.includes(itemId)) {
+          db.deletedItemIds.push(itemId);
+        }
+
+        if (db.ordersData && db.ordersData[monthKey] && db.ordersData[monthKey][member]) {
+          const mObj = db.ordersData[monthKey][member];
+          if (mObj.items && mObj.items[dayNum]) {
+            mObj.items[dayNum] = mObj.items[dayNum].filter(it => it.id !== itemId);
+            let daySum = 0;
+            mObj.items[dayNum].forEach(it => daySum += (parseInt(it.total) || 0));
+            if (daySum > 0) {
+              mObj.days[dayNum] = daySum;
+            } else {
+              delete mObj.days[dayNum];
+              delete mObj.items[dayNum];
+            }
+          }
+        }
+
+        saveDatabase(db);
+        dataVersion = Date.now();
+        console.log(`[XÓA MÓN THÀNH CÔNG] Đã xóa món ${itemId} của ${member} ngày ${dayNum}/${monthKey}`);
+        return sendJson(res, 200, { success: true, itemId, dataVersion, deletedItemIds: db.deletedItemIds });
+      } catch (err) {
+        return sendJson(res, 500, { success: false, error: err.message });
+      }
+    });
+    return;
+  }
+
+  // --- 6.4. API: XÓA TOÀN BỘ ĐƠN CỦA 1 NGÀY (POST /api/order/clear_day) ---
+  if (pathname === '/api/order/clear_day' && method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body);
+        const { monthKey, dayNum } = payload;
+        if (!monthKey || !dayNum) {
+          return sendJson(res, 400, { success: false, error: 'Thiếu thông tin ngày cần xóa' });
+        }
+
+        const db = readDatabase();
+        if (!db.deletedItemIds) db.deletedItemIds = [];
+
+        if (db.ordersData && db.ordersData[monthKey]) {
+          Object.keys(db.ordersData[monthKey]).forEach(member => {
+            const mObj = db.ordersData[monthKey][member];
+            if (mObj.items && mObj.items[dayNum]) {
+              mObj.items[dayNum].forEach(it => {
+                if (it.id && !db.deletedItemIds.includes(it.id)) {
+                  db.deletedItemIds.push(it.id);
+                }
+              });
+              delete mObj.items[dayNum];
+            }
+            if (mObj.days && mObj.days[dayNum]) {
+              delete mObj.days[dayNum];
+            }
+          });
+        }
+
+        saveDatabase(db);
+        dataVersion = Date.now();
+        console.log(`[XÓA NGÀY THÀNH CÔNG] Đã xóa tất cả đơn ngày ${dayNum}/${monthKey}`);
+        return sendJson(res, 200, { success: true, dayNum, monthKey, dataVersion, deletedItemIds: db.deletedItemIds });
+      } catch (err) {
+        return sendJson(res, 500, { success: false, error: err.message });
+      }
+    });
+    return;
+  }
+
   // --- 7. API: APP CHÍNH LƯU TOÀN BỘ STATE (POST /api/save_all) ---
   if (pathname === '/api/save_all' && method === 'POST') {
     let body = '';
@@ -434,9 +558,12 @@ const server = http.createServer((req, res) => {
         if (payload.menu) db.menu = payload.menu;
         if (payload.toppings) db.toppings = payload.toppings;
         if (payload.favorites) db.favorites = Object.assign({}, db.favorites, payload.favorites);
+        if (payload.deletedItemIds && Array.isArray(payload.deletedItemIds)) {
+          db.deletedItemIds = Array.from(new Set([...(db.deletedItemIds || []), ...payload.deletedItemIds]));
+        }
         if (payload.ordersData) {
-          // SAFE DEEP MERGE - Chống ghi đè mất ngày cũ
-          db.ordersData = mergeOrdersData(db.ordersData, payload.ordersData);
+          // SAFE DEEP MERGE - Chống ghi đè mất ngày cũ nhưng tôn trọng các món đã chọn xóa
+          db.ordersData = mergeOrdersData(db.ordersData, payload.ordersData, db.deletedItemIds);
         }
         if (payload.config) db.config = payload.config;
         if (payload.salaryCyclesPaid) db.salaryCyclesPaid = Object.assign({}, db.salaryCyclesPaid, payload.salaryCyclesPaid);
