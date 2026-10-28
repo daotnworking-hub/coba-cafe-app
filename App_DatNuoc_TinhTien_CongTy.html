@@ -2195,7 +2195,10 @@
       { id: 'gk_16', name: 'Mía Mix (thơm, cam, tắc)', category: 'YAOURT', price: 10000 },
       { id: 'gk_17', name: 'Nước chanh', category: 'YAOURT', price: 12000 },
       { id: 'gk_24', name: 'Nước chanh đường', category: 'YAOURT', price: 12000 },
-      { id: 'gk_18', name: 'Soda Đào (Việt Quất/Bạc Hà/Blue)', category: 'YAOURT', price: 20000 },
+      { id: 'gk_18', name: 'Soda Bạc Hà', category: 'YAOURT', price: 20000 },
+      { id: 'gk_18_dao', name: 'Soda Đào', category: 'YAOURT', price: 20000 },
+      { id: 'gk_18_vietquat', name: 'Soda Việt Quất', category: 'YAOURT', price: 20000 },
+      { id: 'gk_18_blue', name: 'Soda Blue', category: 'YAOURT', price: 20000 },
       { id: 'gk_19', name: 'Yaourt Trái Cây', category: 'YAOURT', price: 30000 },
       { id: 'gk_20', name: 'Yaourt Dâu Sấy', category: 'YAOURT', price: 30000 },
       { id: 'gk_21', name: 'Yaourt Đá', category: 'YAOURT', price: 15000 },
@@ -2390,6 +2393,25 @@
         appState.menu.push({ id: 'gk_24', name: 'Nước chanh đường', category: 'YAOURT', price: 12000 });
         needsSave = true;
       }
+
+      // 1.1. Đảm bảo tách bạch đầy đủ 4 vị Soda chuẩn menu quán (Bạc Hà, Đào, Việt Quất, Blue)
+      const oldSodaIdx = appState.menu.findIndex(m => m.name && m.name.includes('Soda Đào (Việt Quất'));
+      if (oldSodaIdx !== -1) {
+        appState.menu.splice(oldSodaIdx, 1);
+        needsSave = true;
+      }
+      const sodaFlavors = [
+        { id: 'gk_18', name: 'Soda Bạc Hà', category: 'YAOURT', price: 20000 },
+        { id: 'gk_18_dao', name: 'Soda Đào', category: 'YAOURT', price: 20000 },
+        { id: 'gk_18_vietquat', name: 'Soda Việt Quất', category: 'YAOURT', price: 20000 },
+        { id: 'gk_18_blue', name: 'Soda Blue', category: 'YAOURT', price: 20000 }
+      ];
+      sodaFlavors.forEach(sf => {
+        if (!appState.menu.some(m => m.name.toLowerCase() === sf.name.toLowerCase())) {
+          appState.menu.push(sf);
+          needsSave = true;
+        }
+      });
 
       // 2. Favorites: đảm bảo có gu của các bạn (Chế Bao, Ngân Mập, C.Chou, A.Duy)
       Object.entries(DEFAULT_FAVORITES).forEach(([mName, favList]) => {
@@ -3682,7 +3704,8 @@ function playChimeSound() {
       const filteredItems = appState.menu.filter(item => {
         const matchCat = (filterCat === 'ALL' || item.category === filterCat);
         const matchSearch = (!searchKey || item.name.toLowerCase().includes(searchKey));
-        return matchCat && matchSearch;
+        // Khi gõ từ khóa tìm kiếm thì ưu tiên tìm trên toàn bộ menu
+        return searchKey ? matchSearch : (matchCat && matchSearch);
       });
 
       if (filteredItems.length === 0) {

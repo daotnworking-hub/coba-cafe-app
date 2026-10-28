@@ -746,12 +746,11 @@
 
       let filtered = appData.menu;
 
-      if (currentCategory !== 'ALL') {
-        filtered = filtered.filter(item => item.category === currentCategory);
-      }
-
       if (query) {
+        // Khi gõ tìm kiếm, tìm kiếm trên TOÀN BỘ menu để không bị kẹt ở tab danh mục hiện tại
         filtered = filtered.filter(item => item.name.toLowerCase().includes(query));
+      } else if (currentCategory !== 'ALL') {
+        filtered = filtered.filter(item => item.category === currentCategory);
       }
 
       document.getElementById('menuCountBadge').innerText = `${filtered.length} món`;

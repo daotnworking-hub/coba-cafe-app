@@ -52,6 +52,21 @@ function readDatabase() {
       const content = fs.readFileSync(DATA_FILE, 'utf8');
       const parsed = JSON.parse(content);
       if (!parsed.deletedItemIds) parsed.deletedItemIds = [];
+      if (parsed.menu) {
+        const hasOldSoda = parsed.menu.some(m => m.name && m.name.includes('Soda Đào (Việt Quất'));
+        if (hasOldSoda) {
+          const sodaItems = [
+            { id: 'gk_18', name: 'Soda Bạc Hà', category: 'YAOURT', price: 20000 },
+            { id: 'gk_18_dao', name: 'Soda Đào', category: 'YAOURT', price: 20000 },
+            { id: 'gk_18_vietquat', name: 'Soda Việt Quất', category: 'YAOURT', price: 20000 },
+            { id: 'gk_18_blue', name: 'Soda Blue', category: 'YAOURT', price: 20000 }
+          ];
+          parsed.menu = parsed.menu.filter(m => !m.name.includes('Soda Đào (Việt Quất'));
+          sodaItems.forEach(s => {
+            if (!parsed.menu.some(m => m.name === s.name)) parsed.menu.push(s);
+          });
+        }
+      }
       return parsed;
     }
   } catch (err) {
@@ -555,7 +570,28 @@ const server = http.createServer((req, res) => {
         if (payload.members) {
           db.members = Array.from(new Set([...(db.members || []), ...payload.members]));
         }
-        if (payload.menu) db.menu = payload.menu;
+        if (payload.menu) {
+          const cleanMenu = [];
+          const sodaItems = [
+            { id: 'gk_18', name: 'Soda Bạc Hà', category: 'YAOURT', price: 20000 },
+            { id: 'gk_18_dao', name: 'Soda Đào', category: 'YAOURT', price: 20000 },
+            { id: 'gk_18_vietquat', name: 'Soda Việt Quất', category: 'YAOURT', price: 20000 },
+            { id: 'gk_18_blue', name: 'Soda Blue', category: 'YAOURT', price: 20000 }
+          ];
+          payload.menu.forEach(m => {
+            if (m.name && m.name.includes('Soda Đào (Việt Quất')) {
+              sodaItems.forEach(s => cleanMenu.push(s));
+            } else {
+              cleanMenu.push(m);
+            }
+          });
+          if (!cleanMenu.some(m => m.name === 'Soda Bạc Hà')) {
+            sodaItems.forEach(s => {
+              if (!cleanMenu.some(m => m.name === s.name)) cleanMenu.push(s);
+            });
+          }
+          db.menu = cleanMenu;
+        }
         if (payload.toppings) db.toppings = payload.toppings;
         if (payload.favorites) db.favorites = Object.assign({}, db.favorites, payload.favorites);
         if (payload.deletedItemIds && Array.isArray(payload.deletedItemIds)) {
