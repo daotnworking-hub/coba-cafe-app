@@ -2601,7 +2601,8 @@
         "days": {
           "2": 12000,
           "3": 25000,
-          "5": 12000
+          "5": 12000,
+          "6": 20000
         },
         "items": {
           "2": [
@@ -2645,6 +2646,20 @@
               "total": 12000,
               "createdAt": "2026-11-05T02:25:00.000Z"
             }
+          ],
+          "6": [
+            {
+              "id": "ord_1793931600002_xu",
+              "name": "Trà Ổi Hồng",
+              "basePrice": 20000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 20000,
+              "qty": 1,
+              "note": "",
+              "total": 20000,
+              "createdAt": "2026-11-06T04:20:00.000Z"
+            }
           ]
         }
       },
@@ -2652,8 +2667,7 @@
         "paid": false,
         "days": {
           "2": 20000,
-          "3": 20000,
-          "6": 20000
+          "3": 20000
         },
         "items": {
           "2": [
@@ -2682,20 +2696,6 @@
               "note": "Bình thường, Bth",
               "total": 20000,
               "createdAt": "2026-11-03T02:29:11.754Z"
-            }
-          ],
-          "6": [
-            {
-              "id": "ord_1793931600002_xu",
-              "name": "Trà Ổi Hồng",
-              "basePrice": 20000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 20000,
-              "qty": 1,
-              "note": "",
-              "total": 20000,
-              "createdAt": "2026-11-06T04:20:00.000Z"
             }
           ]
         }
@@ -3085,14 +3085,14 @@
     "A.Duy": [
       "Duy"
     ],
-    "Ngọc": [
+    "Ngân GD": [
       "Xù"
     ]
   },
   "salaryCyclesPaid": {
     "2026-11": {}
   },
-  "dataVersion": 1794027964723,
+  "dataVersion": 1794040318057,
   "deletedItemIds": [
     "ord_1793068022936_dwfb",
     "ord_1793239869100_4k8r",
