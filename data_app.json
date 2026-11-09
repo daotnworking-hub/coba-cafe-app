@@ -2512,8 +2512,8 @@
         "days": {
           "2": 18000,
           "5": 18000,
-          "7": 18000,
-          "6": 18000
+          "6": 18000,
+          "7": 18000
         },
         "items": {
           "2": [
@@ -2544,20 +2544,6 @@
               "createdAt": "2026-11-05T02:23:02.337Z"
             }
           ],
-          "7": [
-            {
-              "id": "ord_1794017848408_gznw",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít sữa",
-              "total": 18000,
-              "createdAt": "2026-11-07T02:17:28.408Z"
-            }
-          ],
           "6": [
             {
               "id": "ord_1793931600001_duy",
@@ -2570,6 +2556,20 @@
               "note": "Ít sữa",
               "total": 18000,
               "createdAt": "2026-11-06T04:20:00.000Z"
+            }
+          ],
+          "7": [
+            {
+              "id": "ord_1794017848408_gznw",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Ít sữa",
+              "total": 18000,
+              "createdAt": "2026-11-07T02:17:28.408Z"
             }
           ]
         }
@@ -2602,7 +2602,8 @@
           "2": 12000,
           "3": 25000,
           "5": 12000,
-          "6": 20000
+          "6": 20000,
+          "7": 30000
         },
         "items": {
           "2": [
@@ -2660,6 +2661,20 @@
               "total": 20000,
               "createdAt": "2026-11-06T04:20:00.000Z"
             }
+          ],
+          "7": [
+            {
+              "id": "ord_1794017870000_ngangd",
+              "name": "Trà Olong Sen Vàng",
+              "basePrice": 30000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 30000,
+              "qty": 1,
+              "note": "",
+              "total": 30000,
+              "createdAt": "2026-11-07T04:20:00.000Z"
+            }
           ]
         }
       },
@@ -2667,7 +2682,8 @@
         "paid": false,
         "days": {
           "2": 20000,
-          "3": 20000
+          "3": 20000,
+          "9": 18000
         },
         "items": {
           "2": [
@@ -2696,6 +2712,20 @@
               "note": "Bình thường, Bth",
               "total": 20000,
               "createdAt": "2026-11-03T02:29:11.754Z"
+            }
+          ],
+          "9": [
+            {
+              "id": "ord_1794190317196_hi1u",
+              "name": "Cf sữa đá",
+              "basePrice": 18000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 18000,
+              "qty": 1,
+              "note": "Bình thường, Bth",
+              "total": 18000,
+              "createdAt": "2026-11-09T02:11:57.196Z"
             }
           ]
         }
@@ -2743,7 +2773,8 @@
           "2": 25000,
           "3": 25000,
           "5": 25000,
-          "7": 25000
+          "7": 25000,
+          "9": 25000
         },
         "items": {
           "2": [
@@ -2801,6 +2832,20 @@
               "total": 25000,
               "createdAt": "2026-11-07T02:17:44.062Z"
             }
+          ],
+          "9": [
+            {
+              "id": "ord_1794190331168_8el6",
+              "name": "Latte Cacao Cafe",
+              "basePrice": 25000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 25000,
+              "qty": 1,
+              "note": "Ít đá, ngọt",
+              "total": 25000,
+              "createdAt": "2026-11-09T02:12:11.168Z"
+            }
           ]
         }
       },
@@ -2809,7 +2854,8 @@
         "days": {
           "3": 25000,
           "5": 25000,
-          "7": 25000
+          "7": 25000,
+          "9": 25000
         },
         "items": {
           "3": [
@@ -2852,6 +2898,20 @@
               "note": "Bình thường",
               "total": 25000,
               "createdAt": "2026-11-07T02:17:38.462Z"
+            }
+          ],
+          "9": [
+            {
+              "id": "ord_1794190328111_1p6o",
+              "name": "Latte Cacao Cafe",
+              "basePrice": 25000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 25000,
+              "qty": 1,
+              "note": "Bình thường",
+              "total": 25000,
+              "createdAt": "2026-11-09T02:12:08.111Z"
             }
           ]
         }
@@ -3063,6 +3123,28 @@
             }
           ]
         }
+      },
+      "Na Na": {
+        "paid": false,
+        "days": {
+          "3": 20000
+        },
+        "items": {
+          "3": [
+            {
+              "id": "ord_1793673050000_nana",
+              "name": "Trà Ổi Hồng",
+              "basePrice": 20000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 20000,
+              "qty": 1,
+              "note": "",
+              "total": 20000,
+              "createdAt": "2026-11-03T04:20:00.000Z"
+            }
+          ]
+        }
       }
     }
   },
@@ -3092,7 +3174,7 @@
   "salaryCyclesPaid": {
     "2026-11": {}
   },
-  "dataVersion": 1794040318057,
+  "dataVersion": 1794190380809,
   "deletedItemIds": [
     "ord_1793068022936_dwfb",
     "ord_1793239869100_4k8r",
