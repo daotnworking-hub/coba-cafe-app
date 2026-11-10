@@ -591,6 +591,11 @@
               <option value="QTY_DESC">Số ly: Nhiều → Ít</option>
               <option value="NAME_ASC">Tên: A → Z</option>
             </select>
+
+            <button type="button" id="btnToggleCalcPanel" onclick="toggleBillingCalculatorPanel()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-extrabold shadow-xs transition flex items-center gap-1.5">
+              <i class="fa-solid fa-calculator"></i>
+              <span>Bảng Tính Tiền</span>
+            </button>
           </div>
         </div>
       </div>
@@ -638,14 +643,238 @@
         </div>
       </div>
 
+      <!-- =============================================================== -->
+      <!-- BẢNG TÍNH TIỀN & MÁY TÍNH CHỐT SỔ NHANH (TRONG SỔ NỢ THÁNG) -->
+      <!-- =============================================================== -->
+      <div id="billingCalculatorPanel" class="glass-card rounded-2xl border-2 border-orange-300/90 bg-gradient-to-br from-white via-orange-50/20 to-amber-50/30 shadow-md overflow-hidden">
+        <!-- Header Bảng Tính Tiền -->
+        <div class="px-4 py-3 bg-gradient-to-r from-slate-900 via-slate-800 to-amber-950 text-white flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold shadow-xs">
+              <i class="fa-solid fa-calculator"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-extrabold tracking-wide flex items-center gap-2">
+                <span>BẢNG TÍNH TIỀN &amp; CHỐT SỔ NHANH</span>
+                <span class="px-2 py-0.5 text-[10px] rounded-full bg-orange-500/20 border border-orange-400/40 text-orange-200 font-semibold">Tự động cộng theo Ngày &amp; Người chọn</span>
+              </h3>
+              <p class="text-[11px] text-slate-300">Chọn các ngày muốn tính tiền + Tick chọn người cần thu/gộp bill + Chia ship, giảm giá &amp; tính tiền thối</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" id="btnCellPickModeHeader" onclick="toggleMatrixCellPickMode()" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs" title="Bật chế độ bấm vào từng ô trên bảng Sổ Nợ để cộng dồn tiền">
+              <i class="fa-solid fa-hand-pointer"></i>
+              <span id="lblCellPickModeHeader">Chạm Ô Sổ Nợ Để Cộng: TẮT</span>
+            </button>
+            <button type="button" onclick="resetBillingCalculator()" class="px-2.5 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-semibold transition flex items-center gap-1">
+              <i class="fa-solid fa-rotate-left"></i>
+              <span>Làm mới</span>
+            </button>
+            <button type="button" onclick="toggleBillingCalculatorPanel()" class="px-2.5 py-1.5 rounded-xl bg-slate-700/80 hover:bg-slate-600 text-slate-300 text-xs font-semibold transition" title="Thu gọn bảng tính tiền">
+              <i class="fa-solid fa-chevron-up"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Body Bảng Tính Tiền -->
+        <div class="p-4 space-y-4">
+          <!-- BƯỚC 1: CHỌN CÁC NGÀY CẦN TÍNH TIỀN -->
+          <div class="bg-white rounded-2xl p-3.5 border border-slate-200/90 shadow-2xs space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-orange-500 text-white text-[11px] font-extrabold flex items-center justify-center">1</span>
+                <span class="text-xs font-extrabold text-slate-800 uppercase tracking-wide">Chọn Ngày Cần Tính Tiền:</span>
+                <span id="calcSelectedDaysSummary" class="text-xs font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-lg border border-orange-200">Đang chọn tất cả ngày</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-1.5 text-[11px] font-bold">
+                <button type="button" onclick="selectCalcDaysPreset('ALL')" class="px-2.5 py-1 rounded-lg bg-orange-100 hover:bg-orange-200 text-orange-800 transition">Tất cả ngày có đơn</button>
+                <button type="button" onclick="selectCalcDaysPreset('TODAY')" class="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition">Hôm nay</button>
+                <button type="button" onclick="selectCalcDaysPreset('LAST3')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">3 ngày gần nhất</button>
+                <button type="button" onclick="selectCalcDaysPreset('NONE')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 transition">Bỏ chọn hết</button>
+              </div>
+            </div>
+
+            <!-- Danh sách Chip các ngày có đơn -->
+            <div id="calcActiveDaysChips" class="flex flex-wrap gap-1.5 pt-1">
+              <!-- JS render day chips -->
+            </div>
+          </div>
+
+          <!-- BƯỚC 2 & 3: CHIA 2 CỘT (TRÁI: DANH SÁCH NGƯỜI & CHI TIẾT MÓN | PHẢI: HỘP TÍNH TIỀN, SHIP/GIẢM GIÁ, TIỀN THỐI & MÁY TÍNH NHẨM) -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+            <!-- CỘT TRÁI (7/12): DANH SÁCH NHÂN VIÊN TRONG CÁC NGÀY ĐÃ CHỌN -->
+            <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden flex flex-col">
+              <div class="p-3 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-5 h-5 rounded-full bg-orange-500 text-white text-[11px] font-extrabold flex items-center justify-center">2</span>
+                  <span class="text-xs font-extrabold text-slate-800 uppercase">Tick Chọn Người Để Cộng Tiền / Thu Tiền:</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-1 text-[11px] font-bold">
+                  <button type="button" onclick="selectCalcMembersPreset('ALL')" class="px-2 py-1 rounded-lg bg-orange-100 hover:bg-orange-200 text-orange-800 transition">Chọn hết</button>
+                  <button type="button" onclick="selectCalcMembersPreset('UNPAID')" class="px-2 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 transition">Chỉ người Chưa trả</button>
+                  <button type="button" onclick="selectCalcMembersPreset('PAID')" class="px-2 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-700 transition">Chỉ người Đã trả</button>
+                  <button type="button" onclick="selectCalcMembersPreset('NONE')" class="px-2 py-1 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 transition">Bỏ chọn</button>
+                </div>
+              </div>
+
+              <!-- Bảng danh sách người uống -->
+              <div class="max-h-[380px] overflow-y-auto divide-y divide-slate-100" id="calcMembersListContainer">
+                <!-- JS render rows -->
+              </div>
+
+              <!-- Footer tóm tắt nhanh dưới bảng người uống -->
+              <div class="px-3.5 py-2.5 bg-amber-50/80 border-t border-amber-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <span class="font-bold text-slate-700">
+                  Đang tick chọn: <strong id="calcSelectedMemberCount" class="text-orange-600">0</strong> người • <strong id="calcSelectedCupCount" class="text-blue-600">0</strong> ly
+                </span>
+                <div class="flex items-center gap-2">
+                  <button type="button" onclick="markSelectedCalcMembersPaid(true)" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-bold transition flex items-center gap-1 shadow-2xs">
+                    <i class="fa-solid fa-check-double"></i>
+                    <span>Đánh dấu ĐÃ TRẢ người đang chọn</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- CỘT PHẢI (5/12): BẢNG CHỐT SỐ TIỀN, CHIA SHIP/GIẢM GIÁ, TÍNH TIỀN THỐI & MÁY TÍNH BẤM TAY -->
+            <div class="lg:col-span-5 space-y-3">
+              <!-- Card Chốt Tiền Chính -->
+              <div class="bg-white rounded-2xl p-4 border-2 border-orange-200 shadow-xs space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="w-5 h-5 rounded-full bg-orange-500 text-white text-[11px] font-extrabold flex items-center justify-center">3</span>
+                    <span class="text-xs font-extrabold text-slate-800 uppercase">Kết Quả Tính Tiền:</span>
+                  </div>
+                  <span id="calcModeBadge" class="text-[11px] font-bold text-orange-700 bg-orange-100 px-2 py-0.5 rounded-full">Theo Ngày &amp; Người chọn</span>
+                </div>
+
+                <!-- 3 ô số liệu gốc -->
+                <div class="grid grid-cols-3 gap-2 text-center">
+                  <div class="p-2 rounded-xl bg-slate-50 border border-slate-200">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase block">Số Ly Chọn</span>
+                    <span id="calcBoxTotalCups" class="text-base font-extrabold text-blue-600 font-mono">0 ly</span>
+                  </div>
+                  <div class="p-2 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                    <span class="text-[10px] font-bold text-emerald-600 uppercase block">Đã Trả</span>
+                    <span id="calcBoxPaidAmount" class="text-sm font-extrabold text-emerald-700 font-mono">0 đ</span>
+                  </div>
+                  <div class="p-2 rounded-xl bg-rose-50/70 border border-rose-200">
+                    <span class="text-[10px] font-bold text-rose-600 uppercase block">Chưa Trả</span>
+                    <span id="calcBoxUnpaidAmount" class="text-sm font-extrabold text-rose-700 font-mono">0 đ</span>
+                  </div>
+                </div>
+
+                <!-- Cộng Ship / Trừ Giảm giá -->
+                <div class="grid grid-cols-2 gap-2.5 pt-1 text-xs">
+                  <div>
+                    <label class="block font-bold text-slate-600 mb-1 flex items-center justify-between">
+                      <span>+ Phí Ship / Phụ thu:</span>
+                      <span class="text-[10px] text-slate-400">(gõ 15 = 15k)</span>
+                    </label>
+                    <div class="flex items-center gap-1">
+                      <input type="text" id="calcShipInput" oninput="renderBillingCalculatorResult()" placeholder="0" class="w-full border border-slate-300 rounded-xl px-2.5 py-1.5 font-mono font-bold text-slate-800 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500">
+                      <button type="button" onclick="setQuickCalcAdjust('calcShipInput', 15000)" class="px-2 py-1.5 bg-slate-100 hover:bg-orange-100 rounded-lg text-[10px] font-bold text-slate-700 shrink-0">+15k</button>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block font-bold text-slate-600 mb-1 flex items-center justify-between">
+                      <span>- Giảm giá / Voucher:</span>
+                      <span class="text-[10px] text-slate-400">(gõ 20 = 20k)</span>
+                    </label>
+                    <div class="flex items-center gap-1">
+                      <input type="text" id="calcDiscountInput" oninput="renderBillingCalculatorResult()" placeholder="0" class="w-full border border-slate-300 rounded-xl px-2.5 py-1.5 font-mono font-bold text-emerald-700 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                      <button type="button" onclick="setQuickCalcAdjust('calcDiscountInput', 20000)" class="px-2 py-1.5 bg-slate-100 hover:bg-emerald-100 rounded-lg text-[10px] font-bold text-emerald-700 shrink-0">-20k</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Hộp TỔNG TIỀN CUỐI CÙNG -->
+                <div class="p-3.5 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-sm flex items-center justify-between">
+                  <div>
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-orange-100 block">TỔNG TIỀN CẦN TÍNH / THU</span>
+                    <span id="calcFinalTotalAmount" class="text-2xl sm:text-3xl font-black font-mono tracking-tight">0 đ</span>
+                    <span id="calcPerPersonHint" class="text-[11px] text-orange-100 block mt-0.5">Tiền gốc: 0 đ</span>
+                  </div>
+                  <div class="flex flex-col gap-1.5">
+                    <button type="button" onclick="copyCalculatedBillSummary()" class="px-3 py-1.5 bg-white text-orange-600 hover:bg-orange-50 rounded-xl text-xs font-extrabold shadow-xs transition flex items-center gap-1.5">
+                      <i class="fa-regular fa-copy"></i>
+                      <span>Copy Bill Tính Tiền</span>
+                    </button>
+                    <button type="button" onclick="copyRawTotalNumber()" class="px-3 py-1 bg-orange-600/60 hover:bg-orange-600 text-white rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1">
+                      <i class="fa-solid fa-hashtag text-[10px]"></i>
+                      <span>Copy Số Tiền</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- TÍNH TIỀN KHÁCH ĐƯA & TIỀN THỐI LẠI -->
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/90 space-y-2 text-xs">
+                  <div class="flex items-center justify-between gap-2">
+                    <label class="font-bold text-slate-700 shrink-0"><i class="fa-solid fa-money-bill-wave text-emerald-600 mr-1"></i>Tiền đưa:</label>
+                    <input type="text" id="calcCashGivenInput" oninput="renderBillingCalculatorResult()" placeholder="Nhập tiền đưa (vd: 200 hoặc 200000)" class="w-full border border-slate-300 rounded-xl px-2.5 py-1 font-mono font-bold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500">
+                  </div>
+                  <div class="flex flex-wrap items-center justify-between gap-1">
+                    <div class="flex flex-wrap gap-1">
+                      <button type="button" onclick="setQuickCashGiven(50000)" class="px-2 py-0.5 bg-white hover:bg-amber-50 border border-slate-300 rounded-lg text-[11px] font-mono font-bold text-slate-700">50k</button>
+                      <button type="button" onclick="setQuickCashGiven(100000)" class="px-2 py-0.5 bg-white hover:bg-amber-50 border border-slate-300 rounded-lg text-[11px] font-mono font-bold text-slate-700">100k</button>
+                      <button type="button" onclick="setQuickCashGiven(200000)" class="px-2 py-0.5 bg-white hover:bg-amber-50 border border-slate-300 rounded-lg text-[11px] font-mono font-bold text-slate-700">200k</button>
+                      <button type="button" onclick="setQuickCashGiven(500000)" class="px-2 py-0.5 bg-white hover:bg-amber-50 border border-slate-300 rounded-lg text-[11px] font-mono font-bold text-slate-700">500k</button>
+                      <button type="button" onclick="setQuickCashGiven(0)" class="px-2 py-0.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg text-[11px] font-bold text-rose-600">Xóa</button>
+                    </div>
+                    <div id="calcChangeResultText" class="font-mono font-extrabold text-xs text-slate-500">
+                      Tiền thối: 0 đ
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- MÁY TÍNH NHẨM NHANH & CỘNG Ô TÙY CHỌN TRÊN BẢNG SỔ NỢ -->
+              <div class="bg-white rounded-2xl p-3.5 border border-slate-200/90 shadow-2xs space-y-2.5 text-xs">
+                <div class="flex items-center justify-between">
+                  <span class="font-extrabold text-slate-800 flex items-center gap-1.5">
+                    <i class="fa-solid fa-keyboard text-indigo-600"></i>
+                    <span>Máy Tính Nhẩm Nhanh (Gõ phép tính):</span>
+                  </span>
+                  <span class="text-[10px] text-slate-400">VD: 18 + 25 + 12*2</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <input type="text" id="quickMathExprInput" oninput="evaluateQuickMathExpr()" placeholder="Gõ phép tính: vd 18 + 25 + 30 - 5..." class="w-full border border-slate-300 rounded-xl px-3 py-2 font-mono font-bold text-slate-800 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  <div id="quickMathExprResult" class="px-3 py-2 rounded-xl bg-indigo-50 border border-indigo-200 font-mono font-extrabold text-indigo-700 whitespace-nowrap min-w-[95px] text-right">
+                    = 0 đ
+                  </div>
+                </div>
+
+                <!-- Danh sách các ô được chạm chọn trực tiếp trên bảng Sổ Nợ -->
+                <div id="pickedMatrixCellsBox" class="hidden p-2.5 rounded-xl bg-indigo-50/70 border border-indigo-200 space-y-1.5">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-indigo-950 text-[11px]"><i class="fa-solid fa-hand-pointer text-indigo-600 mr-1"></i>Các ô đang chạm chọn trên bảng Sổ Nợ:</span>
+                    <button type="button" onclick="clearPickedMatrixCells()" class="text-[10px] font-bold text-rose-600 hover:underline">Xóa chọn ô</button>
+                  </div>
+                  <div id="pickedMatrixCellsList" class="flex flex-wrap gap-1 max-h-24 overflow-y-auto"></div>
+                  <div class="pt-1 border-t border-indigo-200/80 flex items-center justify-between font-mono font-extrabold text-indigo-900">
+                    <span id="pickedMatrixCellsCount">0 ô (0 ly)</span>
+                    <span id="pickedMatrixCellsSum" class="text-sm text-indigo-700">0 đ</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- BẢNG MA TRẬN TỔNG NỢ (NGÀY 1 - 31) -->
       <div class="glass-card rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm">
         <div class="px-4 py-2.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs">
           <div class="flex items-center gap-2 text-slate-600 font-medium">
             <i class="fa-solid fa-hand-pointer text-orange-500"></i>
-            <span><strong>Click vào ô ngày bất kỳ</strong> để xem chi tiết món đã uống, thêm/xóa món hoặc sửa tiền ngày đó • Click vào <strong>Tên nhân viên</strong> để lấy mã VietQR nhắc nợ.</span>
+            <span><strong>Click vào ô ngày bất kỳ</strong> để xem/sửa món • <strong>Giữ Ctrl/Alt + Click vào các ô ngày</strong> (hoặc bật nút <em>Chạm Ô Để Cộng</em>) để cộng nhẩm nhanh các ô bất kỳ.</span>
           </div>
           <div class="flex items-center gap-3 text-[11px] font-semibold">
+            <button type="button" id="btnCellPickModeTable" onclick="toggleMatrixCellPickMode()" class="px-2.5 py-1 rounded-lg border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold transition flex items-center gap-1">
+              <i class="fa-solid fa-plus-minus"></i>
+              <span id="lblCellPickModeTable">Chạm ô để cộng tiền: TẮT</span>
+            </button>
             <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Đã trả</span>
             <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Còn nợ</span>
           </div>
@@ -1386,16 +1615,10 @@
 
       <!-- Footer -->
       <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="jumpFromCellToOrderTab()" class="px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
-            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-            <span>Mở ngày này ở Tab Đặt Đơn</span>
-          </button>
-          <button type="button" id="btnClearMemberDayCell" onclick="clearMemberDayCell()" class="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
-            <i class="fa-regular fa-trash-can text-[10px]"></i>
-            <span>Xóa trống ô ngày này</span>
-          </button>
-        </div>
+        <button type="button" onclick="jumpFromCellToOrderTab()" class="px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+          <span>Mở ngày này ở Tab Đặt Đơn</span>
+        </button>
         <button type="button" onclick="closeModal('dayCellModal')" class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition">
           Đóng
         </button>
@@ -1462,7 +1685,8 @@
       "Ngân Mập": ["Đen", "Dđen"],
       "C.Chou": ["Châu", "Chou"],
       "A.Duy": ["Duy"],
-      "Ngân GD": ["Xù", "K.Ngân", "K Ngân", "Kim Ngân", "Ngân JD"],
+      "Ngân GD": ["Xù", "Ngân JD"],
+      "Ngân Nui": ["K Ngân", "Kim Ngân"],
       "Na Na": ["Nana"]
     };
 
@@ -3222,10 +3446,10 @@
       "paid": false,
       "days": {
         "2": 18000,
-        "5": 18000,
         "6": 18000,
         "7": 18000,
-        "10": 18000
+        "10": 18000,
+        "4": 18000
       },
       "items": {
         "2": [
@@ -3240,20 +3464,6 @@
             "note": "Ít sữa",
             "total": 18000,
             "createdAt": "2026-11-02T02:13:34.324Z"
-          }
-        ],
-        "5": [
-          {
-            "id": "ord_1793845382337_pdmg",
-            "name": "Cf sữa đá",
-            "basePrice": 18000,
-            "toppings": [],
-            "toppingsPrice": 0,
-            "singlePrice": 18000,
-            "qty": 1,
-            "note": "Ít sữa",
-            "total": 18000,
-            "createdAt": "2026-11-05T02:23:02.337Z"
           }
         ],
         "6": [
@@ -3296,6 +3506,20 @@
             "note": "Ít sữa",
             "total": 18000,
             "createdAt": "2026-11-10T02:11:45.285Z"
+          }
+        ],
+        "4": [
+          {
+            "id": "ord_20261104_aduy_1",
+            "name": "Cf sữa đá",
+            "basePrice": 18000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 18000,
+            "qty": 1,
+            "note": "Ít sữa, nhiều CF",
+            "total": 18000,
+            "createdAt": "2026-11-04T02:20:08.000Z"
           }
         ]
       }
@@ -3342,10 +3566,10 @@
       "days": {
         "2": 12000,
         "3": 25000,
-        "5": 32000,
         "6": 20000,
         "7": 30000,
-        "9": 25000
+        "9": 25000,
+        "4": 20000
       },
       "items": {
         "2": [
@@ -3374,32 +3598,6 @@
             "note": "Bình thường, Bth",
             "total": 25000,
             "createdAt": "2026-11-03T02:28:53.900Z"
-          }
-        ],
-        "5": [
-          {
-            "id": "ord_1793845600001_ngangd",
-            "name": "Nước chanh",
-            "basePrice": 12000,
-            "toppings": [],
-            "toppingsPrice": 0,
-            "singlePrice": 12000,
-            "qty": 1,
-            "note": "Ít đá",
-            "total": 12000,
-            "createdAt": "2026-11-05T02:25:00.000Z"
-          },
-          {
-            "id": "ord_1793845600009_ngangd_kn",
-            "name": "Trà Nhãn",
-            "basePrice": 20000,
-            "toppings": [],
-            "toppingsPrice": 0,
-            "singlePrice": 20000,
-            "qty": 1,
-            "note": "",
-            "total": 20000,
-            "createdAt": "2026-11-05T02:25:00.000Z"
           }
         ],
         "6": [
@@ -3442,6 +3640,20 @@
             "note": "Bình thường, Bth",
             "total": 25000,
             "createdAt": "2026-11-09T02:16:35.625Z"
+          }
+        ],
+        "4": [
+          {
+            "id": "ord_20261104_ngangd_1",
+            "name": "Trà Nhãn",
+            "basePrice": 20000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 20000,
+            "qty": 1,
+            "note": "",
+            "total": 20000,
+            "createdAt": "2026-11-04T02:20:09.000Z"
           }
         ]
       }
@@ -3540,10 +3752,10 @@
       "days": {
         "2": 25000,
         "3": 25000,
-        "5": 25000,
         "7": 25000,
         "9": 25000,
-        "10": 37000
+        "10": 37000,
+        "4": 25000
       },
       "items": {
         "2": [
@@ -3572,20 +3784,6 @@
             "note": "Ít đá, ngọt",
             "total": 25000,
             "createdAt": "2026-11-03T02:30:44.492Z"
-          }
-        ],
-        "5": [
-          {
-            "id": "ord_1793845469473_3wzi",
-            "name": "Latte Cacao Cafe",
-            "basePrice": 25000,
-            "toppings": [],
-            "toppingsPrice": 0,
-            "singlePrice": 25000,
-            "qty": 1,
-            "note": "Ít đá, ngọt",
-            "total": 25000,
-            "createdAt": "2026-11-05T02:24:29.473Z"
           }
         ],
         "7": [
@@ -3641,6 +3839,20 @@
             "total": 12000,
             "createdAt": "2026-11-10T02:10:35.347Z"
           }
+        ],
+        "4": [
+          {
+            "id": "ord_20261104_dao_1",
+            "name": "Latte Cacao Cafe",
+            "basePrice": 25000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 25000,
+            "qty": 1,
+            "note": "Ít đá, ngọt nhiều",
+            "total": 25000,
+            "createdAt": "2026-11-04T02:20:07.000Z"
+          }
         ]
       }
     },
@@ -3648,7 +3860,6 @@
       "paid": false,
       "days": {
         "3": 25000,
-        "5": 25000,
         "7": 25000,
         "9": 25000
       },
@@ -3665,20 +3876,6 @@
             "note": "Bình thường, Bth, ít ca cao",
             "total": 25000,
             "createdAt": "2026-11-03T02:29:34.511Z"
-          }
-        ],
-        "5": [
-          {
-            "id": "ord_1793845387027_6qci",
-            "name": "Latte Cacao Cafe",
-            "basePrice": 25000,
-            "toppings": [],
-            "toppingsPrice": 0,
-            "singlePrice": 25000,
-            "qty": 1,
-            "note": "Bình thường",
-            "total": 25000,
-            "createdAt": "2026-11-05T02:23:07.027Z"
           }
         ],
         "7": [
@@ -3715,8 +3912,8 @@
       "paid": false,
       "days": {
         "3": 20000,
-        "5": 12000,
-        "10": 12000
+        "10": 12000,
+        "4": 12000
       },
       "items": {
         "3": [
@@ -3733,20 +3930,6 @@
             "createdAt": "2026-11-03T02:29:59.347Z"
           }
         ],
-        "5": [
-          {
-            "id": "ord_1793845600003_truong",
-            "name": "Nước chanh",
-            "basePrice": 12000,
-            "toppings": [],
-            "toppingsPrice": 0,
-            "singlePrice": 12000,
-            "qty": 1,
-            "note": "Ít đá, ít đường",
-            "total": 12000,
-            "createdAt": "2026-11-05T02:25:00.000Z"
-          }
-        ],
         "10": [
           {
             "id": "ord_net_1794276388501_hl1x",
@@ -3760,44 +3943,32 @@
             "total": 12000,
             "createdAt": "2026-11-10T02:06:28.523Z"
           }
+        ],
+        "4": [
+          {
+            "id": "ord_20261104_truong_1",
+            "name": "Nước chanh",
+            "basePrice": 12000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 12000,
+            "qty": 1,
+            "note": "Ít đá, ít đường",
+            "total": 12000,
+            "createdAt": "2026-11-04T02:20:02.000Z"
+          }
         ]
       }
     },
     "C.Chou": {
       "paid": false,
       "days": {
-        "5": 30000,
         "6": 30000,
         "9": 30000,
-        "10": 30000
+        "10": 30000,
+        "4": 30000
       },
       "items": {
-        "5": [
-          {
-            "id": "ord_1793845400613_2c23",
-            "name": "Cf sữa đá",
-            "basePrice": 18000,
-            "toppings": [],
-            "toppingsPrice": 0,
-            "singlePrice": 18000,
-            "qty": 1,
-            "note": "Ít sữa ít đá",
-            "total": 18000,
-            "createdAt": "2026-11-05T02:23:20.613Z"
-          },
-          {
-            "id": "ord_1793845401172_yqav",
-            "name": "Nước chanh đường",
-            "basePrice": 12000,
-            "toppings": [],
-            "toppingsPrice": 0,
-            "singlePrice": 12000,
-            "qty": 1,
-            "note": "",
-            "total": 12000,
-            "createdAt": "2026-11-05T02:23:21.172Z"
-          }
-        ],
         "6": [
           {
             "id": "ord_1793931600004_chau_cf",
@@ -3875,18 +4046,44 @@
             "total": 18000,
             "createdAt": "2026-11-10T02:06:47.796Z"
           }
+        ],
+        "4": [
+          {
+            "id": "ord_20261104_cchou_1",
+            "name": "Nước chanh đường",
+            "basePrice": 12000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 12000,
+            "qty": 1,
+            "note": "",
+            "total": 12000,
+            "createdAt": "2026-11-04T02:20:03.000Z"
+          },
+          {
+            "id": "ord_20261104_cchou_2",
+            "name": "Cf sữa đá",
+            "basePrice": 18000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 18000,
+            "qty": 1,
+            "note": "Ít sữa ít đá",
+            "total": 18000,
+            "createdAt": "2026-11-04T02:20:04.000Z"
+          }
         ]
       }
     },
     "Nga": {
       "paid": false,
       "days": {
-        "5": 12000
+        "4": 12000
       },
       "items": {
-        "5": [
+        "4": [
           {
-            "id": "ord_1793845600002_nga",
+            "id": "ord_20261104_nga_1",
             "name": "Nước chanh",
             "basePrice": 12000,
             "toppings": [],
@@ -3895,7 +4092,7 @@
             "qty": 1,
             "note": "Ít đá",
             "total": 12000,
-            "createdAt": "2026-11-05T02:25:00.000Z"
+            "createdAt": "2026-11-04T02:20:01.000Z"
           }
         ]
       }
@@ -3903,24 +4100,10 @@
     "Yến": {
       "paid": false,
       "days": {
-        "5": 25000,
-        "10": 18000
+        "10": 18000,
+        "4": 25000
       },
       "items": {
-        "5": [
-          {
-            "id": "ord_1793845600005_yen",
-            "name": "Sinh tố Dừa Non",
-            "basePrice": 25000,
-            "toppings": [],
-            "toppingsPrice": 0,
-            "singlePrice": 25000,
-            "qty": 1,
-            "note": "Dừa sấy riêng",
-            "total": 25000,
-            "createdAt": "2026-11-05T02:25:00.000Z"
-          }
-        ],
         "10": [
           {
             "id": "ord_net_1794276010827_81mn",
@@ -3934,18 +4117,32 @@
             "total": 18000,
             "createdAt": "2026-11-10T02:00:10.827Z"
           }
+        ],
+        "4": [
+          {
+            "id": "ord_20261104_yen_1",
+            "name": "Sinh tố Dừa Non",
+            "basePrice": 25000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 25000,
+            "qty": 1,
+            "note": "Dừa sấy riêng",
+            "total": 25000,
+            "createdAt": "2026-11-04T02:20:05.000Z"
+          }
         ]
       }
     },
     "Khoa": {
       "paid": false,
       "days": {
-        "5": 20000
+        "4": 20000
       },
       "items": {
-        "5": [
+        "4": [
           {
-            "id": "ord_1793845600006_khoa",
+            "id": "ord_20261104_khoa_1",
             "name": "Nước Dừa Tươi",
             "basePrice": 20000,
             "toppings": [],
@@ -3954,7 +4151,7 @@
             "qty": 1,
             "note": "Ko đường, ko đá, ko cái",
             "total": 20000,
-            "createdAt": "2026-11-05T02:26:02.457Z"
+            "createdAt": "2026-11-04T02:20:06.000Z"
           }
         ]
       }
@@ -3962,7 +4159,8 @@
     "Ngân Mập": {
       "paid": false,
       "days": {
-        "6": 12000
+        "6": 12000,
+        "4": 12000
       },
       "items": {
         "6": [
@@ -3977,6 +4175,20 @@
             "note": "Không đá",
             "total": 12000,
             "createdAt": "2026-11-06T04:20:00.000Z"
+          }
+        ],
+        "4": [
+          {
+            "id": "ord_20261104_nganmap_1",
+            "name": "Nước chanh",
+            "basePrice": 12000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 12000,
+            "qty": 1,
+            "note": "Ít đá",
+            "total": 12000,
+            "createdAt": "2026-11-04T02:20:00.000Z"
           }
         ]
       }
@@ -4221,7 +4433,7 @@
       },
       currentOrderDate: '',
       currentMatrixMonth: '',
-      matrixViewMode: 'SALARY_CYCLE',
+      matrixViewMode: 'CALENDAR_MONTH',
       currentSalaryCycle: '',
       salaryCycleOrder: 'CHRONO',
       salaryCyclesPaid: {},
@@ -4238,7 +4450,20 @@
         "ord_1793932170081_n7m3",
         "ord_1793932178300_a0u6",
         "ord_1793932189763_r82w",
-        "ord_1793932215660_p4c2"
+        "ord_1793932215660_p4c2",
+        "ord_1793845382337_pdmg",
+        "ord_1793845600001_ngangd",
+        "ord_1793845600009_ngangd_kn",
+        "ord_1793845600009_kngan",
+        "ord_1793845469473_3wzi",
+        "ord_1793845387027_6qci",
+        "ord_1793845600003_truong",
+        "ord_1793845400613_2c23",
+        "ord_1793845401172_yqav",
+        "ord_1793845600002_nga",
+        "ord_1793845600005_yen",
+        "ord_1793845600006_khoa",
+        "ord_1794304178743_d4d5"
       ]
     };
 
@@ -4323,6 +4548,11 @@
 
       // HỢP NHẤT AN TOÀN: Luôn giữ đầy đủ mọi đơn trong INITIAL_ORDERS_DATA và localStorage
       appState.ordersData = mergeOrdersData(INITIAL_ORDERS_DATA, appState.ordersData, appState.deletedItemIds);
+      Object.keys(appState.ordersData).forEach(mKey => {
+        delete appState.ordersData[mKey]['K.Ngân'];
+      });
+      localStorage.setItem('COBA_CAFE_DELETED_ITEMS_V2', JSON.stringify(appState.deletedItemIds));
+      localStorage.setItem(STORAGE_KEY_ORDERS, JSON.stringify(appState.ordersData));
 
       const savedConfig = localStorage.getItem(STORAGE_KEY_CONFIG);
       if (savedConfig) {
@@ -4457,16 +4687,13 @@
         ? deletedItemIds
         : (appState && appState.deletedItemIds ? appState.deletedItemIds : []);
       const deletedSet = new Set((effectiveDeleted || []).filter(Boolean));
-      deletedSet.add('ord_1793845600009_kngan');
 
       for (const monthKey of Object.keys(incOrders)) {
         if (!merged[monthKey]) {
           merged[monthKey] = JSON.parse(JSON.stringify(incOrders[monthKey]));
         }
-        delete merged[monthKey]['K.Ngân'];
         const incMonth = incOrders[monthKey];
         for (const member of Object.keys(incMonth)) {
-          if (member === 'K.Ngân') continue;
           if (!merged[monthKey][member]) {
             merged[monthKey][member] = JSON.parse(JSON.stringify(incMonth[member]));
           }
@@ -4530,26 +4757,8 @@
           const incDays = incM.days || {};
           for (const day of Object.keys(incDays)) {
             if (!baseM.days[day] && incDays[day] && (!baseM.items[day] || baseM.items[day].length > 0)) {
-              baseM.days[day] = incDays[day] === 30 ? 30000 : incDays[day];
+              baseM.days[day] = incDays[day];
             }
-          }
-
-          // Luôn đồng bộ days[day] theo tổng tiền thực tế của items[day] để chống lệch số tiền
-          for (const day of Object.keys(baseM.items || {})) {
-            if (Array.isArray(baseM.items[day])) {
-              baseM.items[day] = baseM.items[day].filter(it => !it.id || !deletedSet.has(it.id));
-              let s = 0;
-              baseM.items[day].forEach(it => s += (parseInt(it.total) || 0));
-              if (s > 0) {
-                baseM.days[day] = s;
-              } else {
-                delete baseM.days[day];
-                delete baseM.items[day];
-              }
-            }
-          }
-          for (const day of Object.keys(baseM.days || {})) {
-            if (baseM.days[day] === 30) baseM.days[day] = 30000;
           }
         }
       }
@@ -4812,8 +5021,6 @@
         if (y === yyyy) opt.selected = true;
         yearSel.appendChild(opt);
       }
-
-      setMatrixMode(appState.matrixViewMode || 'SALARY_CYCLE');
     }
 
     function getSalaryCycleForDate(dateObj) {
@@ -6306,17 +6513,8 @@
       itemObj.total = newSinglePrice * newQty;
       itemObj.updatedAt = Date.now();
 
-      let newItemId = itemId;
-
       if (newMember !== oldMember) {
-        // Đưa ID cũ vào deletedItemIds để chống hồi sinh ở người cũ khi Deep Merge
-        if (!appState.deletedItemIds) appState.deletedItemIds = [];
-        if (itemId && !appState.deletedItemIds.includes(itemId)) {
-          appState.deletedItemIds.push(itemId);
-        }
-        newItemId = 'ord_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
-
-        // Chuyển món sang người mới với ID mới
+        // Chuyển món sang người mới
         oldMObj.items[dayNum].splice(itemIdx, 1);
         let oldSum = 0;
         oldMObj.items[dayNum].forEach(it => oldSum += (parseInt(it.total) || 0));
@@ -6334,12 +6532,7 @@
         if (!newMObj.days) newMObj.days = {};
         if (!newMObj.items) newMObj.items = {};
         if (!newMObj.items[dayNum]) newMObj.items[dayNum] = [];
-
-        const movedItemObj = Object.assign({}, itemObj, {
-          id: newItemId,
-          updatedAt: Date.now()
-        });
-        newMObj.items[dayNum].push(movedItemObj);
+        newMObj.items[dayNum].push(itemObj);
 
         let newSum = 0;
         newMObj.items[dayNum].forEach(it => newSum += (parseInt(it.total) || 0));
@@ -6362,8 +6555,6 @@
           newMember,
           dayNum,
           itemId,
-          newItemId,
-          updatedItem: Object.assign({}, itemObj, { id: newItemId }),
           updatedFields: {
             name: itemObj.name,
             basePrice: itemObj.basePrice,
@@ -6383,7 +6574,7 @@
       renderMemberControls();
       renderMatrix(false);
       if (currentDayCellContext && currentDayCellContext.monthKey === monthKey && currentDayCellContext.dayNum === dayNum) {
-        openDayCellModal(currentDayCellContext.member, monthKey, dayNum);
+        openDayCellModal(newMember, monthKey, dayNum);
       }
       showToast("Đã cập nhật món thành công!", "success");
     }
@@ -6968,18 +7159,22 @@
 
         cellValues.forEach(({ col, val, cupCount, itemsArr }) => {
           let displayVal = val > 0 ? (val >= 1000 ? Math.round(val / 1000) : val) : '';
+          const cellKey = `${member}|${col.monthKey}|${col.day}`;
+          const isCellPicked = calcState.pickedCells.has(cellKey);
           let cellBg = !col.isValid
             ? 'bg-slate-100/70 text-slate-300'
-            : (val > 0 ? 'bg-amber-100/70 font-extrabold text-amber-950 hover:bg-orange-200' : 'text-slate-300 hover:bg-orange-50');
+            : (isCellPicked
+                ? 'bg-indigo-600 text-white font-black ring-2 ring-indigo-400 z-10'
+                : (val > 0 ? 'bg-amber-100/70 font-extrabold text-amber-950 hover:bg-orange-200' : 'text-slate-300 hover:bg-orange-50'));
 
-          let tooltipText = `Click để thêm/sửa món ngày ${col.day}/${col.monthNum} của ${member}`;
+          let tooltipText = `Click để thêm/sửa món ngày ${col.day}/${col.monthNum} của ${member} (Giữ Ctrl/Alt + Click để cộng ô này vào máy tính)`;
           if (val > 0) {
             const desc = itemsArr.map(it => `${it.qty}x ${it.name}${it.note ? ` (${it.note})` : ''}`).join(', ');
-            tooltipText = `${member} • Ngày ${col.day}/${col.monthNum}: ${formatVND(val)} (${cupCount} ly: ${desc}) — Click để xem/sửa`;
+            tooltipText = `${member} • Ngày ${col.day}/${col.monthNum}: ${formatVND(val)} (${cupCount} ly: ${desc}) — Click để xem/sửa • Ctrl/Alt+Click để cộng tiền`;
           }
 
-          rowHtml += `<td class="p-1 text-center font-mono border-r border-slate-200 ${cellBg} cursor-pointer transition"
-                          onclick="openDayCellModal('${member}', '${col.monthKey}', ${col.day})"
+          rowHtml += `<td class="p-1 text-center font-mono border-r border-slate-200 ${cellBg} cursor-pointer transition select-none"
+                          onclick="handleMatrixCellClick(event, '${member}', '${col.monthKey}', ${col.day})"
                           title="${tooltipText.replace(/"/g, '&quot;')}">
                         ${displayVal}
                       </td>`;
@@ -7018,7 +7213,9 @@
       def.columns.forEach((col, idx) => {
         const sum = dailySums[idx];
         const displaySum = sum > 0 ? (sum >= 1000 ? Math.round(sum / 1000) : sum) : '0';
-        footTotalRow += `<td class="p-1 text-center font-mono font-bold text-amber-950 border-r border-amber-200 text-[10px]">${displaySum}</td>`;
+        const clickAttr = sum > 0 ? `onclick="soloSelectCalcDay('${col.monthKey}', ${col.day})" title="Click để tính tiền riêng ngày ${col.day}/${col.monthNum} (${formatVND(sum)})"` : '';
+        const cursorCls = sum > 0 ? 'cursor-pointer hover:bg-orange-300/80 underline decoration-dotted' : '';
+        footTotalRow += `<td ${clickAttr} class="p-1 text-center font-mono font-bold text-amber-950 border-r border-amber-200 text-[10px] ${cursorCls}">${displaySum}</td>`;
       });
       footTotalRow += `<td class="p-2 text-right font-extrabold font-mono text-amber-900 border-l border-amber-300">${formatVND(totalOverallAmount)}</td>`;
       footTotalRow += `<td class="p-2 text-center font-extrabold font-mono text-blue-900 border-l border-amber-300">${totalOverallQty}</td>`;
@@ -7036,6 +7233,8 @@
 
       tfoot.innerHTML = footTotalRow + footQtyRow;
 
+      syncAndRenderBillingCalculator(def);
+
       if (autoScrollToday) {
         setTimeout(scrollToTodayColumn, 100);
       }
@@ -7047,6 +7246,657 @@
       const todayTh = subHeaderRow.querySelector('.bg-orange-500');
       if (todayTh) {
         todayTh.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+
+    /* ==========================================================
+       BẢNG TÍNH TIỀN & CHỐT SỔ NHANH TRONG TAB SỔ NỢ THÁNG
+       ========================================================== */
+    const calcState = {
+      panelOpen: true,
+      contextKey: '',
+      selectedDayKeys: new Set(),
+      selectedMembers: new Set(),
+      cellPickMode: false,
+      pickedCells: new Set(),
+      lastComputedTotal: 0,
+      lastComputedSummaryText: ''
+    };
+
+    function parseSmartMoneyInput(rawStr) {
+      if (!rawStr) return 0;
+      const cleaned = String(rawStr).replace(/[^0-9.-]/g, '');
+      const num = parseFloat(cleaned);
+      if (isNaN(num) || num <= 0) return 0;
+      // Nếu gõ số nhỏ hơn 1000 (vd: 15, 20, 200), tự động hiểu là đơn vị nghìn đồng (15.000, 20.000, 200.000)
+      return num < 1000 ? Math.round(num * 1000) : Math.round(num);
+    }
+
+    function toggleBillingCalculatorPanel() {
+      const panel = document.getElementById('billingCalculatorPanel');
+      if (!panel) return;
+      calcState.panelOpen = !panel.classList.contains('hidden') ? false : true;
+      panel.classList.toggle('hidden', !calcState.panelOpen);
+      if (calcState.panelOpen) {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    function toggleMatrixCellPickMode() {
+      calcState.cellPickMode = !calcState.cellPickMode;
+      const hBtn = document.getElementById('btnCellPickModeHeader');
+      const hLbl = document.getElementById('lblCellPickModeHeader');
+      const tBtn = document.getElementById('btnCellPickModeTable');
+      const tLbl = document.getElementById('lblCellPickModeTable');
+
+      if (calcState.cellPickMode) {
+        if (hBtn) hBtn.className = "px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition flex items-center gap-1.5 shadow-sm ring-2 ring-white";
+        if (hLbl) hLbl.innerText = "Chạm Ô Sổ Nợ Để Cộng: ĐANG BẬT";
+        if (tBtn) tBtn.className = "px-2.5 py-1 rounded-lg border border-indigo-600 bg-indigo-600 text-white font-extrabold transition flex items-center gap-1 shadow-xs";
+        if (tLbl) tLbl.innerText = "Chạm ô để cộng tiền: ĐANG BẬT";
+        showToast("Đã bật chế độ Chạm Ô Cộng Tiền! Hãy bấm vào các ô tiền trên bảng Sổ Nợ để cộng dồn.", "info");
+      } else {
+        if (hBtn) hBtn.className = "px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs";
+        if (hLbl) hLbl.innerText = "Chạm Ô Sổ Nợ Để Cộng: TẮT";
+        if (tBtn) tBtn.className = "px-2.5 py-1 rounded-lg border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold transition flex items-center gap-1";
+        if (tLbl) tLbl.innerText = "Chạm ô để cộng tiền: TẮT";
+      }
+      renderMatrix();
+    }
+
+    function handleMatrixCellClick(event, member, monthKey, dayNum) {
+      if (calcState.cellPickMode || (event && (event.ctrlKey || event.altKey || event.metaKey || event.shiftKey))) {
+        const key = `${member}|${monthKey}|${dayNum}`;
+        if (calcState.pickedCells.has(key)) {
+          calcState.pickedCells.delete(key);
+        } else {
+          calcState.pickedCells.add(key);
+        }
+        const panel = document.getElementById('billingCalculatorPanel');
+        if (panel && panel.classList.contains('hidden')) {
+          panel.classList.remove('hidden');
+          calcState.panelOpen = true;
+        }
+        renderMatrix();
+        return;
+      }
+      openDayCellModal(member, monthKey, dayNum);
+    }
+
+    function clearPickedMatrixCells() {
+      calcState.pickedCells.clear();
+      renderMatrix();
+    }
+
+    function getActiveDaysInCurrentMatrix(def) {
+      if (!def) def = getMatrixColumnsDefinition();
+      const activeDays = [];
+      def.columns.forEach(col => {
+        if (!col.isValid) return;
+        let daySum = 0;
+        let dayCups = 0;
+        const mData = appState.ordersData[col.monthKey] || {};
+        appState.members.forEach(m => {
+          const obj = mData[m];
+          if (!obj) return;
+          const v = (obj.days && obj.days[col.day]) ? obj.days[col.day] : 0;
+          if (v > 0) {
+            daySum += v;
+            const its = (obj.items && obj.items[col.day]) ? obj.items[col.day] : [];
+            if (its.length > 0) {
+              its.forEach(i => dayCups += (i.qty || 1));
+            } else {
+              dayCups += 1;
+            }
+          }
+        });
+        if (daySum > 0) {
+          activeDays.push({
+            key: `${col.monthKey}|${col.day}`,
+            monthKey: col.monthKey,
+            day: col.day,
+            monthNum: col.monthNum,
+            label: `${String(col.day).padStart(2, '0')}/${String(col.monthNum).padStart(2, '0')}`,
+            sum: daySum,
+            cups: dayCups
+          });
+        }
+      });
+      return activeDays;
+    }
+
+    function syncAndRenderBillingCalculator(def) {
+      if (!def) def = getMatrixColumnsDefinition();
+      const contextKey = appState.matrixViewMode === 'SALARY_CYCLE'
+        ? `CYCLE_${appState.currentSalaryCycle}`
+        : `MONTH_${appState.currentMatrixMonth}`;
+
+      const activeDays = getActiveDaysInCurrentMatrix(def);
+      const validDayKeys = new Set(activeDays.map(d => d.key));
+
+      if (calcState.contextKey !== contextKey) {
+        calcState.contextKey = contextKey;
+        calcState.selectedDayKeys = new Set(validDayKeys);
+        calcState.selectedMembers = new Set(appState.members);
+      } else {
+        // Nếu có ngày mới vừa thêm đơn mà trước đó đang chọn hết, giữ đồng bộ
+        Array.from(calcState.selectedDayKeys).forEach(k => {
+          if (!validDayKeys.has(k)) calcState.selectedDayKeys.delete(k);
+        });
+        if (calcState.selectedDayKeys.size === 0 && validDayKeys.size > 0 && !calcState._manualEmptyDays) {
+          calcState.selectedDayKeys = new Set(validDayKeys);
+        }
+      }
+
+      renderBillingCalculatorResult(def, activeDays);
+    }
+
+    function selectCalcDaysPreset(preset) {
+      const def = getMatrixColumnsDefinition();
+      const activeDays = getActiveDaysInCurrentMatrix(def);
+      calcState._manualEmptyDays = false;
+
+      if (preset === 'ALL') {
+        calcState.selectedDayKeys = new Set(activeDays.map(d => d.key));
+      } else if (preset === 'NONE') {
+        calcState._manualEmptyDays = true;
+        calcState.selectedDayKeys.clear();
+      } else if (preset === 'TODAY') {
+        const now = new Date();
+        const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}|${now.getDate()}`;
+        if (activeDays.some(d => d.key === todayKey)) {
+          calcState.selectedDayKeys = new Set([todayKey]);
+        } else if (activeDays.length > 0) {
+          calcState.selectedDayKeys = new Set([activeDays[activeDays.length - 1].key]);
+        }
+      } else if (preset === 'LAST3') {
+        const last3 = activeDays.slice(-3).map(d => d.key);
+        calcState.selectedDayKeys = new Set(last3);
+      }
+      // Khi đổi bộ lọc ngày, mặc định chọn tất cả những người có uống trong các ngày đó
+      calcState.selectedMembers = new Set(appState.members);
+      renderBillingCalculatorResult(def, activeDays);
+    }
+
+    function toggleCalcDayKey(dayKey) {
+      calcState._manualEmptyDays = false;
+      if (calcState.selectedDayKeys.has(dayKey)) {
+        calcState.selectedDayKeys.delete(dayKey);
+        if (calcState.selectedDayKeys.size === 0) calcState._manualEmptyDays = true;
+      } else {
+        calcState.selectedDayKeys.add(dayKey);
+      }
+      renderBillingCalculatorResult();
+    }
+
+    function soloSelectCalcDay(monthKey, dayNum) {
+      const key = `${monthKey}|${dayNum}`;
+      calcState._manualEmptyDays = false;
+      calcState.selectedDayKeys = new Set([key]);
+      calcState.selectedMembers = new Set(appState.members);
+      const panel = document.getElementById('billingCalculatorPanel');
+      if (panel && panel.classList.contains('hidden')) {
+        panel.classList.remove('hidden');
+        calcState.panelOpen = true;
+      }
+      renderBillingCalculatorResult();
+      const [y, m] = monthKey.split('-');
+      showToast(`Đang tính tiền riêng ngày ${String(dayNum).padStart(2, '0')}/${m}/${y}`, 'info');
+    }
+
+    function selectCalcMembersPreset(preset) {
+      const def = getMatrixColumnsDefinition();
+      if (preset === 'ALL') {
+        calcState.selectedMembers = new Set(appState.members);
+      } else if (preset === 'NONE') {
+        calcState.selectedMembers.clear();
+      } else if (preset === 'UNPAID' || preset === 'PAID') {
+        const nextSet = new Set();
+        appState.members.forEach(m => {
+          const isPaid = getMemberPaidStatusInCurrentView(m, def);
+          if (preset === 'UNPAID' && !isPaid) nextSet.add(m);
+          if (preset === 'PAID' && isPaid) nextSet.add(m);
+        });
+        calcState.selectedMembers = nextSet;
+      }
+      renderBillingCalculatorResult(def);
+    }
+
+    function toggleCalcMember(member) {
+      if (calcState.selectedMembers.has(member)) {
+        calcState.selectedMembers.delete(member);
+      } else {
+        calcState.selectedMembers.add(member);
+      }
+      renderBillingCalculatorResult();
+    }
+
+    function getMemberPaidStatusInCurrentView(member, def) {
+      if (!def) def = getMatrixColumnsDefinition();
+      if (def.mode === 'SALARY_CYCLE') {
+        const cyclePaidMap = appState.salaryCyclesPaid[def.cycleKey] || {};
+        return !!cyclePaidMap[member];
+      }
+      const mData = appState.ordersData[appState.currentMatrixMonth]?.[member];
+      return !!(mData && mData.paid);
+    }
+
+    function setQuickCalcAdjust(inputId, val) {
+      const el = document.getElementById(inputId);
+      if (!el) return;
+      const cur = parseSmartMoneyInput(el.value);
+      el.value = cur === val ? '' : val;
+      renderBillingCalculatorResult();
+    }
+
+    function setQuickCashGiven(val) {
+      const el = document.getElementById('calcCashGivenInput');
+      if (!el) return;
+      el.value = val > 0 ? val : '';
+      renderBillingCalculatorResult();
+    }
+
+    function resetBillingCalculator() {
+      const shipEl = document.getElementById('calcShipInput');
+      const discEl = document.getElementById('calcDiscountInput');
+      const cashEl = document.getElementById('calcCashGivenInput');
+      const mathEl = document.getElementById('quickMathExprInput');
+      if (shipEl) shipEl.value = '';
+      if (discEl) discEl.value = '';
+      if (cashEl) cashEl.value = '';
+      if (mathEl) mathEl.value = '';
+      calcState.pickedCells.clear();
+      calcState._manualEmptyDays = false;
+      const def = getMatrixColumnsDefinition();
+      const activeDays = getActiveDaysInCurrentMatrix(def);
+      calcState.selectedDayKeys = new Set(activeDays.map(d => d.key));
+      calcState.selectedMembers = new Set(appState.members);
+      evaluateQuickMathExpr();
+      renderMatrix();
+      showToast("Đã đặt lại Bảng Tính Tiền về mặc định!", "info");
+    }
+
+    function renderBillingCalculatorResult(def, activeDays) {
+      if (!def) def = getMatrixColumnsDefinition();
+      if (!activeDays) activeDays = getActiveDaysInCurrentMatrix(def);
+
+      // 1. Render Day Chips
+      const chipsContainer = document.getElementById('calcActiveDaysChips');
+      const daysSummaryEl = document.getElementById('calcSelectedDaysSummary');
+      if (chipsContainer) {
+        if (activeDays.length === 0) {
+          chipsContainer.innerHTML = `<span class="text-xs text-slate-400 italic">Chưa có ngày nào phát sinh đơn trong kỳ này.</span>`;
+          if (daysSummaryEl) daysSummaryEl.innerText = '0 ngày';
+        } else {
+          chipsContainer.innerHTML = activeDays.map(d => {
+            const isSel = calcState.selectedDayKeys.has(d.key);
+            return `
+              <div class="inline-flex items-center rounded-xl border text-xs font-bold transition overflow-hidden ${
+                isSel
+                  ? 'bg-orange-500 text-white border-orange-600 shadow-2xs'
+                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-orange-50'
+              }">
+                <button type="button" onclick="toggleCalcDayKey('${d.key}')" class="px-2.5 py-1.5 flex items-center gap-1.5 cursor-pointer">
+                  <i class="fa-solid ${isSel ? 'fa-square-check' : 'fa-square text-slate-300'} text-[11px]"></i>
+                  <span>${d.label}</span>
+                  <span class="px-1.5 py-0.2 rounded text-[10px] font-mono ${isSel ? 'bg-orange-600 text-orange-100' : 'bg-slate-200 text-slate-700'}">${Math.round(d.sum / 1000)}k (${d.cups} ly)</span>
+                </button>
+                <button type="button" onclick="soloSelectCalcDay('${d.monthKey}', ${d.day})" class="px-1.5 py-1.5 border-l ${isSel ? 'border-orange-400 hover:bg-orange-600 text-orange-100' : 'border-slate-200 hover:bg-slate-200 text-slate-400'} text-[10px]" title="Chỉ tính riêng ngày ${d.label}">
+                  Chỉ ngày này
+                </button>
+              </div>
+            `;
+          }).join('');
+
+          if (daysSummaryEl) {
+            if (calcState.selectedDayKeys.size === activeDays.length) {
+              daysSummaryEl.innerText = `Tất cả ${activeDays.length} ngày có đơn`;
+            } else if (calcState.selectedDayKeys.size === 1) {
+              const onlyKey = Array.from(calcState.selectedDayKeys)[0];
+              const found = activeDays.find(x => x.key === onlyKey);
+              daysSummaryEl.innerText = found ? `Chỉ ngày ${found.label} (${formatVND(found.sum)})` : `1 ngày`;
+            } else {
+              daysSummaryEl.innerText = `Đang chọn ${calcState.selectedDayKeys.size}/${activeDays.length} ngày`;
+            }
+          }
+        }
+      }
+
+      // 2. Tính toán danh sách nhân viên có đơn trong các ngày đang chọn
+      const activeMemberRows = [];
+      appState.members.forEach(member => {
+        let mTotal = 0;
+        let mCups = 0;
+        const dayDetails = [];
+
+        activeDays.forEach(d => {
+          if (!calcState.selectedDayKeys.has(d.key)) return;
+          const mObj = appState.ordersData[d.monthKey]?.[member];
+          if (!mObj) return;
+          const val = (mObj.days && mObj.days[d.day]) ? mObj.days[d.day] : 0;
+          if (val > 0) {
+            mTotal += val;
+            const its = (mObj.items && mObj.items[d.day]) ? mObj.items[d.day] : [];
+            let c = 0;
+            const itemNames = [];
+            if (its.length > 0) {
+              its.forEach(it => {
+                c += (it.qty || 1);
+                itemNames.push(`${it.qty > 1 ? it.qty + 'x ' : ''}${it.name}${it.note ? ' (' + it.note + ')' : ''}`);
+              });
+            } else {
+              c = 1;
+            }
+            mCups += c;
+            dayDetails.push({
+              label: d.label,
+              val,
+              cups: c,
+              itemsText: itemNames.join(', ')
+            });
+          }
+        });
+
+        if (mTotal > 0) {
+          const isPaid = getMemberPaidStatusInCurrentView(member, def);
+          activeMemberRows.push({
+            member,
+            isPaid,
+            mTotal,
+            mCups,
+            dayDetails,
+            isSelected: calcState.selectedMembers.has(member)
+          });
+        }
+      });
+
+      // Sắp xếp người có số tiền cao -> thấp
+      activeMemberRows.sort((a, b) => b.mTotal - a.mTotal);
+
+      const shipFee = parseSmartMoneyInput(document.getElementById('calcShipInput')?.value);
+      const discountAmt = parseSmartMoneyInput(document.getElementById('calcDiscountInput')?.value);
+      const netAdjust = shipFee - discountAmt;
+
+      let selectedPeopleCount = 0;
+      let selectedCupsCount = 0;
+      let selectedBaseTotal = 0;
+      let selectedPaidTotal = 0;
+      let selectedUnpaidTotal = 0;
+
+      activeMemberRows.forEach(r => {
+        if (r.isSelected) {
+          selectedPeopleCount++;
+          selectedCupsCount += r.mCups;
+          selectedBaseTotal += r.mTotal;
+          if (r.isPaid) selectedPaidTotal += r.mTotal;
+          else selectedUnpaidTotal += r.mTotal;
+        }
+      });
+
+      // Render bảng nhân viên bên trái
+      const listContainer = document.getElementById('calcMembersListContainer');
+      if (listContainer) {
+        if (activeMemberRows.length === 0) {
+          listContainer.innerHTML = `
+            <div class="p-6 text-center text-slate-400 text-xs italic">
+              Không có nhân viên nào đặt nước trong các ngày đang chọn. Hãy bấm chọn ngày ở Bước 1!
+            </div>
+          `;
+        } else {
+          listContainer.innerHTML = activeMemberRows.map(r => {
+            const alias = MEMBER_ALIASES[r.member] ? `<span class="text-[10px] text-orange-600 font-semibold ml-1">(${MEMBER_ALIASES[r.member][0]})</span>` : '';
+            // Chia ship/giảm giá theo tỷ lệ số ly của những người đang chọn
+            let personShare = 0;
+            if (r.isSelected && netAdjust !== 0 && selectedCupsCount > 0) {
+              personShare = Math.round((netAdjust * r.mCups) / selectedCupsCount);
+            }
+            const personFinal = Math.max(0, r.mTotal + personShare);
+            const detailsHtml = r.dayDetails.map(dd =>
+              `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 text-[10px] border border-slate-200" title="${dd.itemsText.replace(/"/g, '&quot;')}">
+                <strong>${dd.label}:</strong> ${dd.itemsText || (Math.round(dd.val / 1000) + 'k')} <strong class="text-orange-700 font-mono">(${Math.round(dd.val / 1000)}k)</strong>
+              </span>`
+            ).join(' ');
+
+            return `
+              <div onclick="toggleCalcMember('${r.member}')" class="p-2.5 flex items-center justify-between gap-2 cursor-pointer transition ${
+                r.isSelected ? 'bg-orange-50/60 hover:bg-orange-100/60' : 'bg-white opacity-60 hover:opacity-90'
+              }">
+                <div class="flex items-start gap-2.5 min-w-0 flex-grow">
+                  <div class="pt-0.5">
+                    <i class="fa-solid ${r.isSelected ? 'fa-square-check text-orange-500' : 'fa-square text-slate-300'} text-sm"></i>
+                  </div>
+                  <div class="min-w-0 flex-grow">
+                    <div class="flex flex-wrap items-center gap-1.5">
+                      <span class="text-xs font-extrabold text-slate-800">${r.member}${alias}</span>
+                      <span class="px-1.5 py-0.2 bg-blue-100 text-blue-700 rounded font-mono font-bold text-[10px]">${r.mCups} ly</span>
+                      <button type="button" onclick="event.stopPropagation(); toggleMemberPaidStatus('${r.member}')" class="px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                        r.isPaid ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
+                      }">
+                        ${r.isPaid ? '✓ Đã trả' : 'Chưa trả'}
+                      </button>
+                    </div>
+                    <div class="flex flex-wrap gap-1 mt-1">
+                      ${detailsHtml}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-right shrink-0 flex items-center gap-2">
+                  <div>
+                    <div class="font-mono font-extrabold text-sm ${r.isSelected ? 'text-orange-600' : 'text-slate-500'}">${formatVND(personFinal)}</div>
+                    ${personShare !== 0 ? `<div class="text-[10px] font-mono text-slate-400">Gốc: ${formatVND(r.mTotal)}</div>` : ''}
+                  </div>
+                  <button type="button" onclick="event.stopPropagation(); openSingleDebtModal('${r.member}', ${personFinal}, ${r.mCups}, ${r.isPaid})" class="p-1.5 rounded-lg bg-slate-100 hover:bg-orange-500 hover:text-white text-slate-600 text-xs transition" title="Tạo mã QR thu tiền ${r.member}">
+                    <i class="fa-solid fa-qrcode"></i>
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      const selMemEl = document.getElementById('calcSelectedMemberCount');
+      const selCupEl = document.getElementById('calcSelectedCupCount');
+      if (selMemEl) selMemEl.innerText = selectedPeopleCount;
+      if (selCupEl) selCupEl.innerText = selectedCupsCount;
+
+      // 3. Nếu đang có các ô chạm chọn trực tiếp trên bảng Sổ Nợ (pickedCells), hiển thị và ưu tiên tính tổng ô chạm
+      const pickedBox = document.getElementById('pickedMatrixCellsBox');
+      const pickedListEl = document.getElementById('pickedMatrixCellsList');
+      const pickedCountEl = document.getElementById('pickedMatrixCellsCount');
+      const pickedSumEl = document.getElementById('pickedMatrixCellsSum');
+
+      let pickedSum = 0;
+      let pickedCups = 0;
+      const pickedItemsDesc = [];
+
+      if (calcState.pickedCells.size > 0) {
+        Array.from(calcState.pickedCells).forEach(cellKey => {
+          const [m, mKey, dStr] = cellKey.split('|');
+          const dNum = parseInt(dStr, 10);
+          const mObj = appState.ordersData[mKey]?.[m];
+          const v = (mObj && mObj.days && mObj.days[dNum]) ? mObj.days[dNum] : 0;
+          const its = (mObj && mObj.items && mObj.items[dNum]) ? mObj.items[dNum] : [];
+          let c = 0;
+          its.forEach(i => c += (i.qty || 1));
+          if (c === 0 && v > 0) c = 1;
+          pickedSum += v;
+          pickedCups += c;
+          const [, mm] = mKey.split('-');
+          pickedItemsDesc.push({ key: cellKey, label: `${m} (${String(dNum).padStart(2, '0')}/${mm}): ${Math.round(v / 1000)}k` });
+        });
+
+        if (pickedBox) pickedBox.classList.remove('hidden');
+        if (pickedListEl) {
+          pickedListEl.innerHTML = pickedItemsDesc.map(p => `
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-white border border-indigo-200 text-[11px] font-bold text-indigo-900">
+              <span>${p.label}</span>
+              <button type="button" onclick="handleMatrixCellClick({ctrlKey:true}, '${p.key.split('|')[0]}', '${p.key.split('|')[1]}', ${p.key.split('|')[2]})" class="text-slate-400 hover:text-rose-600 ml-0.5">&times;</button>
+            </span>
+          `).join('');
+        }
+        if (pickedCountEl) pickedCountEl.innerText = `${calcState.pickedCells.size} ô đã chọn (${pickedCups} ly)`;
+        if (pickedSumEl) pickedSumEl.innerText = formatVND(pickedSum);
+      } else {
+        if (pickedBox) pickedBox.classList.add('hidden');
+      }
+
+      // 4. Cập nhật Hộp Kết Quả Chính
+      const finalTotal = Math.max(0, selectedBaseTotal + netAdjust);
+      calcState.lastComputedTotal = finalTotal;
+
+      const boxCups = document.getElementById('calcBoxTotalCups');
+      const boxPaid = document.getElementById('calcBoxPaidAmount');
+      const boxUnpaid = document.getElementById('calcBoxUnpaidAmount');
+      const finalEl = document.getElementById('calcFinalTotalAmount');
+      const hintEl = document.getElementById('calcPerPersonHint');
+
+      if (boxCups) boxCups.innerText = `${selectedCupsCount} ly`;
+      if (boxPaid) boxPaid.innerText = formatVND(selectedPaidTotal);
+      if (boxUnpaid) boxUnpaid.innerText = formatVND(selectedUnpaidTotal);
+      if (finalEl) finalEl.innerText = formatVND(finalTotal);
+
+      if (hintEl) {
+        if (netAdjust !== 0) {
+          const adjStr = `${shipFee > 0 ? ' + Ship ' + formatVND(shipFee) : ''}${discountAmt > 0 ? ' - Giảm ' + formatVND(discountAmt) : ''}`;
+          hintEl.innerText = `Tiền gốc: ${formatVND(selectedBaseTotal)}${adjStr}`;
+        } else {
+          hintEl.innerText = `${selectedPeopleCount} người • ${selectedCupsCount} ly • Chưa trả: ${formatVND(selectedUnpaidTotal)}`;
+        }
+      }
+
+      // 5. Tính tiền khách đưa & tiền thối lại
+      const cashGiven = parseSmartMoneyInput(document.getElementById('calcCashGivenInput')?.value);
+      const changeEl = document.getElementById('calcChangeResultText');
+      if (changeEl) {
+        if (cashGiven <= 0) {
+          changeEl.className = "font-mono font-extrabold text-xs text-slate-500";
+          changeEl.innerText = "Tiền thối: 0 đ";
+        } else if (cashGiven >= finalTotal) {
+          changeEl.className = "font-mono font-extrabold text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200";
+          changeEl.innerText = `💰 Thối lại: ${formatVND(cashGiven - finalTotal)}`;
+        } else {
+          changeEl.className = "font-mono font-extrabold text-xs text-rose-600 bg-rose-50 px-2 py-0.5 rounded-lg border border-rose-200";
+          changeEl.innerText = `⚠️ Còn thiếu: ${formatVND(finalTotal - cashGiven)}`;
+        }
+      }
+
+      // 6. Tạo nội dung Copy Bill Tính Tiền
+      const selectedDayLabels = activeDays.filter(d => calcState.selectedDayKeys.has(d.key)).map(d => d.label);
+      const headerDateStr = selectedDayLabels.length === 1
+        ? `NGÀY ${selectedDayLabels[0]}`
+        : `CÁC NGÀY (${selectedDayLabels.join(', ')})`;
+
+      const lines = [
+        `🧾 BẢNG TÍNH TIỀN NƯỚC CÔ BA CAFE - ${headerDateStr}`,
+        `----------------------------------------`
+      ];
+      activeMemberRows.filter(r => r.isSelected).forEach((r, idx) => {
+        let share = 0;
+        if (netAdjust !== 0 && selectedCupsCount > 0) {
+          share = Math.round((netAdjust * r.mCups) / selectedCupsCount);
+        }
+        const pFinal = Math.max(0, r.mTotal + share);
+        const statusStr = r.isPaid ? '[Đã trả]' : '[Chưa trả]';
+        const itemsSummary = r.dayDetails.map(dd => `${dd.label}: ${dd.itemsText || (Math.round(dd.val/1000)+'k')}`).join(' | ');
+        lines.push(`${idx + 1}. ${getMemberDisplayName(r.member)} (${r.mCups} ly): ${formatVND(pFinal)} ${statusStr} — ${itemsSummary}`);
+      });
+      lines.push(`----------------------------------------`);
+      lines.push(`📌 Tổng số ly: ${selectedCupsCount} ly (${selectedPeopleCount} người)`);
+      if (shipFee > 0) lines.push(`➕ Phí ship/phụ thu: +${formatVND(shipFee)}`);
+      if (discountAmt > 0) lines.push(`➖ Giảm giá/Voucher: -${formatVND(discountAmt)}`);
+      lines.push(`💰 TỔNG CỘNG: ${formatVND(finalTotal)}`);
+      if (appState.config.accountNo) {
+        lines.push(`🏦 CK: ${appState.config.bankCode} - ${appState.config.accountNo} (${appState.config.accountName})`);
+      }
+      calcState.lastComputedSummaryText = lines.join('\n');
+    }
+
+    function copyCalculatedBillSummary() {
+      if (!calcState.lastComputedSummaryText) {
+        renderBillingCalculatorResult();
+      }
+      navigator.clipboard.writeText(calcState.lastComputedSummaryText).then(() => {
+        showToast("Đã copy Bảng Kê Tính Tiền vào bộ nhớ tạm!", "success");
+      });
+    }
+
+    function copyRawTotalNumber() {
+      navigator.clipboard.writeText(String(calcState.lastComputedTotal || 0)).then(() => {
+        showToast(`Đã copy số tiền: ${formatVND(calcState.lastComputedTotal || 0)}`, "success");
+      });
+    }
+
+    function markSelectedCalcMembersPaid(paidStatus) {
+      const def = getMatrixColumnsDefinition();
+      let count = 0;
+      const nowIso = new Date().toISOString();
+
+      appState.members.forEach(member => {
+        if (!calcState.selectedMembers.has(member)) return;
+        // Chỉ đánh dấu những người có đơn trong các ngày đang chọn
+        let hasOrder = false;
+        def.columns.forEach(col => {
+          const key = `${col.monthKey}|${col.day}`;
+          if (!calcState.selectedDayKeys.has(key)) return;
+          const v = appState.ordersData[col.monthKey]?.[member]?.days?.[col.day] || 0;
+          if (v > 0) hasOrder = true;
+        });
+        if (!hasOrder) return;
+
+        if (def.mode === 'SALARY_CYCLE') {
+          if (!appState.salaryCyclesPaid[def.cycleKey]) appState.salaryCyclesPaid[def.cycleKey] = {};
+          appState.salaryCyclesPaid[def.cycleKey][member] = paidStatus;
+        } else {
+          if (appState.ordersData[appState.currentMatrixMonth]?.[member]) {
+            appState.ordersData[appState.currentMatrixMonth][member].paid = paidStatus;
+            appState.ordersData[appState.currentMatrixMonth][member].paidUpdatedAt = nowIso;
+          }
+        }
+        count++;
+      });
+
+      if (count === 0) {
+        showToast("Chưa có nhân viên nào được chọn!", "warning");
+        return;
+      }
+      localStorage.setItem('COBA_CAFE_SALARY_PAID_V2', JSON.stringify(appState.salaryCyclesPaid));
+      saveToStorage();
+      renderMatrix();
+      showToast(`Đã đánh dấu ${paidStatus ? 'ĐÃ TRẢ' : 'CHƯA TRẢ'} cho ${count} nhân viên đang chọn!`, "success");
+    }
+
+    function evaluateQuickMathExpr() {
+      const inputEl = document.getElementById('quickMathExprInput');
+      const resEl = document.getElementById('quickMathExprResult');
+      if (!inputEl || !resEl) return;
+      const raw = inputEl.value.trim();
+      if (!raw) {
+        resEl.innerText = '= 0 đ';
+        return;
+      }
+      try {
+        // Hỗ trợ viết '18k' -> '18000', dấu ',' -> '.', chỉ cho phép số và toán tử + - * / ( )
+        const normalized = raw
+          .toLowerCase()
+          .replace(/(\d+)\s*k/g, '($1*1000)')
+          .replace(/,/g, '.')
+          .replace(/x/g, '*')
+          .replace(/:/g, '/');
+        if (!/^[0-9+\-*/().\s]+$/.test(normalized)) {
+          resEl.innerText = 'Nhập số...';
+          return;
+        }
+        const val = Function(`"use strict"; return (${normalized});`)();
+        if (typeof val === 'number' && isFinite(val)) {
+          const finalVND = (val > 0 && val < 1000 && !raw.toLowerCase().includes('k')) ? Math.round(val * 1000) : Math.round(val);
+          resEl.innerText = `= ${formatVND(finalVND)}`;
+        } else {
+          resEl.innerText = '= 0 đ';
+        }
+      } catch (e) {
+        resEl.innerText = '...';
       }
     }
 
@@ -7064,35 +7914,10 @@
       document.getElementById('dayCellModalSubtitle').innerText = `Xem chi tiết món đã uống, chỉnh sửa hoặc thêm nhanh món vào ngày ${dPad}/${m}`;
 
       const mObj = appState.ordersData[monthKey]?.[member];
-      if (mObj && mObj.days && mObj.days[dayNum] > 0 && (!mObj.items || !mObj.items[dayNum] || mObj.items[dayNum].length === 0)) {
-        // Tự động tạo bản ghi món nếu ô ngày có số tiền nhưng chưa có danh sách items chi tiết
-        if (!mObj.items) mObj.items = {};
-        const fallbackPrice = mObj.days[dayNum] === 30 ? 30000 : mObj.days[dayNum];
-        mObj.days[dayNum] = fallbackPrice;
-        mObj.items[dayNum] = [{
-          id: `ord_auto_${monthKey.replace('-', '')}_${dayNum}_${Date.now().toString(36)}`,
-          name: 'Món nước',
-          basePrice: fallbackPrice,
-          toppings: [],
-          toppingsPrice: 0,
-          singlePrice: fallbackPrice,
-          qty: 1,
-          note: '',
-          total: fallbackPrice,
-          createdAt: new Date().toISOString(),
-          updatedAt: Date.now()
-        }];
-        saveToStorage();
-      }
-
       const dayItems = (mObj && mObj.items && mObj.items[dayNum]) ? mObj.items[dayNum] : [];
       const dayTotal = (mObj && mObj.days && mObj.days[dayNum]) ? mObj.days[dayNum] : 0;
 
       document.getElementById('dayCellModalTotalText').innerText = formatVND(dayTotal);
-      const btnClearCell = document.getElementById('btnClearMemberDayCell');
-      if (btnClearCell) {
-        btnClearCell.style.display = dayTotal > 0 ? '' : 'none';
-      }
 
       const listEl = document.getElementById('dayCellModalItemsList');
       listEl.innerHTML = '';
@@ -7112,16 +7937,12 @@
             <div class="min-w-0 flex-grow">
               <div class="flex items-center gap-1.5">
                 <span class="font-bold text-slate-800">${item.name}</span>
+                <span class="px-1.5 py-0.2 bg-orange-100 text-orange-700 rounded font-mono font-bold text-[11px]">x${item.qty}</span>
               </div>
               ${noteStr}
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
-              <div class="flex items-center bg-slate-50 border border-slate-200 rounded-lg overflow-hidden h-6">
-                <button type="button" onclick="adjustDayCellItemQty('${member}', '${monthKey}', ${dayNum}, '${item.id}', -1)" class="px-1.5 h-full hover:bg-rose-50 text-slate-500 hover:text-rose-600 font-bold text-[11px] transition" title="Giảm 1 ly">-</button>
-                <span class="px-1.5 font-mono font-extrabold text-[11px] text-orange-700">${item.qty}</span>
-                <button type="button" onclick="adjustDayCellItemQty('${member}', '${monthKey}', ${dayNum}, '${item.id}', 1)" class="px-1.5 h-full hover:bg-emerald-50 text-slate-500 hover:text-emerald-600 font-bold text-[11px] transition" title="Tăng 1 ly">+</button>
-              </div>
-              <span class="font-mono font-extrabold text-orange-600 min-w-[54px] text-right">${formatVND(item.total)}</span>
+              <span class="font-mono font-extrabold text-orange-600">${formatVND(item.total)}</span>
               <button type="button" onclick="openEditOrderItemModal('${member}', ${dayNum}, '${item.id}', '${monthKey}')" class="p-1.5 text-slate-400 hover:text-orange-600 rounded-lg hover:bg-orange-50 transition" title="Sửa món / Đổi người uống">
                 <i class="fa-regular fa-pen-to-square"></i>
               </button>
@@ -7139,71 +7960,6 @@
       renderDayCellQuickMenu();
 
       document.getElementById('dayCellModal').classList.remove('hidden');
-    }
-
-    function adjustDayCellItemQty(member, monthKey, dayNum, itemId, delta) {
-      const mObj = appState.ordersData[monthKey]?.[member];
-      if (!mObj || !mObj.items || !mObj.items[dayNum]) return;
-      const item = mObj.items[dayNum].find(it => it.id === itemId);
-      if (!item) return;
-
-      const newQty = (parseInt(item.qty) || 1) + delta;
-      if (newQty <= 0) {
-        removeItemFromDayCell(member, monthKey, dayNum, itemId);
-        return;
-      }
-
-      const single = parseInt(item.singlePrice) || parseInt(item.basePrice) || 0;
-      item.qty = newQty;
-      item.total = single * newQty;
-      item.updatedAt = Date.now();
-
-      let daySum = 0;
-      mObj.items[dayNum].forEach(it => daySum += (parseInt(it.total) || 0));
-      mObj.days[dayNum] = daySum;
-
-      saveToStorage();
-      renderTodayOrdersList();
-      renderRecentDaysStrip();
-      renderMemberControls();
-      renderMatrix(false);
-      openDayCellModal(member, monthKey, dayNum);
-    }
-
-    function clearMemberDayCell() {
-      if (!currentDayCellContext) return;
-      const { member, monthKey, dayNum } = currentDayCellContext;
-      const mObj = appState.ordersData[monthKey]?.[member];
-      if (!mObj) return;
-
-      if (!appState.deletedItemIds) appState.deletedItemIds = [];
-      if (mObj.items && mObj.items[dayNum]) {
-        mObj.items[dayNum].forEach(it => {
-          if (it.id && !appState.deletedItemIds.includes(it.id)) {
-            appState.deletedItemIds.push(it.id);
-          }
-        });
-        delete mObj.items[dayNum];
-      }
-      if (mObj.days && mObj.days[dayNum] !== undefined) {
-        delete mObj.days[dayNum];
-      }
-
-      saveToStorage();
-      fetch(`${getApiBase()}/api/order/clear_member_day`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ monthKey, member, dayNum })
-      }).then(r => r.json()).then(d => {
-        if (d && d.dataVersion) currentServerVersion = d.dataVersion;
-      }).catch(() => {});
-
-      renderTodayOrdersList();
-      renderRecentDaysStrip();
-      renderMemberControls();
-      renderMatrix(false);
-      openDayCellModal(member, monthKey, dayNum);
-      showToast(`Đã xóa trống ô ngày ${dayNum} của ${member}!`, "info");
     }
 
     function removeItemFromDayCell(member, monthKey, dayNum, itemId) {
