@@ -1386,10 +1386,16 @@
 
       <!-- Footer -->
       <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
-        <button type="button" onclick="jumpFromCellToOrderTab()" class="px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
-          <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-          <span>Mở ngày này ở Tab Đặt Đơn</span>
-        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="jumpFromCellToOrderTab()" class="px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            <span>Mở ngày này ở Tab Đặt Đơn</span>
+          </button>
+          <button type="button" id="btnClearMemberDayCell" onclick="clearMemberDayCell()" class="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+            <i class="fa-regular fa-trash-can text-[10px]"></i>
+            <span>Xóa trống ô ngày này</span>
+          </button>
+        </div>
         <button type="button" onclick="closeModal('dayCellModal')" class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition">
           Đóng
         </button>
@@ -1534,7 +1540,7 @@
         "20": 30000,
         "21": 30000,
         "22": 30000,
-        "23": 30,
+        "23": 30000,
         "26": 30000,
         "27": 30000,
         "28": 30000,
@@ -1902,6 +1908,32 @@
             "total": 12000,
             "createdAt": "2026-10-29T02:11:28.165Z"
           }
+        ],
+        "23": [
+          {
+            "id": "ord_oct23_chou_1",
+            "name": "Cf sữa đá",
+            "basePrice": 18000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 18000,
+            "qty": 1,
+            "note": "Ít sữa ít đá",
+            "total": 18000,
+            "createdAt": "2026-10-23T02:00:00.000Z"
+          },
+          {
+            "id": "ord_oct23_chou_2",
+            "name": "Nước chanh đường",
+            "basePrice": 12000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 12000,
+            "qty": 1,
+            "note": "",
+            "total": 12000,
+            "createdAt": "2026-10-23T02:00:00.000Z"
+          }
         ]
       }
     },
@@ -1999,6 +2031,20 @@
             "note": "Bình thường, Bth",
             "total": 15000,
             "createdAt": "2026-10-24T02:06:07.073Z"
+          }
+        ],
+        "23": [
+          {
+            "id": "ord_sync_202610_23_6279",
+            "name": "Trà Ổi Hồng",
+            "basePrice": 20000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 20000,
+            "qty": 1,
+            "note": "",
+            "total": 20000,
+            "createdAt": "2026-10-23T02:00:00.000Z"
           }
         ]
       }
@@ -2134,6 +2180,20 @@
             "note": "Ít đá, Bth",
             "total": 18000,
             "createdAt": "2026-10-29T02:26:00.621Z"
+          }
+        ],
+        "23": [
+          {
+            "id": "ord_sync_202610_23_6144",
+            "name": "Trà Ổi Hồng",
+            "basePrice": 20000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 20000,
+            "qty": 1,
+            "note": "",
+            "total": 20000,
+            "createdAt": "2026-10-23T02:00:00.000Z"
           }
         ]
       }
@@ -2530,6 +2590,20 @@
             "total": 18000,
             "createdAt": "2026-10-28T02:08:24.567Z"
           }
+        ],
+        "23": [
+          {
+            "id": "ord_sync_202610_23_8873",
+            "name": "Nước Dừa Tươi",
+            "basePrice": 20000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 20000,
+            "qty": 1,
+            "note": "",
+            "total": 20000,
+            "createdAt": "2026-10-23T02:00:00.000Z"
+          }
         ]
       }
     },
@@ -2810,6 +2884,20 @@
             "note": "Bình thường, Bth",
             "total": 30000,
             "createdAt": "2026-10-29T02:22:48.143Z"
+          }
+        ],
+        "25": [
+          {
+            "id": "ord_sync_202610_25_7194",
+            "name": "Dừa Tươi Quế Hoa (700ml)",
+            "basePrice": 20000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 20000,
+            "qty": 1,
+            "note": "",
+            "total": 20000,
+            "createdAt": "2026-10-25T02:00:00.000Z"
           }
         ]
       }
@@ -4451,8 +4539,26 @@
           const incDays = incM.days || {};
           for (const day of Object.keys(incDays)) {
             if (!baseM.days[day] && incDays[day] && (!baseM.items[day] || baseM.items[day].length > 0)) {
-              baseM.days[day] = incDays[day];
+              baseM.days[day] = incDays[day] === 30 ? 30000 : incDays[day];
             }
+          }
+
+          // Luôn đồng bộ days[day] theo tổng tiền thực tế của items[day] để chống lệch số tiền
+          for (const day of Object.keys(baseM.items || {})) {
+            if (Array.isArray(baseM.items[day])) {
+              baseM.items[day] = baseM.items[day].filter(it => !it.id || !deletedSet.has(it.id));
+              let s = 0;
+              baseM.items[day].forEach(it => s += (parseInt(it.total) || 0));
+              if (s > 0) {
+                baseM.days[day] = s;
+              } else {
+                delete baseM.days[day];
+                delete baseM.items[day];
+              }
+            }
+          }
+          for (const day of Object.keys(baseM.days || {})) {
+            if (baseM.days[day] === 30) baseM.days[day] = 30000;
           }
         }
       }
@@ -6207,8 +6313,17 @@
       itemObj.total = newSinglePrice * newQty;
       itemObj.updatedAt = Date.now();
 
+      let newItemId = itemId;
+
       if (newMember !== oldMember) {
-        // Chuyển món sang người mới
+        // Đưa ID cũ vào deletedItemIds để chống hồi sinh ở người cũ khi Deep Merge
+        if (!appState.deletedItemIds) appState.deletedItemIds = [];
+        if (itemId && !appState.deletedItemIds.includes(itemId)) {
+          appState.deletedItemIds.push(itemId);
+        }
+        newItemId = 'ord_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+
+        // Chuyển món sang người mới với ID mới
         oldMObj.items[dayNum].splice(itemIdx, 1);
         let oldSum = 0;
         oldMObj.items[dayNum].forEach(it => oldSum += (parseInt(it.total) || 0));
@@ -6226,7 +6341,12 @@
         if (!newMObj.days) newMObj.days = {};
         if (!newMObj.items) newMObj.items = {};
         if (!newMObj.items[dayNum]) newMObj.items[dayNum] = [];
-        newMObj.items[dayNum].push(itemObj);
+
+        const movedItemObj = Object.assign({}, itemObj, {
+          id: newItemId,
+          updatedAt: Date.now()
+        });
+        newMObj.items[dayNum].push(movedItemObj);
 
         let newSum = 0;
         newMObj.items[dayNum].forEach(it => newSum += (parseInt(it.total) || 0));
@@ -6249,6 +6369,8 @@
           newMember,
           dayNum,
           itemId,
+          newItemId,
+          updatedItem: Object.assign({}, itemObj, { id: newItemId }),
           updatedFields: {
             name: itemObj.name,
             basePrice: itemObj.basePrice,
@@ -6268,7 +6390,7 @@
       renderMemberControls();
       renderMatrix(false);
       if (currentDayCellContext && currentDayCellContext.monthKey === monthKey && currentDayCellContext.dayNum === dayNum) {
-        openDayCellModal(newMember, monthKey, dayNum);
+        openDayCellModal(currentDayCellContext.member, monthKey, dayNum);
       }
       showToast("Đã cập nhật món thành công!", "success");
     }
@@ -6949,10 +7071,35 @@
       document.getElementById('dayCellModalSubtitle').innerText = `Xem chi tiết món đã uống, chỉnh sửa hoặc thêm nhanh món vào ngày ${dPad}/${m}`;
 
       const mObj = appState.ordersData[monthKey]?.[member];
+      if (mObj && mObj.days && mObj.days[dayNum] > 0 && (!mObj.items || !mObj.items[dayNum] || mObj.items[dayNum].length === 0)) {
+        // Tự động tạo bản ghi món nếu ô ngày có số tiền nhưng chưa có danh sách items chi tiết
+        if (!mObj.items) mObj.items = {};
+        const fallbackPrice = mObj.days[dayNum] === 30 ? 30000 : mObj.days[dayNum];
+        mObj.days[dayNum] = fallbackPrice;
+        mObj.items[dayNum] = [{
+          id: `ord_auto_${monthKey.replace('-', '')}_${dayNum}_${Date.now().toString(36)}`,
+          name: 'Món nước',
+          basePrice: fallbackPrice,
+          toppings: [],
+          toppingsPrice: 0,
+          singlePrice: fallbackPrice,
+          qty: 1,
+          note: '',
+          total: fallbackPrice,
+          createdAt: new Date().toISOString(),
+          updatedAt: Date.now()
+        }];
+        saveToStorage();
+      }
+
       const dayItems = (mObj && mObj.items && mObj.items[dayNum]) ? mObj.items[dayNum] : [];
       const dayTotal = (mObj && mObj.days && mObj.days[dayNum]) ? mObj.days[dayNum] : 0;
 
       document.getElementById('dayCellModalTotalText').innerText = formatVND(dayTotal);
+      const btnClearCell = document.getElementById('btnClearMemberDayCell');
+      if (btnClearCell) {
+        btnClearCell.style.display = dayTotal > 0 ? '' : 'none';
+      }
 
       const listEl = document.getElementById('dayCellModalItemsList');
       listEl.innerHTML = '';
@@ -6972,12 +7119,16 @@
             <div class="min-w-0 flex-grow">
               <div class="flex items-center gap-1.5">
                 <span class="font-bold text-slate-800">${item.name}</span>
-                <span class="px-1.5 py-0.2 bg-orange-100 text-orange-700 rounded font-mono font-bold text-[11px]">x${item.qty}</span>
               </div>
               ${noteStr}
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
-              <span class="font-mono font-extrabold text-orange-600">${formatVND(item.total)}</span>
+              <div class="flex items-center bg-slate-50 border border-slate-200 rounded-lg overflow-hidden h-6">
+                <button type="button" onclick="adjustDayCellItemQty('${member}', '${monthKey}', ${dayNum}, '${item.id}', -1)" class="px-1.5 h-full hover:bg-rose-50 text-slate-500 hover:text-rose-600 font-bold text-[11px] transition" title="Giảm 1 ly">-</button>
+                <span class="px-1.5 font-mono font-extrabold text-[11px] text-orange-700">${item.qty}</span>
+                <button type="button" onclick="adjustDayCellItemQty('${member}', '${monthKey}', ${dayNum}, '${item.id}', 1)" class="px-1.5 h-full hover:bg-emerald-50 text-slate-500 hover:text-emerald-600 font-bold text-[11px] transition" title="Tăng 1 ly">+</button>
+              </div>
+              <span class="font-mono font-extrabold text-orange-600 min-w-[54px] text-right">${formatVND(item.total)}</span>
               <button type="button" onclick="openEditOrderItemModal('${member}', ${dayNum}, '${item.id}', '${monthKey}')" class="p-1.5 text-slate-400 hover:text-orange-600 rounded-lg hover:bg-orange-50 transition" title="Sửa món / Đổi người uống">
                 <i class="fa-regular fa-pen-to-square"></i>
               </button>
@@ -6995,6 +7146,71 @@
       renderDayCellQuickMenu();
 
       document.getElementById('dayCellModal').classList.remove('hidden');
+    }
+
+    function adjustDayCellItemQty(member, monthKey, dayNum, itemId, delta) {
+      const mObj = appState.ordersData[monthKey]?.[member];
+      if (!mObj || !mObj.items || !mObj.items[dayNum]) return;
+      const item = mObj.items[dayNum].find(it => it.id === itemId);
+      if (!item) return;
+
+      const newQty = (parseInt(item.qty) || 1) + delta;
+      if (newQty <= 0) {
+        removeItemFromDayCell(member, monthKey, dayNum, itemId);
+        return;
+      }
+
+      const single = parseInt(item.singlePrice) || parseInt(item.basePrice) || 0;
+      item.qty = newQty;
+      item.total = single * newQty;
+      item.updatedAt = Date.now();
+
+      let daySum = 0;
+      mObj.items[dayNum].forEach(it => daySum += (parseInt(it.total) || 0));
+      mObj.days[dayNum] = daySum;
+
+      saveToStorage();
+      renderTodayOrdersList();
+      renderRecentDaysStrip();
+      renderMemberControls();
+      renderMatrix(false);
+      openDayCellModal(member, monthKey, dayNum);
+    }
+
+    function clearMemberDayCell() {
+      if (!currentDayCellContext) return;
+      const { member, monthKey, dayNum } = currentDayCellContext;
+      const mObj = appState.ordersData[monthKey]?.[member];
+      if (!mObj) return;
+
+      if (!appState.deletedItemIds) appState.deletedItemIds = [];
+      if (mObj.items && mObj.items[dayNum]) {
+        mObj.items[dayNum].forEach(it => {
+          if (it.id && !appState.deletedItemIds.includes(it.id)) {
+            appState.deletedItemIds.push(it.id);
+          }
+        });
+        delete mObj.items[dayNum];
+      }
+      if (mObj.days && mObj.days[dayNum] !== undefined) {
+        delete mObj.days[dayNum];
+      }
+
+      saveToStorage();
+      fetch(`${getApiBase()}/api/order/clear_member_day`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ monthKey, member, dayNum })
+      }).then(r => r.json()).then(d => {
+        if (d && d.dataVersion) currentServerVersion = d.dataVersion;
+      }).catch(() => {});
+
+      renderTodayOrdersList();
+      renderRecentDaysStrip();
+      renderMemberControls();
+      renderMatrix(false);
+      openDayCellModal(member, monthKey, dayNum);
+      showToast(`Đã xóa trống ô ngày ${dayNum} của ${member}!`, "info");
     }
 
     function removeItemFromDayCell(member, monthKey, dayNum, itemId) {

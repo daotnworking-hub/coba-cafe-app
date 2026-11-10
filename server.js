@@ -171,8 +171,26 @@ function mergeOrdersData(baseOrders, incOrders, deletedItemIds = []) {
       const incDays = incM.days || {};
       for (const day of Object.keys(incDays)) {
         if (!baseM.days[day] && incDays[day] && (!baseM.items[day] || baseM.items[day].length > 0)) {
-          baseM.days[day] = incDays[day];
+          baseM.days[day] = incDays[day] === 30 ? 30000 : incDays[day];
         }
+      }
+
+      // Đảm bảo mọi ngày có items thì days[day] luôn khớp chính xác tổng tiền của items[day]
+      for (const day of Object.keys(baseM.items || {})) {
+        if (Array.isArray(baseM.items[day])) {
+          baseM.items[day] = baseM.items[day].filter(it => !it.id || !deletedSet.has(it.id));
+          let s = 0;
+          baseM.items[day].forEach(it => s += (parseInt(it.total) || 0));
+          if (s > 0) {
+            baseM.days[day] = s;
+          } else {
+            delete baseM.days[day];
+            delete baseM.items[day];
+          }
+        }
+      }
+      for (const day of Object.keys(baseM.days || {})) {
+        if (baseM.days[day] === 30) baseM.days[day] = 30000;
       }
     }
   }
@@ -577,8 +595,9 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const payload = JSON.parse(body);
-        const { monthKey, oldMember, newMember, dayNum, itemId, updatedItem } = payload;
-        if (!monthKey || !oldMember || !dayNum || !itemId || !updatedItem) {
+        const { monthKey, oldMember, newMember, dayNum, itemId, updatedItem, updatedFields, newItemId } = payload;
+        const patchObj = updatedItem || updatedFields;
+        if (!monthKey || !oldMember || !dayNum || !itemId || !patchObj) {
           return sendJson(res, 400, { success: false, error: 'Thiếu thông tin cập nhật món' });
         }
 
@@ -591,8 +610,10 @@ const server = http.createServer((req, res) => {
           if (!db.deletedItemIds.includes(itemId)) {
             db.deletedItemIds.push(itemId);
           }
+          let origItem = null;
           if (db.ordersData?.[monthKey]?.[oldMember]?.items?.[dayNum]) {
             const oldMObj = db.ordersData[monthKey][oldMember];
+            origItem = oldMObj.items[dayNum].find(it => it.id === itemId) || null;
             oldMObj.items[dayNum] = oldMObj.items[dayNum].filter(it => it.id !== itemId);
             let oldSum = 0;
             oldMObj.items[dayNum].forEach(it => oldSum += (parseInt(it.total) || 0));
@@ -609,8 +630,14 @@ const server = http.createServer((req, res) => {
           if (!newMObj.items) newMObj.items = {};
           if (!newMObj.items[dayNum]) newMObj.items[dayNum] = [];
 
-          updatedItem.updatedAt = Date.now();
-          newMObj.items[dayNum].push(updatedItem);
+          const finalNewId = newItemId || (patchObj.id && patchObj.id !== itemId ? patchObj.id : ('ord_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4)));
+          const movedRecord = Object.assign({}, origItem || {}, patchObj, {
+            id: finalNewId,
+            updatedAt: Date.now()
+          });
+          if (!newMObj.items[dayNum].some(it => it.id === finalNewId)) {
+            newMObj.items[dayNum].push(movedRecord);
+          }
           let newSum = 0;
           newMObj.items[dayNum].forEach(it => newSum += (parseInt(it.total) || 0));
           newMObj.days[dayNum] = newSum;
@@ -620,8 +647,10 @@ const server = http.createServer((req, res) => {
           if (mObj?.items?.[dayNum]) {
             const idx = mObj.items[dayNum].findIndex(it => it.id === itemId);
             if (idx !== -1) {
-              updatedItem.updatedAt = Date.now();
-              mObj.items[dayNum][idx] = updatedItem;
+              mObj.items[dayNum][idx] = Object.assign({}, mObj.items[dayNum][idx], patchObj, {
+                id: itemId,
+                updatedAt: Date.now()
+              });
               let s = 0;
               mObj.items[dayNum].forEach(it => s += (parseInt(it.total) || 0));
               mObj.days[dayNum] = s;
@@ -629,7 +658,46 @@ const server = http.createServer((req, res) => {
           }
         }
 
-        saveDatabase(db);
+        saveDatabase(db, true);
+        return sendJson(res, 200, { success: true, dataVersion, deletedItemIds: db.deletedItemIds });
+      } catch (err) {
+        return sendJson(res, 500, { success: false, error: err.message });
+      }
+    });
+    return;
+  }
+
+  // --- 6.38. API: XÓA TRỐNG 1 Ô NGÀY CỦA 1 NHÂN VIÊN TRÊN SỔ NỢ (POST /api/order/clear_member_day) ---
+  if (pathname === '/api/order/clear_member_day' && method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body);
+        const { monthKey, member, dayNum } = payload;
+        if (!monthKey || !member || !dayNum) {
+          return sendJson(res, 400, { success: false, error: 'Thiếu thông tin ô ngày cần xóa' });
+        }
+
+        const db = readDatabase();
+        if (!db.deletedItemIds) db.deletedItemIds = [];
+
+        const mObj = db.ordersData?.[monthKey]?.[member];
+        if (mObj) {
+          if (mObj.items && mObj.items[dayNum]) {
+            mObj.items[dayNum].forEach(it => {
+              if (it.id && !db.deletedItemIds.includes(it.id)) {
+                db.deletedItemIds.push(it.id);
+              }
+            });
+            delete mObj.items[dayNum];
+          }
+          if (mObj.days && mObj.days[dayNum] !== undefined) {
+            delete mObj.days[dayNum];
+          }
+        }
+
+        saveDatabase(db, true);
         return sendJson(res, 200, { success: true, dataVersion, deletedItemIds: db.deletedItemIds });
       } catch (err) {
         return sendJson(res, 500, { success: false, error: err.message });
