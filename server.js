@@ -4,6 +4,7 @@
  * ===================================================================
  *  Chạy trực tiếp bằng Node.js thuần (Không cần cài bất kỳ package nào)
  *  Tự động chia sẻ Menu Đặt Nước qua Wi-Fi / Mạng nội bộ công ty
+ *  Cơ chế Deep Merge 2 chiều chống mất dữ liệu + Auto-Backup xoay vòng
  * ===================================================================
  */
 
@@ -15,10 +16,12 @@ const url = require('url');
 
 const DEFAULT_PORT = 8080;
 const DATA_FILE = path.join(__dirname, 'data_app.json');
+const MIRROR_DATA_FILE = path.join('D:\\coba-cafe-app', 'data_app.json');
 const CLIENT_HTML_FILE = path.join(__dirname, 'Menu_DatNuoc_NhanVien.html');
 const ADMIN_HTML_FILE = path.join(__dirname, 'App_DatNuoc_TinhTien_CongTy.html');
 
 let dataVersion = Date.now();
+let lastBackupTime = 0;
 
 // Tìm địa chỉ IP LAN (Wi-Fi hoặc Cáp mạng) của máy tính này
 function getLocalIpAddress() {
@@ -27,11 +30,8 @@ function getLocalIpAddress() {
 
   for (const name of Object.keys(interfaces)) {
     for (const iface of interfaces[name]) {
-      // Bỏ qua IPv6 và địa chỉ nội bộ 127.0.0.1
       if (iface.family === 'IPv4' && !iface.internal) {
-        // Bỏ qua dải APIPA 169.254.x.x
         if (!iface.address.startsWith('169.254.')) {
-          // Ưu tiên các dải mạng LAN văn phòng phổ biến: 192.168.x.x, 10.x.x.x, 172.x.x.x
           if (iface.address.startsWith('192.168.')) {
             candidates.unshift(iface.address);
           } else {
@@ -49,9 +49,16 @@ function getLocalIpAddress() {
 function readDatabase() {
   try {
     if (fs.existsSync(DATA_FILE)) {
+      const stat = fs.statSync(DATA_FILE);
       const content = fs.readFileSync(DATA_FILE, 'utf8');
       const parsed = JSON.parse(content);
       if (!parsed.deletedItemIds) parsed.deletedItemIds = [];
+      if (parsed.dataVersion && parsed.dataVersion > dataVersion) {
+        dataVersion = parsed.dataVersion;
+      }
+      if (stat.mtimeMs && Math.floor(stat.mtimeMs) > dataVersion) {
+        dataVersion = Math.floor(stat.mtimeMs);
+      }
       if (parsed.menu) {
         const hasOldSoda = parsed.menu.some(m => m.name && m.name.includes('Soda Đào (Việt Quất'));
         if (hasOldSoda) {
@@ -85,12 +92,12 @@ function readDatabase() {
   };
 }
 
-const BACKUP_DIR = path.join(__dirname, 'backups_coba_cafe');
+const BACKUP_DIR = 'D:\\backups_coba_cafe';
 if (!fs.existsSync(BACKUP_DIR)) {
   try { fs.mkdirSync(BACKUP_DIR, { recursive: true }); } catch (e) {}
 }
 
-// Deep Merge ordersData an toàn - Chống ghi đè hủy diệt nhưng tôn trọng các món đã chủ động xóa
+// Deep Merge ordersData an toàn - Chống ghi đè hủy diệt, hỗ trợ cập nhật món theo updatedAt & tôn trọng deletedItemIds
 function mergeOrdersData(baseOrders, incOrders, deletedItemIds = []) {
   if (!baseOrders || typeof baseOrders !== 'object') return incOrders || {};
   if (!incOrders || typeof incOrders !== 'object') return baseOrders || {};
@@ -113,7 +120,11 @@ function mergeOrdersData(baseOrders, incOrders, deletedItemIds = []) {
       if (!baseM.days) baseM.days = {};
       if (!baseM.items) baseM.items = {};
 
-      if (incM.paid !== undefined && incM.paid) {
+      // Hỗ trợ cập nhật trạng thái paid theo timestamp mới nhất hoặc giữ true
+      if (incM.paidUpdatedAt && (!baseM.paidUpdatedAt || incM.paidUpdatedAt >= baseM.paidUpdatedAt)) {
+        baseM.paid = !!incM.paid;
+        baseM.paidUpdatedAt = incM.paidUpdatedAt;
+      } else if (!baseM.paidUpdatedAt && incM.paid !== undefined && incM.paid) {
         baseM.paid = true;
       }
 
@@ -127,11 +138,24 @@ function mergeOrdersData(baseOrders, incOrders, deletedItemIds = []) {
       const incItems = incM.items || {};
       for (const day of Object.keys(incItems)) {
         if (!baseM.items[day]) baseM.items[day] = [];
-        const existingIds = new Set(baseM.items[day].map(it => it.id).filter(Boolean));
+        const existingMap = new Map();
+        baseM.items[day].forEach((it, idx) => {
+          if (it.id) existingMap.set(it.id, idx);
+        });
+
         for (const item of incItems[day]) {
-          if (item.id && (deletedSet.has(item.id) || existingIds.has(item.id))) continue;
+          if (!item) continue;
+          if (item.id && deletedSet.has(item.id)) continue;
+          if (item.id && existingMap.has(item.id)) {
+            const existIdx = existingMap.get(item.id);
+            const existItem = baseM.items[day][existIdx];
+            if ((item.updatedAt || 0) > (existItem.updatedAt || 0)) {
+              baseM.items[day][existIdx] = JSON.parse(JSON.stringify(item));
+            }
+            continue;
+          }
           baseM.items[day].push(JSON.parse(JSON.stringify(item)));
-          if (item.id) existingIds.add(item.id);
+          if (item.id) existingMap.set(item.id, baseM.items[day].length - 1);
         }
 
         let daySum = 0;
@@ -181,34 +205,60 @@ function mergeOrdersData(baseOrders, incOrders, deletedItemIds = []) {
   return merged;
 }
 
-// Ghi dữ liệu vào data_app.json kèm sao lưu xoay vòng tự động
-function saveDatabase(data) {
+function formatBackupTimestamp(d = new Date()) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+}
+
+// Ghi dữ liệu vào data_app.json kèm sao lưu xoay vòng tự động (Non-blocking backup cleanup)
+function saveDatabase(data, forceBackup = false) {
   try {
-    // 1. Tự động sao lưu dự phòng có timestamp
-    if (fs.existsSync(DATA_FILE)) {
+    dataVersion = Date.now();
+    data.dataVersion = dataVersion;
+
+    const nowMs = Date.now();
+    // Tạo bản backup có timestamp theo đúng chuẩn data_app_backup_YYYYMMDD_HHMMSS.json
+    if (fs.existsSync(DATA_FILE) && (forceBackup || (nowMs - lastBackupTime > 10000))) {
+      lastBackupTime = nowMs;
       try {
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        const backupPath = path.join(BACKUP_DIR, `data_app_${timestamp}.json`);
+        const ts = formatBackupTimestamp(new Date());
+        const backupPath = path.join(BACKUP_DIR, `data_app_backup_${ts}.json`);
         fs.copyFileSync(DATA_FILE, backupPath);
 
-        // Duy trì tối đa 50 bản backup gần nhất
-        const files = fs.readdirSync(BACKUP_DIR)
-          .filter(f => f.startsWith('data_app_') && f.endsWith('.json'))
-          .map(f => ({ name: f, time: fs.statSync(path.join(BACKUP_DIR, f)).mtime.getTime() }))
-          .sort((a, b) => b.time - a.time);
+        // Dọn dẹp xoay vòng bất đồng bộ (giữ tối thiểu 55 bản mới nhất) để không làm chậm phản hồi HTTP
+        setImmediate(() => {
+          try {
+            const files = fs.readdirSync(BACKUP_DIR)
+              .filter(f => f.startsWith('data_app_') && f.endsWith('.json'))
+              .map(f => ({ name: f, time: fs.statSync(path.join(BACKUP_DIR, f)).mtime.getTime() }))
+              .sort((a, b) => b.time - a.time);
 
-        if (files.length > 50) {
-          for (let i = 50; i < files.length; i++) {
-            try { fs.unlinkSync(path.join(BACKUP_DIR, files[i].name)); } catch (e) {}
-          }
-        }
+            if (files.length > 60) {
+              for (let i = 60; i < files.length; i++) {
+                try { fs.unlinkSync(path.join(BACKUP_DIR, files[i].name)); } catch (e) {}
+              }
+            }
+          } catch (e) {}
+        });
       } catch (bkErr) {
         console.warn('[BACKUP WARNING] Không thể tạo backup file:', bkErr.message);
       }
     }
 
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
-    dataVersion = Date.now();
+    const jsonString = JSON.stringify(data, null, 2);
+    fs.writeFileSync(DATA_FILE, jsonString, 'utf8');
+
+    // Tự động đồng bộ sang thư mục repo git nếu khác đường dẫn
+    if (path.resolve(DATA_FILE) !== path.resolve(MIRROR_DATA_FILE)) {
+      setImmediate(() => {
+        try {
+          if (fs.existsSync(path.dirname(MIRROR_DATA_FILE))) {
+            fs.writeFileSync(MIRROR_DATA_FILE, jsonString, 'utf8');
+          }
+        } catch (e) {}
+      });
+    }
+
     return true;
   } catch (err) {
     console.error('Lỗi khi lưu file data_app.json:', err.message);
@@ -220,6 +270,7 @@ function saveDatabase(data) {
 function sendJson(res, statusCode, obj) {
   res.writeHead(statusCode, {
     'Content-Type': 'application/json; charset=utf-8',
+    'Cache-Control': 'no-store, no-cache, must-revalidate',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type'
@@ -246,7 +297,7 @@ const server = http.createServer((req, res) => {
   // --- 1. GIAO DIỆN MENU CHO NHÂN VIÊN ---
   if (pathname === '/' || pathname === '/menu' || pathname === '/Menu_DatNuoc_NhanVien.html') {
     if (fs.existsSync(CLIENT_HTML_FILE)) {
-      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' });
       return fs.createReadStream(CLIENT_HTML_FILE).pipe(res);
     } else {
       res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
@@ -257,7 +308,7 @@ const server = http.createServer((req, res) => {
   // --- 2. GIAO DIỆN APP CHÍNH (ADMIN / SỔ NỢ) ---
   if (pathname === '/admin' || pathname === '/app' || pathname === '/App_DatNuoc_TinhTien_CongTy.html') {
     if (fs.existsSync(ADMIN_HTML_FILE)) {
-      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' });
       return fs.createReadStream(ADMIN_HTML_FILE).pipe(res);
     } else {
       res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
@@ -306,6 +357,12 @@ const server = http.createServer((req, res) => {
 
   // --- 5. API: POLLING KIỂM TRA ĐỔI MỚI DỮ LIỆU ---
   if (pathname === '/api/poll' && method === 'GET') {
+    try {
+      if (fs.existsSync(DATA_FILE)) {
+        const mtime = Math.floor(fs.statSync(DATA_FILE).mtimeMs);
+        if (mtime > dataVersion) dataVersion = mtime;
+      }
+    } catch (e) {}
     return sendJson(res, 200, { dataVersion });
   }
 
@@ -357,7 +414,7 @@ const server = http.createServer((req, res) => {
           const total = parseInt(it.total) || (singlePrice * qty);
 
           const itemRecord = {
-            id: 'ord_net_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+            id: it.id || ('ord_net_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4)),
             name: it.name,
             basePrice: parseInt(it.basePrice) || singlePrice,
             toppings: it.toppings || [],
@@ -366,7 +423,8 @@ const server = http.createServer((req, res) => {
             qty: qty,
             note: it.note || '',
             total: total,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            updatedAt: Date.now()
           };
 
           mObj.items[dayNum].push(itemRecord);
@@ -374,7 +432,7 @@ const server = http.createServer((req, res) => {
           countCups += qty;
 
           // Lưu làm món quen thuộc nếu được yêu cầu
-          if (saveAsFavorite) {
+          if (saveAsFavorite || it.saveAsFav) {
             if (!db.favorites) db.favorites = {};
             if (!db.favorites[member]) db.favorites[member] = [];
             const exists = db.favorites[member].some(f => f.name === it.name && (f.note || '') === (it.note || ''));
@@ -396,7 +454,7 @@ const server = http.createServer((req, res) => {
         mObj.items[dayNum].forEach(it => daySum += it.total);
         mObj.days[dayNum] = daySum;
 
-        saveDatabase(db);
+        saveDatabase(db, true);
 
         console.log(`[ĐƠN MỚI] ${member} vừa đặt ${countCups} ly nước (Tổng: ${totalAdded.toLocaleString('vi-VN')} đ) ngày ${orderDate}!`);
 
@@ -431,8 +489,7 @@ const server = http.createServer((req, res) => {
         if (!db.members) db.members = [];
         if (!db.members.includes(name)) {
           db.members.push(name);
-          saveDatabase(db);
-          dataVersion = Date.now();
+          saveDatabase(db, true);
           console.log(`[THÊM NHÂN VIÊN] Đã thêm thành viên: ${name}`);
         }
         return sendJson(res, 200, { success: true, member: name, members: db.members, dataVersion });
@@ -460,8 +517,7 @@ const server = http.createServer((req, res) => {
         if (db.favorites && db.favorites[name]) {
           delete db.favorites[name];
         }
-        saveDatabase(db);
-        dataVersion = Date.now();
+        saveDatabase(db, true);
         console.log(`[XÓA NHÂN VIÊN] Đã xóa thành viên: ${name}`);
         return sendJson(res, 200, { success: true, member: name, members: db.members, dataVersion });
       } catch (err) {
@@ -504,10 +560,77 @@ const server = http.createServer((req, res) => {
           }
         }
 
-        saveDatabase(db);
-        dataVersion = Date.now();
+        saveDatabase(db, true);
         console.log(`[XÓA MÓN THÀNH CÔNG] Đã xóa món ${itemId} của ${member} ngày ${dayNum}/${monthKey}`);
         return sendJson(res, 200, { success: true, itemId, dataVersion, deletedItemIds: db.deletedItemIds });
+      } catch (err) {
+        return sendJson(res, 500, { success: false, error: err.message });
+      }
+    });
+    return;
+  }
+
+  // --- 6.35. API: CẬP NHẬT / CHUYỂN NGƯỜI 1 MÓN ĐÃ ĐẶT (POST /api/order/update_item) ---
+  if (pathname === '/api/order/update_item' && method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body);
+        const { monthKey, oldMember, newMember, dayNum, itemId, updatedItem } = payload;
+        if (!monthKey || !oldMember || !dayNum || !itemId || !updatedItem) {
+          return sendJson(res, 400, { success: false, error: 'Thiếu thông tin cập nhật món' });
+        }
+
+        const db = readDatabase();
+        if (!db.deletedItemIds) db.deletedItemIds = [];
+        const targetMember = newMember || oldMember;
+
+        if (targetMember !== oldMember) {
+          // Chuyển món sang người khác: đưa ID cũ vào deletedItemIds để chống hồi sinh
+          if (!db.deletedItemIds.includes(itemId)) {
+            db.deletedItemIds.push(itemId);
+          }
+          if (db.ordersData?.[monthKey]?.[oldMember]?.items?.[dayNum]) {
+            const oldMObj = db.ordersData[monthKey][oldMember];
+            oldMObj.items[dayNum] = oldMObj.items[dayNum].filter(it => it.id !== itemId);
+            let oldSum = 0;
+            oldMObj.items[dayNum].forEach(it => oldSum += (parseInt(it.total) || 0));
+            if (oldSum > 0) oldMObj.days[dayNum] = oldSum;
+            else { delete oldMObj.days[dayNum]; delete oldMObj.items[dayNum]; }
+          }
+
+          if (!db.ordersData[monthKey]) db.ordersData[monthKey] = {};
+          if (!db.ordersData[monthKey][targetMember]) {
+            db.ordersData[monthKey][targetMember] = { paid: false, days: {}, items: {} };
+          }
+          const newMObj = db.ordersData[monthKey][targetMember];
+          if (!newMObj.days) newMObj.days = {};
+          if (!newMObj.items) newMObj.items = {};
+          if (!newMObj.items[dayNum]) newMObj.items[dayNum] = [];
+
+          updatedItem.updatedAt = Date.now();
+          newMObj.items[dayNum].push(updatedItem);
+          let newSum = 0;
+          newMObj.items[dayNum].forEach(it => newSum += (parseInt(it.total) || 0));
+          newMObj.days[dayNum] = newSum;
+        } else {
+          // Cập nhật tại chỗ
+          const mObj = db.ordersData?.[monthKey]?.[oldMember];
+          if (mObj?.items?.[dayNum]) {
+            const idx = mObj.items[dayNum].findIndex(it => it.id === itemId);
+            if (idx !== -1) {
+              updatedItem.updatedAt = Date.now();
+              mObj.items[dayNum][idx] = updatedItem;
+              let s = 0;
+              mObj.items[dayNum].forEach(it => s += (parseInt(it.total) || 0));
+              mObj.days[dayNum] = s;
+            }
+          }
+        }
+
+        saveDatabase(db);
+        return sendJson(res, 200, { success: true, dataVersion, deletedItemIds: db.deletedItemIds });
       } catch (err) {
         return sendJson(res, 500, { success: false, error: err.message });
       }
@@ -547,8 +670,7 @@ const server = http.createServer((req, res) => {
           });
         }
 
-        saveDatabase(db);
-        dataVersion = Date.now();
+        saveDatabase(db, true);
         console.log(`[XÓA NGÀY THÀNH CÔNG] Đã xóa tất cả đơn ngày ${dayNum}/${monthKey}`);
         return sendJson(res, 200, { success: true, dayNum, monthKey, dataVersion, deletedItemIds: db.deletedItemIds });
       } catch (err) {
@@ -569,6 +691,9 @@ const server = http.createServer((req, res) => {
 
         if (payload.members) {
           db.members = Array.from(new Set([...(db.members || []), ...payload.members]));
+        }
+        if (payload.memberAliases && typeof payload.memberAliases === 'object') {
+          db.memberAliases = Object.assign({}, db.memberAliases || {}, payload.memberAliases);
         }
         if (payload.menu) {
           const cleanMenu = [];
@@ -598,14 +723,14 @@ const server = http.createServer((req, res) => {
           db.deletedItemIds = Array.from(new Set([...(db.deletedItemIds || []), ...payload.deletedItemIds]));
         }
         if (payload.ordersData) {
-          // SAFE DEEP MERGE - Chống ghi đè mất ngày cũ nhưng tôn trọng các món đã chọn xóa
+          // SAFE DEEP MERGE - Chống ghi đè mất ngày cũ nhưng tôn trọng các món đã chọn xóa và cập nhật món
           db.ordersData = mergeOrdersData(db.ordersData, payload.ordersData, db.deletedItemIds);
         }
         if (payload.config) db.config = payload.config;
         if (payload.salaryCyclesPaid) db.salaryCyclesPaid = Object.assign({}, db.salaryCyclesPaid, payload.salaryCyclesPaid);
 
         saveDatabase(db);
-        return sendJson(res, 200, { success: true, dataVersion });
+        return sendJson(res, 200, { success: true, dataVersion, deletedItemIds: db.deletedItemIds });
       } catch (err) {
         return sendJson(res, 500, { success: false, error: err.message });
       }
@@ -635,15 +760,6 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`       http://localhost:${PORT}/admin`);
   console.log(`       hoặc: http://${localIp}:${PORT}/admin`);
   console.log('================================================================\n');
-
-  // Tự động mở trình duyệt vào App Quản lý ngay khi khởi động
-  try {
-    const { exec } = require('child_process');
-    exec(`start http://localhost:${PORT}/admin`);
-    console.log('[+] Đã tự động mở trình duyệt web vào App Quản lý!');
-  } catch (err) {
-    console.warn('Không thể tự động mở trình duyệt:', err.message);
-  }
 });
 
 // Xử lý khi lỗi cổng bị chiếm

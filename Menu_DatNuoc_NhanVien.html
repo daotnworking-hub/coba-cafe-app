@@ -425,13 +425,55 @@
       menu: [],
       toppings: [],
       favorites: {},
+      ordersData: {},
       memberAliases: {
         "Chế Bao": ["BB", "Bánh Bao"],
-        "Ngân Mập": ["Đen"],
-        "C.Chou": ["Châu"],
-        "A.Duy": ["Duy"]
+        "Ngân Mập": ["Đen", "Dđen"],
+        "C.Chou": ["Châu", "Chou"],
+        "A.Duy": ["Duy"],
+        "Ngân GD": ["Xù", "Ngân JD"],
+        "Ngân Nui": ["K Ngân", "Kim Ngân"],
+        "Na Na": ["Nana"]
       }
     };
+
+    function normalizeVN(str) {
+      if (!str) return '';
+      return String(str)
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function getInitialsVN(normStr) {
+      if (!normStr) return '';
+      return normStr.split(' ').filter(Boolean).map(w => w[0]).join('');
+    }
+
+    function matchSmartSearch(targetText, rawQuery, extraAliases = []) {
+      if (!rawQuery || !rawQuery.trim()) return true;
+      const qNorm = normalizeVN(rawQuery);
+      if (!qNorm) return true;
+
+      let combined = normalizeVN(targetText);
+      if (Array.isArray(extraAliases) && extraAliases.length > 0) {
+        combined += ' ' + extraAliases.map(a => normalizeVN(a)).join(' ');
+      }
+      const initials = getInitialsVN(combined);
+      const compactCombined = combined.replace(/\s+/g, '');
+      const compactQuery = qNorm.replace(/\s+/g, '');
+
+      if (combined.includes(qNorm) || compactCombined.includes(compactQuery) || initials.includes(compactQuery)) {
+        return true;
+      }
+
+      const tokens = qNorm.split(' ').filter(Boolean);
+      return tokens.every(tok => combined.includes(tok) || initials.includes(tok));
+    }
 
     let selectedMember = '';
     let currentCategory = 'ALL'; // MẶC ĐỊNH LÀ TẤT CẢ MÓN ĐỂ NGƯỜI DÙNG THẤY TOÀN BỘ MENU NGAY!
@@ -498,7 +540,8 @@
           appData.menu = data.menu || [];
           appData.toppings = data.toppings || [];
           appData.favorites = data.favorites || {};
-          if (data.memberAliases) appData.memberAliases = data.memberAliases;
+          appData.ordersData = data.ordersData || {};
+          if (data.memberAliases) appData.memberAliases = Object.assign({}, appData.memberAliases, data.memberAliases);
           console.log('[LAN Server] Đã kết nối với máy chủ nội bộ!');
           return;
         }
@@ -530,10 +573,7 @@
       let matchCount = 0;
       appData.members.forEach((m, idx) => {
         const aliases = appData.memberAliases[m] || [];
-        const matchName = m.toLowerCase().includes(query);
-        const matchAlias = aliases.some(a => a.toLowerCase().includes(query));
-
-        if (query && !matchName && !matchAlias) return;
+        if (query && !matchSmartSearch(m, query, aliases)) return;
 
         matchCount++;
         const isSelected = (m === selectedMember);
@@ -643,14 +683,51 @@
       }
     }
 
-    /* Hiển thị danh sách món ruột của thành viên đó */
+    function getMemberHistoryDrinks(memberName) {
+      if (!memberName || !appData.ordersData) return [];
+      const map = new Map();
+      Object.values(appData.ordersData).forEach(monthObj => {
+        const mObj = monthObj?.[memberName];
+        if (!mObj || !mObj.items) return;
+        Object.values(mObj.items).forEach(arr => {
+          if (!Array.isArray(arr)) return;
+          arr.forEach(it => {
+            if (!it || !it.name) return;
+            const cleanNote = (it.note || '').replace(/Bình thường,\s*/g, '').replace(/,\s*Bth/g, '').replace(/^Bth$/g, '').trim();
+            const key = `${it.name}||${cleanNote}`;
+            const cur = map.get(key) || {
+              id: 'hist_' + map.size,
+              name: it.name,
+              price: it.basePrice || it.singlePrice || 20000,
+              toppings: it.toppings || [],
+              toppingsPrice: it.toppingsPrice || 0,
+              note: cleanNote,
+              count: 0
+            };
+            cur.count += (it.qty || 1);
+            map.set(key, cur);
+          });
+        });
+      });
+      return Array.from(map.values()).sort((a, b) => b.count - a.count).slice(0, 4);
+    }
+
+    let currentClientCombinedFavs = [];
+
+    /* Hiển thị danh sách món ruột & món hay uống của thành viên đó */
     function renderUserFavorites(memberName) {
       const section = document.getElementById('favoritesSection');
       const container = document.getElementById('favoritesListContainer');
       const title = document.getElementById('favUserTitle');
 
       const favList = appData.favorites[memberName] || [];
-      if (!favList || favList.length === 0) {
+      const histList = getMemberHistoryDrinks(memberName).filter(h => {
+        return !favList.some(f => f.name.toLowerCase() === h.name.toLowerCase() && (f.note || '').toLowerCase() === (h.note || '').toLowerCase());
+      });
+
+      currentClientCombinedFavs = [...favList, ...histList];
+
+      if (currentClientCombinedFavs.length === 0) {
         section.classList.add('hidden');
         return;
       }
@@ -659,27 +736,51 @@
       container.innerHTML = '';
       section.classList.remove('hidden');
 
-      favList.forEach(fav => {
+      currentClientCombinedFavs.forEach((fav, idx) => {
         const card = document.createElement('div');
         card.className = "p-3 rounded-2xl bg-white border border-amber-200/90 shadow-2xs hover:border-orange-400 hover:shadow-md transition flex items-center justify-between gap-3 group";
 
         let noteBadge = fav.note ? `<div class="text-[11px] text-slate-600 italic mt-0.5 flex items-center gap-1 line-clamp-1"><i class="fa-solid fa-note-sticky text-orange-500 text-[10px]"></i><span>${fav.note}</span></div>` : '';
         let toppingBadge = (fav.toppings && fav.toppings.length) ? `<div class="text-[10px] text-amber-700 font-bold">+ ${fav.toppings.join(', ')}</div>` : '';
+        let countTag = fav.count ? `<span class="text-[10px] bg-orange-100 text-orange-700 px-1.5 py-0.2 rounded font-mono font-bold ml-1">Hay uống (${fav.count}x)</span>` : '';
 
         card.innerHTML = `
           <div class="flex-grow min-w-0">
-            <h4 class="font-black text-slate-900 text-xs sm:text-sm line-clamp-1">${fav.name}</h4>
+            <h4 class="font-black text-slate-900 text-xs sm:text-sm line-clamp-1">${fav.name}${countTag}</h4>
             <div class="font-mono text-xs font-black text-orange-600 mt-0.5">${formatVND(fav.price + (fav.toppingsPrice || 0))}</div>
             ${toppingBadge}
             ${noteBadge}
           </div>
-          <button type="button" onclick="quickAddFavoriteToCart('${memberName}', '${fav.id}')" class="px-3 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white shadow-xs transition flex items-center gap-1.5 shrink-0" title="Đặt ngay món này không cần chọn lại">
+          <button type="button" onclick="quickAddCombinedFavToCart('${memberName}', ${idx})" class="px-3 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white shadow-xs transition flex items-center gap-1.5 shrink-0 active:scale-95" title="Đặt ngay món này không cần chọn lại">
             <i class="fa-solid fa-bolt-lightning text-[11px]"></i>
             <span>Đặt Ngay</span>
           </button>
         `;
         container.appendChild(card);
       });
+    }
+
+    function quickAddCombinedFavToCart(memberName, idx) {
+      if (!selectedMember) {
+        selectMember(memberName);
+      }
+      const fav = currentClientCombinedFavs[idx];
+      if (!fav) return;
+
+      const singlePrice = fav.price + (fav.toppingsPrice || 0);
+      cart.push({
+        name: fav.name,
+        basePrice: fav.price,
+        toppings: fav.toppings || [],
+        toppingsPrice: fav.toppingsPrice || 0,
+        singlePrice: singlePrice,
+        qty: 1,
+        note: fav.note || '',
+        total: singlePrice
+      });
+
+      updateCartUI();
+      showToast(`⚡ Đã thêm 1 ly "${fav.name}" vào giỏ!`, "success");
     }
 
     function quickAddFavoriteToCart(memberName, favId) {
@@ -747,8 +848,7 @@
       let filtered = appData.menu;
 
       if (query) {
-        // Khi gõ tìm kiếm, tìm kiếm trên TOÀN BỘ menu để không bị kẹt ở tab danh mục hiện tại
-        filtered = filtered.filter(item => item.name.toLowerCase().includes(query));
+        filtered = filtered.filter(item => matchSmartSearch(item.name, query));
       } else if (currentCategory !== 'ALL') {
         filtered = filtered.filter(item => item.category === currentCategory);
       }
