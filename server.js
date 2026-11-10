@@ -53,6 +53,14 @@ function readDatabase() {
       const content = fs.readFileSync(DATA_FILE, 'utf8');
       const parsed = JSON.parse(content);
       if (!parsed.deletedItemIds) parsed.deletedItemIds = [];
+      if (parsed.members) {
+        parsed.members = parsed.members.filter(m => m !== 'K.Ngân');
+      }
+      if (parsed.ordersData) {
+        for (const mKey of Object.keys(parsed.ordersData)) {
+          delete parsed.ordersData[mKey]['K.Ngân'];
+        }
+      }
       if (parsed.dataVersion && parsed.dataVersion > dataVersion) {
         dataVersion = parsed.dataVersion;
       }
@@ -103,14 +111,17 @@ function mergeOrdersData(baseOrders, incOrders, deletedItemIds = []) {
   if (!incOrders || typeof incOrders !== 'object') return baseOrders || {};
 
   const merged = JSON.parse(JSON.stringify(baseOrders));
-  const deletedSet = new Set((deletedItemIds || []).filter(Boolean));
+      const deletedSet = new Set((deletedItemIds || []).filter(Boolean));
+  deletedSet.add('ord_1793845600009_kngan');
 
   for (const monthKey of Object.keys(incOrders)) {
     if (!merged[monthKey]) {
       merged[monthKey] = JSON.parse(JSON.stringify(incOrders[monthKey]));
     }
+    delete merged[monthKey]['K.Ngân'];
     const incMonth = incOrders[monthKey];
     for (const member of Object.keys(incMonth)) {
+      if (member === 'K.Ngân') continue;
       if (!merged[monthKey][member]) {
         merged[monthKey][member] = JSON.parse(JSON.stringify(incMonth[member]));
       }
@@ -758,7 +769,7 @@ const server = http.createServer((req, res) => {
         const db = readDatabase();
 
         if (payload.members) {
-          db.members = Array.from(new Set([...(db.members || []), ...payload.members]));
+          db.members = Array.from(new Set([...(db.members || []), ...payload.members])).filter(m => m !== 'K.Ngân');
         }
         if (payload.memberAliases && typeof payload.memberAliases === 'object') {
           db.memberAliases = Object.assign({}, db.memberAliases || {}, payload.memberAliases);
