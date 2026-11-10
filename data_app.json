@@ -2730,7 +2730,7 @@
         "days": {
           "2": 12000,
           "3": 25000,
-          "5": 32000,
+          "5": 20000,
           "6": 20000,
           "7": 30000,
           "9": 25000
@@ -2765,18 +2765,6 @@
             }
           ],
           "5": [
-            {
-              "id": "ord_1793845600001_ngangd",
-              "name": "Nước chanh",
-              "basePrice": 12000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 12000,
-              "qty": 1,
-              "note": "Ít đá",
-              "total": 12000,
-              "createdAt": "2026-11-05T02:25:00.000Z"
-            },
             {
               "id": "ord_1793845600009_ngangd_kn",
               "name": "Trà Nhãn",
@@ -3350,9 +3338,24 @@
       "Ngân Mập": {
         "paid": false,
         "days": {
+          "5": 12000,
           "6": 12000
         },
         "items": {
+          "5": [
+            {
+              "id": "ord_1794304178743_d4d5",
+              "name": "Nước chanh",
+              "basePrice": 12000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 12000,
+              "qty": 1,
+              "note": "",
+              "total": 12000,
+              "createdAt": "2026-11-10T09:49:38.743Z"
+            }
+          ],
           "6": [
             {
               "id": "ord_1793931600003_den",
@@ -3450,7 +3453,7 @@
   "salaryCyclesPaid": {
     "2026-11": {}
   },
-  "dataVersion": 1794302099778,
+  "dataVersion": 1794304178904,
   "deletedItemIds": [
     "ord_1793068022936_dwfb",
     "ord_1793239869100_4k8r",
@@ -3462,6 +3465,7 @@
     "ord_1793932178300_a0u6",
     "ord_1793932189763_r82w",
     "ord_1793932215660_p4c2",
-    "ord_1793845600009_kngan"
+    "ord_1793845600009_kngan",
+    "ord_1793845600001_ngangd"
   ]
 }

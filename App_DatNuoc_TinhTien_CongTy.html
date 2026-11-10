@@ -4221,7 +4221,7 @@
       },
       currentOrderDate: '',
       currentMatrixMonth: '',
-      matrixViewMode: 'CALENDAR_MONTH',
+      matrixViewMode: 'SALARY_CYCLE',
       currentSalaryCycle: '',
       salaryCycleOrder: 'CHRONO',
       salaryCyclesPaid: {},
@@ -4812,6 +4812,8 @@
         if (y === yyyy) opt.selected = true;
         yearSel.appendChild(opt);
       }
+
+      setMatrixMode(appState.matrixViewMode || 'SALARY_CYCLE');
     }
 
     function getSalaryCycleForDate(dateObj) {
