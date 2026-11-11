@@ -2198,7 +2198,7 @@
         "days": {
           "27": 15000,
           "29": 30000,
-          "23": 20000
+          "23": 35000
         },
         "items": {
           "27": [
@@ -2241,6 +2241,18 @@
               "note": "",
               "total": 20000,
               "createdAt": "2026-10-23T02:00:00.000Z"
+            },
+            {
+              "id": "ord_oct23_truong_2",
+              "name": "Cf đen đá",
+              "basePrice": 15000,
+              "toppings": [],
+              "toppingsPrice": 0,
+              "singlePrice": 15000,
+              "qty": 1,
+              "note": "Ko đường",
+              "total": 15000,
+              "createdAt": "2026-10-23T02:05:00.000Z"
             }
           ]
         }
@@ -3586,7 +3598,7 @@
   "salaryCyclesPaid": {
     "2026-11": {}
   },
-  "dataVersion": 1794368384528,
+  "dataVersion": 1794368547415,
   "deletedItemIds": [
     "ord_1792030096343_ugxl",
     "ord_1792030105292_q4kh",
