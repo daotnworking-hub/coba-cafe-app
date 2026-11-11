@@ -3025,8 +3025,7 @@
         "days": {
           "3": 25000,
           "7": 25000,
-          "9": 25000,
-          "5": 25000
+          "9": 25000
         },
         "items": {
           "3": [
@@ -3069,20 +3068,6 @@
               "note": "Bình thường",
               "total": 25000,
               "createdAt": "2026-11-09T02:12:08.111Z"
-            }
-          ],
-          "5": [
-            {
-              "id": "ord_1793845387027_6qci",
-              "name": "Latte Cacao Cafe",
-              "basePrice": 25000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 25000,
-              "qty": 1,
-              "note": "Bình thường",
-              "total": 25000,
-              "createdAt": "2026-11-05T02:23:07.027Z"
             }
           ]
         }
@@ -3419,9 +3404,9 @@
     }
   },
   "config": {
-    "bankCode": "MB",
-    "accountNo": "0974121693",
-    "accountName": "CO BA CAFE"
+    "bankCode": "TPB",
+    "accountNo": "02897118301",
+    "accountName": "TRAN NGOC DAO"
   },
   "memberAliases": {
     "Chế Bao": [
@@ -3453,7 +3438,7 @@
   "salaryCyclesPaid": {
     "2026-11": {}
   },
-  "dataVersion": 1794307019145,
+  "dataVersion": 1794307216594,
   "deletedItemIds": [
     "ord_1793068022936_dwfb",
     "ord_1793239869100_4k8r",
@@ -3476,7 +3461,8 @@
     "ord_1793845600002_nga",
     "ord_1793845600005_yen",
     "ord_1793845600006_khoa",
-    "ord_1794304178743_d4d5"
+    "ord_1794304178743_d4d5",
+    "ord_1793845387027_6qci"
   ],
   "updatedAt": "2026-11-10T10:38:28.388424+00:00"
 }
