@@ -11,8 +11,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Icons CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <!-- SheetJS CDN for Excel Export -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- SheetJS with Full Excel Styling Support (xlsx-js-style) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
   <script>
     tailwind.config = {
@@ -523,13 +523,17 @@
               <i class="fa-solid fa-user-plus"></i>
               <span>+ Thêm NV</span>
             </button>
+            <button onclick="openPublicShareModal()" class="px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-extrabold transition flex items-center gap-1.5 shadow-sm ring-2 ring-purple-200">
+              <i class="fa-solid fa-share-nodes"></i>
+              <span>📲 Gửi Sổ Nợ Cho Mọi Người Tự Xem</span>
+            </button>
             <button onclick="openGroupDebtReminderModal()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
               <i class="fa-solid fa-bullhorn"></i>
               <span>Nhắc Nợ Nhóm</span>
             </button>
             <button onclick="openExportModal('MATRIX')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
               <i class="fa-solid fa-file-excel"></i>
-              <span>Xuất Excel</span>
+              <span>Xuất Excel Đẹp</span>
             </button>
           </div>
         </div>
@@ -1679,6 +1683,101 @@
           <span>Mở ngày này ở Tab Đặt Đơn</span>
         </button>
         <button type="button" onclick="closeModal('dayCellModal')" class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL MỚI 3: GỬI SỔ NỢ CHO MỌI NGƯỜI TỰ XEM -->
+  <!-- ========================================== -->
+  <div id="publicShareModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-xs z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl border border-slate-200 space-y-4 my-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 text-white flex items-center justify-center shadow-sm">
+            <i class="fa-solid fa-share-nodes text-lg"></i>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-extrabold text-slate-900">
+              GỬI SỔ NỢ CHO MỌI NGƯỜI TỰ VÀO XEM &amp; QUÉT QR
+            </h3>
+            <p class="text-xs text-slate-500">Mọi người tự bấm vào tên mình ➔ Xem ngày nào uống món gì ➔ Quét mã QR TPBank ở dưới</p>
+          </div>
+        </div>
+        <button onclick="closeModal('publicShareModal')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100 transition">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <!-- CÁCH 1: LINK MỞ TRỰC TIẾP TRÊN ĐIỆN THOẠI / MÁY TÍNH -->
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-purple-50 to-indigo-50/70 border-2 border-purple-200 space-y-3 flex flex-col justify-between">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-purple-600 text-white text-[10px] font-extrabold uppercase">Cách 1 • Nhanh nhất tại Cty</span>
+              <span class="text-[11px] font-bold text-purple-700"><i class="fa-solid fa-wifi mr-1"></i>Qua Wi-Fi Công Ty</span>
+            </div>
+            <h4 class="text-sm font-extrabold text-slate-900">Gửi Link Web Xem Sổ Nợ Trực Tuyến</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Gửi đường link này vào nhóm Zalo. Mọi người bấm vào link là xem được ngay bảng tiền của cả công ty và bấm vào tên mình để xem bill + quét QR.
+            </p>
+            <div class="p-2 bg-white rounded-xl border border-purple-200 font-mono text-xs font-extrabold text-purple-800 text-center select-all" id="publicShareLanUrlText">
+              http://192.168.1.91:8080/sono
+            </div>
+          </div>
+          <div class="space-y-1.5 pt-1">
+            <button type="button" onclick="copyPublicShareZaloMessage()" class="w-full py-2.5 px-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-extrabold shadow-sm transition flex items-center justify-center gap-1.5">
+              <i class="fa-regular fa-copy"></i>
+              <span>Copy Tin Nhắn + Link Gửi Nhóm Zalo</span>
+            </button>
+            <a href="/sono" target="_blank" id="btnPreviewPublicViewer" class="w-full py-2 px-3 bg-white hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              <span>Mở Xem Thử Trang Của Mọi Người</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- CÁCH 2: TẢI FILE SỔ NỢ GỬI ZALO (MỞ ĐƯỢC BẰNG 4G / Ở NHÀ) -->
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50/70 border-2 border-orange-200 space-y-3 flex flex-col justify-between">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full bg-orange-600 text-white text-[10px] font-extrabold uppercase">Cách 2 • Xem Mọi Nơi (4G/Ở nhà)</span>
+              <span class="text-[11px] font-bold text-orange-700"><i class="fa-solid fa-mobile-screen-button mr-1"></i>Độc lập 100%</span>
+            </div>
+            <h4 class="text-sm font-extrabold text-slate-900">Tải File Sổ Nợ Tương Tác &amp; File Excel Đẹp</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Tải <strong>File Sổ Nợ Tra Cứu (.html)</strong> và <strong>File Excel Chốt Sổ Mẫu Mới (.xlsx)</strong> rồi thả vào nhóm Zalo. Ai dùng 4G hay ở nhà mở lên cũng tự bấm vào tên mình xem hóa đơn + mã QR được hết!
+            </p>
+          </div>
+          <div class="space-y-1.5 pt-1">
+            <button type="button" onclick="downloadStandalonePublicViewerHtml()" class="w-full py-2.5 px-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-xl text-xs font-extrabold shadow-sm transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-download"></i>
+              <span>Tải File Sổ Nợ Gửi Zalo (Tự bấm tên + QR)</span>
+            </button>
+            <button type="button" onclick="quickExportSalaryCycleExcel()" class="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold shadow-xs transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-file-excel"></i>
+              <span>Xuất Ngay File Excel Mẫu Mới Đẹp (.xlsx)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Khung xem trước tin nhắn gửi nhóm Zalo -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between">
+          <label class="text-xs font-extrabold text-slate-700">📋 Mẫu tin nhắn thông báo gửi vào nhóm Zalo công ty:</label>
+          <button type="button" onclick="copyPublicShareZaloMessage()" class="text-xs font-bold text-purple-600 hover:underline flex items-center gap-1">
+            <i class="fa-regular fa-copy"></i> Copy nội dung này
+          </button>
+        </div>
+        <textarea id="publicShareZaloText" rows="5" class="w-full p-3 rounded-2xl bg-slate-50 border border-slate-300 text-xs font-mono text-slate-800 focus:outline-none" readonly></textarea>
+      </div>
+
+      <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
+        <span><i class="fa-solid fa-shield-halved text-emerald-600 mr-1"></i>Chế độ <strong>Chỉ Xem (Read-Only)</strong>: Mọi người chỉ xem được hóa đơn &amp; quét QR, không ai tự sửa/xóa được dữ liệu của bạn.</span>
+        <button type="button" onclick="closeModal('publicShareModal')" class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition shrink-0">
           Đóng
         </button>
       </div>
@@ -3509,7 +3608,8 @@
         "4": 18000,
         "6": 18000,
         "7": 18000,
-        "10": 18000
+        "10": 18000,
+        "11": 18000
       },
       "items": {
         "2": [
@@ -3581,6 +3681,20 @@
             "total": 18000,
             "createdAt": "2026-11-10T02:11:45.285Z"
           }
+        ],
+        "11": [
+          {
+            "id": "ord_1794363312080_drp8",
+            "name": "Cf sữa đá",
+            "basePrice": 18000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 18000,
+            "qty": 1,
+            "note": "Ít sữa",
+            "total": 18000,
+            "createdAt": "2026-11-11T02:15:12.080Z"
+          }
         ]
       }
     },
@@ -3629,7 +3743,8 @@
         "4": 20000,
         "6": 20000,
         "7": 30000,
-        "9": 25000
+        "9": 25000,
+        "11": 12000
       },
       "items": {
         "2": [
@@ -3714,6 +3829,20 @@
             "note": "Bình thường, Bth",
             "total": 25000,
             "createdAt": "2026-11-09T02:16:35.625Z"
+          }
+        ],
+        "11": [
+          {
+            "id": "ord_1794363342057_hs4o",
+            "name": "Nước chanh",
+            "basePrice": 12000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 12000,
+            "qty": 1,
+            "note": "Ngọt",
+            "total": 12000,
+            "createdAt": "2026-11-11T02:15:42.057Z"
           }
         ]
       }
@@ -3815,7 +3944,8 @@
         "4": 25000,
         "7": 25000,
         "9": 25000,
-        "10": 37000
+        "10": 37000,
+        "11": 25000
       },
       "items": {
         "2": [
@@ -3913,6 +4043,20 @@
             "total": 12000,
             "createdAt": "2026-11-10T02:10:35.347Z"
           }
+        ],
+        "11": [
+          {
+            "id": "ord_1794363420294_bkvi",
+            "name": "Sinh tố Mãng Cầu",
+            "basePrice": 25000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 25000,
+            "qty": 1,
+            "note": "",
+            "total": 25000,
+            "createdAt": "2026-11-11T02:17:00.294Z"
+          }
         ]
       }
     },
@@ -3920,6 +4064,7 @@
       "paid": false,
       "days": {
         "3": 25000,
+        "5": 25000,
         "7": 25000,
         "9": 25000
       },
@@ -3964,6 +4109,20 @@
             "note": "Bình thường",
             "total": 25000,
             "createdAt": "2026-11-09T02:12:08.111Z"
+          }
+        ],
+        "5": [
+          {
+            "id": "ord_1793845387027_6qci",
+            "name": "Latte Cacao Cafe",
+            "basePrice": 25000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 25000,
+            "qty": 1,
+            "note": "Bình thường",
+            "total": 25000,
+            "createdAt": "2026-11-05T02:23:07.027Z"
           }
         ]
       }
@@ -4026,7 +4185,8 @@
         "4": 30000,
         "6": 30000,
         "9": 30000,
-        "10": 30000
+        "10": 30000,
+        "11": 30000
       },
       "items": {
         "4": [
@@ -4132,6 +4292,32 @@
             "total": 18000,
             "createdAt": "2026-11-10T02:06:47.796Z"
           }
+        ],
+        "11": [
+          {
+            "id": "ord_1794364396308_vx7d",
+            "name": "Cf sữa đá",
+            "basePrice": 18000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 18000,
+            "qty": 1,
+            "note": "Ít sữa ít đá",
+            "total": 18000,
+            "createdAt": "2026-11-11T02:33:16.308Z"
+          },
+          {
+            "id": "ord_1794364399122_c8y2",
+            "name": "Nước chanh đường",
+            "basePrice": 12000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 12000,
+            "qty": 1,
+            "note": "",
+            "total": 12000,
+            "createdAt": "2026-11-11T02:33:19.122Z"
+          }
         ]
       }
     },
@@ -4197,7 +4383,8 @@
     "Khoa": {
       "paid": false,
       "days": {
-        "4": 20000
+        "4": 20000,
+        "11": 18000
       },
       "items": {
         "4": [
@@ -4213,6 +4400,20 @@
             "total": 20000,
             "createdAt": "2026-11-04T02:20:06.000Z"
           }
+        ],
+        "11": [
+          {
+            "id": "ord_1794363365840_o5df",
+            "name": "Cf sữa đá",
+            "basePrice": 18000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 18000,
+            "qty": 1,
+            "note": "Ít đá",
+            "total": 18000,
+            "createdAt": "2026-11-11T02:16:05.840Z"
+          }
         ]
       }
     },
@@ -4220,7 +4421,8 @@
       "paid": false,
       "days": {
         "4": 12000,
-        "6": 12000
+        "6": 12000,
+        "11": 18000
       },
       "items": {
         "4": [
@@ -4250,13 +4452,28 @@
             "total": 12000,
             "createdAt": "2026-11-06T04:20:00.000Z"
           }
+        ],
+        "11": [
+          {
+            "id": "ord_1794363321051_lzz4",
+            "name": "Cf sữa đá",
+            "basePrice": 18000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 18000,
+            "qty": 1,
+            "note": "",
+            "total": 18000,
+            "createdAt": "2026-11-11T02:15:21.051Z"
+          }
         ]
       }
     },
     "Na Na": {
       "paid": false,
       "days": {
-        "3": 20000
+        "3": 20000,
+        "11": 18000
       },
       "items": {
         "3": [
@@ -4271,6 +4488,20 @@
             "note": "",
             "total": 20000,
             "createdAt": "2026-11-03T04:20:00.000Z"
+          }
+        ],
+        "11": [
+          {
+            "id": "ord_1794363387724_3z0w",
+            "name": "Cf sữa đá",
+            "basePrice": 18000,
+            "toppings": [],
+            "toppingsPrice": 0,
+            "singlePrice": 18000,
+            "qty": 1,
+            "note": "nhiều sữa",
+            "total": 18000,
+            "createdAt": "2026-11-11T02:16:27.724Z"
           }
         ]
       }
@@ -4558,7 +4789,7 @@
 
         // Phím Escape để đóng các Modal đang mở
         if (e.key === 'Escape') {
-          ['editOrderItemModal', 'dayCellModal', 'singleDebtModal', 'groupDebtModal', 'menuItemModal', 'memberModal', 'favoriteModal', 'exportReportModal', 'lanQrModal'].forEach(mId => {
+          ['editOrderItemModal', 'dayCellModal', 'singleDebtModal', 'groupDebtModal', 'menuItemModal', 'memberModal', 'favoriteModal', 'exportReportModal', 'lanQrModal', 'publicShareModal'].forEach(mId => {
             const el = document.getElementById(mId);
             if (el && !el.classList.contains('hidden')) {
               el.classList.add('hidden');
@@ -8939,72 +9170,537 @@
       }
 
       const wb = XLSX.utils.book_new();
+      const fmtDateVN = (s) => {
+        if (!s || !s.includes('-')) return s;
+        const [y, m, d] = s.split('-');
+        return `${d}/${m}/${y}`;
+      };
+      const periodLabel = `${fmtDateVN(startStr)} → ${fmtDateVN(endStr)}`;
+      const bankInfoStr = `CHUYỂN KHOẢN THANH TOÁN: TPBank • STK: 02897118301 • Chủ TK: TRAN NGOC DAO`;
 
-      const matrixHeaders = ["STT", "Con nợ"];
-      data.dateList.forEach(d => matrixHeaders.push(d.label));
-      matrixHeaders.push("Tổng Tiền (VNĐ)", "Số Ly", "Trạng Thái");
+      // Bộ khung viền & bảng màu chuẩn chuyên nghiệp (xlsx-js-style)
+      const borderThin = {
+        top: { style: "thin", color: { rgb: "CBD5E1" } },
+        bottom: { style: "thin", color: { rgb: "CBD5E1" } },
+        left: { style: "thin", color: { rgb: "CBD5E1" } },
+        right: { style: "thin", color: { rgb: "CBD5E1" } }
+      };
+      const borderHeader = {
+        top: { style: "medium", color: { rgb: "1E293B" } },
+        bottom: { style: "medium", color: { rgb: "1E293B" } },
+        left: { style: "thin", color: { rgb: "475569" } },
+        right: { style: "thin", color: { rgb: "475569" } }
+      };
+      const borderTotal = {
+        top: { style: "medium", color: { rgb: "C2410C" } },
+        bottom: { style: "double", color: { rgb: "C2410C" } },
+        left: { style: "thin", color: { rgb: "FDBA74" } },
+        right: { style: "thin", color: { rgb: "FDBA74" } }
+      };
 
-      const matrixRows = [];
-      const dailyColSums = Array(data.dateList.length).fill(0);
+      const styleBannerTitle = {
+        font: { name: "Arial", sz: 15, bold: true, color: { rgb: "FFFFFF" } },
+        fill: { fgColor: { rgb: "7C2D12" } },
+        alignment: { horizontal: "center", vertical: "center" }
+      };
+      const styleBannerSub = {
+        font: { name: "Arial", sz: 10, bold: true, color: { rgb: "9A3412" } },
+        fill: { fgColor: { rgb: "FFEDD5" } },
+        alignment: { horizontal: "center", vertical: "center" },
+        border: borderThin
+      };
+      const styleBannerBank = {
+        font: { name: "Arial", sz: 11, bold: true, color: { rgb: "581C87" } },
+        fill: { fgColor: { rgb: "F3E8FF" } },
+        alignment: { horizontal: "center", vertical: "center" },
+        border: borderThin
+      };
+      const styleTableHeader = {
+        font: { name: "Arial", sz: 10, bold: true, color: { rgb: "FFFFFF" } },
+        fill: { fgColor: { rgb: "1E293B" } },
+        alignment: { horizontal: "center", vertical: "center", wrapText: true },
+        border: borderHeader
+      };
+      const styleTableHeaderAmber = {
+        font: { name: "Arial", sz: 10, bold: true, color: { rgb: "FFFFFF" } },
+        fill: { fgColor: { rgb: "C2410C" } },
+        alignment: { horizontal: "center", vertical: "center", wrapText: true },
+        border: borderHeader
+      };
 
-      data.membersToInclude.forEach((member, idx) => {
+      // =========================================================================
+      // SHEET 1: 1. CHỐT TIỀN TỪNG NGƯỜI (BẢNG TỔNG HỢP GỬI NHÓM ZALO RÕ RÀNG NHẤT)
+      // =========================================================================
+      const summaryAoA = [
+        ["BẢNG CHỐT TIỀN NƯỚC CÔNG TY - CÔ BA CAFE", "", "", "", "", "", "", "", ""],
+        [`Kỳ thống kê: ${periodLabel}  •  Tổng cộng: ${formatVND(data.grandTotal)} (${data.grandQty} ly)`, "", "", "", "", "", "", "", ""],
+        [bankInfoStr, "", "", "", "", "", "", "", ""],
+        ["STT", "Nhân Viên", "Biệt Danh", "Số Ngày Uống", "Tổng Số Ly", "Tổng Tiền Cần Đóng (VNĐ)", "Trạng Thái", "Chi Tiết Từng Ngày & Món Đã Chọn", "Nội Dung Chuyển Khoản"]
+      ];
+
+      // Chuẩn bị dữ liệu từng nhân viên có phát sinh tiền (hoặc toàn bộ nếu lọc 1 người)
+      const memberSummaryRecords = [];
+      data.membersToInclude.forEach(member => {
         const mData = data.memberMatrixData[member];
-        const row = [idx + 1, member];
+        const aliasArr = (appState.memberAliases && appState.memberAliases[member]) || MEMBER_ALIASES[member] || [];
+        const aliasStr = aliasArr.length > 0 ? aliasArr[0] : "";
 
-        data.dateList.forEach((d, colIdx) => {
+        // Gom chi tiết từng ngày của nhân viên này
+        const dayBreakdowns = [];
+        let activeDaysCount = 0;
+        data.dateList.forEach(d => {
+          const mObj = appState.ordersData[d.monthKey]?.[member];
+          if (!mObj) return;
+          const dAmt = mObj.days?.[d.dayNum] || 0;
+          const dItems = mObj.items?.[d.dayNum] || [];
+          if (dAmt > 0 || dItems.length > 0) {
+            activeDaysCount++;
+            if (dItems.length > 0) {
+              const itemsText = dItems.map(it => {
+                const n = it.note ? ` (${it.note})` : '';
+                return `${it.qty > 1 ? it.qty + 'x ' : ''}${it.name}${n}`;
+              }).join(', ');
+              dayBreakdowns.push(`• ${d.label}: ${itemsText} (${Math.round(dAmt / 1000)}k)`);
+            } else {
+              dayBreakdowns.push(`• ${d.label}: ${Math.round(dAmt / 1000)}k`);
+            }
+          }
+        });
+
+        if (mData.total > 0 || data.membersToInclude.length === 1) {
+          memberSummaryRecords.push({
+            member,
+            aliasStr,
+            activeDaysCount,
+            qty: mData.qty,
+            total: mData.total,
+            paid: mData.paid,
+            breakdownText: dayBreakdowns.join('\n'),
+            transferNote: `Tien nuoc ${member} ${Math.round(mData.total / 1000)}k`
+          });
+        }
+      });
+
+      // Sắp xếp từ người nhiều tiền nhất xuống thấp nhất
+      memberSummaryRecords.sort((a, b) => b.total - a.total);
+
+      let totalActiveDaysSum = 0;
+      memberSummaryRecords.forEach((rec, idx) => {
+        totalActiveDaysSum += rec.activeDaysCount;
+        summaryAoA.push([
+          idx + 1,
+          rec.member,
+          rec.aliasStr,
+          rec.activeDaysCount,
+          rec.qty,
+          rec.total,
+          rec.paid ? "Đã thanh toán" : "Chưa trả",
+          rec.breakdownText,
+          rec.transferNote
+        ]);
+      });
+
+      summaryAoA.push([
+        "",
+        "TỔNG CỘNG TOÀN CÔNG TY",
+        "",
+        totalActiveDaysSum,
+        data.grandQty,
+        data.grandTotal,
+        "",
+        `Tổng số người đặt: ${memberSummaryRecords.length} người`,
+        "TPBank: 02897118301 (TRAN NGOC DAO)"
+      ]);
+
+      const wsSummary = XLSX.utils.aoa_to_sheet(summaryAoA);
+      wsSummary['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 8 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 8 } },
+        { s: { r: 2, c: 0 }, e: { r: 2, c: 8 } }
+      ];
+      wsSummary['!cols'] = [
+        { wch: 6 },   // STT
+        { wch: 18 },  // Nhân Viên
+        { wch: 13 },  // Biệt Danh
+        { wch: 14 },  // Số Ngày Uống
+        { wch: 13 },  // Tổng Số Ly
+        { wch: 24 },  // Tổng Tiền Cần Đóng
+        { wch: 16 },  // Trạng Thái
+        { wch: 58 },  // Chi Tiết Từng Ngày & Món Đã Chọn
+        { wch: 28 }   // Nội Dung CK
+      ];
+      wsSummary['!rows'] = [
+        { hpt: 32 },
+        { hpt: 22 },
+        { hpt: 24 },
+        { hpt: 28 }
+      ];
+
+      // Áp dụng style cho Sheet 1
+      for (let c = 0; c <= 8; c++) {
+        const ref0 = XLSX.utils.encode_cell({ r: 0, c });
+        const ref1 = XLSX.utils.encode_cell({ r: 1, c });
+        const ref2 = XLSX.utils.encode_cell({ r: 2, c });
+        const ref3 = XLSX.utils.encode_cell({ r: 3, c });
+        if (wsSummary[ref0]) wsSummary[ref0].s = styleBannerTitle;
+        if (wsSummary[ref1]) wsSummary[ref1].s = styleBannerSub;
+        if (wsSummary[ref2]) wsSummary[ref2].s = styleBannerBank;
+        if (wsSummary[ref3]) wsSummary[ref3].s = (c === 5) ? styleTableHeaderAmber : styleTableHeader;
+      }
+
+      const summaryStartRow = 4;
+      memberSummaryRecords.forEach((rec, idx) => {
+        const r = summaryStartRow + idx;
+        const isEven = idx % 2 === 1;
+        const rowBg = rec.paid ? "ECFDF5" : (isEven ? "F8FAFC" : "FFFFFF");
+        const lineCount = Math.max(1, (rec.breakdownText.match(/\n/g) || []).length + 1);
+        wsSummary['!rows'][r] = { hpt: Math.max(24, Math.min(130, lineCount * 15 + 8)) };
+
+        for (let c = 0; c <= 8; c++) {
+          const cellRef = XLSX.utils.encode_cell({ r, c });
+          if (!wsSummary[cellRef]) continue;
+
+          let alignH = "center";
+          let bold = false;
+          let colorRgb = "1E293B";
+          let cellFill = rowBg;
+          let numFmt = undefined;
+
+          if (c === 1) { alignH = "left"; bold = true; colorRgb = "0F172A"; }
+          else if (c === 2) { alignH = "center"; colorRgb = "C2410C"; bold = true; }
+          else if (c === 3 || c === 4) { alignH = "center"; bold = true; colorRgb = "1D4ED8"; }
+          else if (c === 5) {
+            alignH = "right";
+            bold = true;
+            colorRgb = "B45309";
+            cellFill = "FEF3C7";
+            numFmt = '#,##0 "đ"';
+          } else if (c === 6) {
+            alignH = "center";
+            bold = true;
+            if (rec.paid) {
+              colorRgb = "047857";
+              cellFill = "D1FAE5";
+            } else {
+              colorRgb = "BE123C";
+              cellFill = "FFE4E6";
+            }
+          } else if (c === 7) {
+            alignH = "left";
+            colorRgb = "334155";
+          } else if (c === 8) {
+            alignH = "left";
+            colorRgb = "6D28D9";
+          }
+
+          wsSummary[cellRef].s = {
+            font: { name: "Arial", sz: 10, bold, color: { rgb: colorRgb } },
+            fill: { fgColor: { rgb: cellFill } },
+            alignment: { horizontal: alignH, vertical: "center", wrapText: true },
+            border: borderThin
+          };
+          if (numFmt) wsSummary[cellRef].s.numFmt = numFmt;
+        }
+      });
+
+      // Dòng tổng cộng Sheet 1
+      const sumTotalRowIdx = summaryStartRow + memberSummaryRecords.length;
+      wsSummary['!rows'][sumTotalRowIdx] = { hpt: 28 };
+      for (let c = 0; c <= 8; c++) {
+        const cellRef = XLSX.utils.encode_cell({ r: sumTotalRowIdx, c });
+        if (!wsSummary[cellRef]) continue;
+        wsSummary[cellRef].s = {
+          font: { name: "Arial", sz: 11, bold: true, color: { rgb: c === 5 ? "9A3412" : "0F172A" } },
+          fill: { fgColor: { rgb: "FDE68A" } },
+          alignment: { horizontal: c === 5 ? "right" : (c === 1 || c === 7 || c === 8 ? "left" : "center"), vertical: "center" },
+          border: borderTotal
+        };
+        if (c === 5) wsSummary[cellRef].s.numFmt = '#,##0 "đ"';
+      }
+
+      // =========================================================================
+      // SHEET 2: 2. SỔ NỢ MA TRẬN THEO NGÀY (CHỈ HIỆN CÁC NGÀY CÓ ĐƠN CHO GỌN ĐẸP)
+      // =========================================================================
+      const activeDates = data.dateList.filter(d => {
+        return data.membersToInclude.some(m => (data.memberMatrixData[m]?.days?.[d.fullDate] || 0) > 0);
+      });
+      const matrixColsToUse = activeDates.length > 0 ? activeDates : data.dateList;
+      const totalMatrixCols = 2 + matrixColsToUse.length + 3; // STT, Nhân Viên, ...ngày..., Tổng Tiền, Số Ly, Trạng Thái
+
+      const padRow = (arr) => {
+        const res = [...arr];
+        while (res.length < totalMatrixCols) res.push("");
+        return res;
+      };
+
+      const matrixHeaderRow = ["STT", "Nhân Viên"];
+      matrixColsToUse.forEach(d => matrixHeaderRow.push(d.label));
+      matrixHeaderRow.push("Tổng Tiền (VNĐ)", "Tổng Ly", "Trạng Thái");
+
+      const matrixAoA = [
+        padRow(["BẢNG MA TRẬN TIỀN NƯỚC THEO NGÀY - CÔ BA CAFE"]),
+        padRow([`Kỳ thống kê: ${periodLabel}  •  ${bankInfoStr}`]),
+        matrixHeaderRow
+      ];
+
+      const dailyColSums = Array(matrixColsToUse.length).fill(0);
+      const dailyColCups = Array(matrixColsToUse.length).fill(0);
+
+      // Sắp xếp danh sách nhân viên: người có uống lên trên
+      const sortedMatrixMembers = [...data.membersToInclude].sort((a, b) => {
+        const diff = (data.memberMatrixData[b]?.total || 0) - (data.memberMatrixData[a]?.total || 0);
+        return diff !== 0 ? diff : a.localeCompare(b, 'vi');
+      });
+
+      sortedMatrixMembers.forEach((member, idx) => {
+        const mData = data.memberMatrixData[member];
+        const aliasArr = (appState.memberAliases && appState.memberAliases[member]) || MEMBER_ALIASES[member] || [];
+        const dispName = aliasArr.length > 0 ? `${member} (${aliasArr[0]})` : member;
+        const row = [idx + 1, dispName];
+
+        matrixColsToUse.forEach((d, colIdx) => {
           const val = mData.days[d.fullDate] || 0;
           dailyColSums[colIdx] += val;
+          const itemsArr = appState.ordersData[d.monthKey]?.[member]?.items?.[d.dayNum] || [];
+          let cCount = 0;
+          itemsArr.forEach(it => cCount += (it.qty || 1));
+          if (val > 0 && cCount === 0) cCount = 1;
+          dailyColCups[colIdx] += cCount;
+
           row.push(val > 0 ? val : "");
         });
 
-        row.push(mData.total, mData.qty, mData.paid ? "Đã trả" : "Chưa trả");
-        matrixRows.push(row);
+        row.push(mData.total, mData.qty, mData.paid ? "Đã trả" : (mData.total > 0 ? "Chưa trả" : "-"));
+        matrixAoA.push(row);
       });
 
-      const totalRow = ["", "Tổng ngày"];
-      dailyColSums.forEach(sum => totalRow.push(sum > 0 ? sum : ""));
-      totalRow.push(data.grandTotal, data.grandQty, "");
-      matrixRows.push(totalRow);
+      const totalDayMoneyRow = ["", "TỔNG TIỀN NGÀY"];
+      dailyColSums.forEach(sum => totalDayMoneyRow.push(sum > 0 ? sum : 0));
+      totalDayMoneyRow.push(data.grandTotal, data.grandQty, "");
+      matrixAoA.push(totalDayMoneyRow);
 
-      const wsMatrix = XLSX.utils.aoa_to_sheet([matrixHeaders, ...matrixRows]);
+      const totalDayCupRow = ["", "TỔNG SỐ LY NGÀY"];
+      dailyColCups.forEach(c => totalDayCupRow.push(c > 0 ? c : 0));
+      totalDayCupRow.push("", data.grandQty, "");
+      matrixAoA.push(totalDayCupRow);
 
-      const detailHeaders = ["STT", "Ngày", "Người Đặt", "Tên Món", "Topping", "Ghi Chú", "Đơn Giá (VNĐ)", "Số Lượng", "Thành Tiền (VNĐ)"];
-      const detailRows = [];
+      const wsMatrix = XLSX.utils.aoa_to_sheet(matrixAoA);
+      wsMatrix['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: totalMatrixCols - 1 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: totalMatrixCols - 1 } }
+      ];
+
+      const matrixColWidths = [
+        { wch: 6 },
+        { wch: 22 }
+      ];
+      matrixColsToUse.forEach(() => matrixColWidths.push({ wch: 11 }));
+      matrixColWidths.push({ wch: 18 }, { wch: 10 }, { wch: 14 });
+      wsMatrix['!cols'] = matrixColWidths;
+      wsMatrix['!rows'] = [
+        { hpt: 30 },
+        { hpt: 22 },
+        { hpt: 26 }
+      ];
+
+      for (let c = 0; c < totalMatrixCols; c++) {
+        const r0 = XLSX.utils.encode_cell({ r: 0, c });
+        const r1 = XLSX.utils.encode_cell({ r: 1, c });
+        const r2 = XLSX.utils.encode_cell({ r: 2, c });
+        if (wsMatrix[r0]) wsMatrix[r0].s = styleBannerTitle;
+        if (wsMatrix[r1]) wsMatrix[r1].s = styleBannerSub;
+        if (wsMatrix[r2]) {
+          wsMatrix[r2].s = (c === totalMatrixCols - 3) ? styleTableHeaderAmber : styleTableHeader;
+        }
+      }
+
+      const matrixStartRow = 3;
+      sortedMatrixMembers.forEach((member, idx) => {
+        const r = matrixStartRow + idx;
+        const mData = data.memberMatrixData[member];
+        wsMatrix['!rows'][r] = { hpt: 21 };
+        const isZero = mData.total === 0;
+        const baseFill = isZero ? "F8FAFC" : (idx % 2 === 1 ? "FFFBEB" : "FFFFFF");
+
+        for (let c = 0; c < totalMatrixCols; c++) {
+          const ref = XLSX.utils.encode_cell({ r, c });
+          if (!wsMatrix[ref]) continue;
+          const val = wsMatrix[ref].v;
+          let alignH = "center";
+          let bold = false;
+          let fg = baseFill;
+          let color = isZero ? "94A3B8" : "1E293B";
+          let numFmt = undefined;
+
+          if (c === 1) {
+            alignH = "left";
+            bold = !isZero;
+            color = isZero ? "94A3B8" : "0F172A";
+          } else if (c >= 2 && c < 2 + matrixColsToUse.length) {
+            alignH = "right";
+            if (typeof val === 'number' && val > 0) {
+              bold = true;
+              fg = "FEF3C7";
+              color = "9A3412";
+              numFmt = "#,##0";
+            }
+          } else if (c === totalMatrixCols - 3) {
+            alignH = "right";
+            bold = true;
+            fg = isZero ? "F8FAFC" : "FFEDD5";
+            color = isZero ? "94A3B8" : "C2410C";
+            numFmt = "#,##0";
+          } else if (c === totalMatrixCols - 2) {
+            alignH = "center";
+            bold = !isZero;
+            color = isZero ? "94A3B8" : "1D4ED8";
+          } else if (c === totalMatrixCols - 1) {
+            alignH = "center";
+            bold = true;
+            if (mData.paid) { fg = "D1FAE5"; color = "047857"; }
+            else if (mData.total > 0) { fg = "FFE4E6"; color = "BE123C"; }
+          }
+
+          wsMatrix[ref].s = {
+            font: { name: "Arial", sz: 10, bold, color: { rgb: color } },
+            fill: { fgColor: { rgb: fg } },
+            alignment: { horizontal: alignH, vertical: "center" },
+            border: borderThin
+          };
+          if (numFmt) wsMatrix[ref].s.numFmt = numFmt;
+        }
+      });
+
+      const footMoneyR = matrixStartRow + sortedMatrixMembers.length;
+      const footCupR = footMoneyR + 1;
+      wsMatrix['!rows'][footMoneyR] = { hpt: 25 };
+      wsMatrix['!rows'][footCupR] = { hpt: 22 };
+
+      for (let c = 0; c < totalMatrixCols; c++) {
+        const refM = XLSX.utils.encode_cell({ r: footMoneyR, c });
+        if (wsMatrix[refM]) {
+          wsMatrix[refM].s = {
+            font: { name: "Arial", sz: 10, bold: true, color: { rgb: "7C2D12" } },
+            fill: { fgColor: { rgb: "FDE68A" } },
+            alignment: { horizontal: (c >= 2 && c <= totalMatrixCols - 3) ? "right" : "center", vertical: "center" },
+            border: borderTotal,
+            numFmt: (c >= 2 && c <= totalMatrixCols - 3) ? "#,##0" : undefined
+          };
+        }
+        const refC = XLSX.utils.encode_cell({ r: footCupR, c });
+        if (wsMatrix[refC]) {
+          wsMatrix[refC].s = {
+            font: { name: "Arial", sz: 10, bold: true, color: { rgb: "1E3A8A" } },
+            fill: { fgColor: { rgb: "DBEAFE" } },
+            alignment: { horizontal: "center", vertical: "center" },
+            border: borderThin
+          };
+        }
+      }
+
+      // =========================================================================
+      // SHEET 3: 3. CHI TIẾT TỪNG MÓN THEO NGÀY
+      // =========================================================================
+      const detailAoA = [
+        ["NHẬT KÝ CHI TIẾT TỪNG MÓN ĐÃ ĐẶT THEO NGÀY - CÔ BA CAFE", "", "", "", "", "", "", ""],
+        [`Kỳ thống kê: ${periodLabel}  •  Tổng số ly: ${data.grandQty} ly  •  Tổng tiền: ${formatVND(data.grandTotal)}`, "", "", "", "", "", "", ""],
+        ["STT", "Ngày Uống", "Nhân Viên", "Tên Món Nước", "Ghi Chú (Đá / Ngọt / Khác)", "Số Lượng", "Đơn Giá (VNĐ)", "Thành Tiền (VNĐ)"]
+      ];
+
       data.detailedList.forEach((it, idx) => {
-        detailRows.push([
+        detailAoA.push([
           idx + 1,
-          it.date,
+          fmtDateVN(it.date),
           it.member,
           it.name,
-          it.toppings,
-          it.note,
-          it.singlePrice,
+          [it.note, it.toppings].filter(Boolean).join(' • '),
           it.qty,
+          it.singlePrice,
           it.total
         ]);
       });
-      detailRows.push(["", "", "TỔNG CỘNG", "", "", "", "", data.grandQty, data.grandTotal]);
+      detailAoA.push(["", "", "TỔNG CỘNG TOÀN BỘ", "", "", data.grandQty, "", data.grandTotal]);
 
-      const wsDetail = XLSX.utils.aoa_to_sheet([detailHeaders, ...detailRows]);
+      const wsDetail = XLSX.utils.aoa_to_sheet(detailAoA);
+      wsDetail['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 7 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 7 } }
+      ];
+      wsDetail['!cols'] = [
+        { wch: 7 },
+        { wch: 14 },
+        { wch: 18 },
+        { wch: 28 },
+        { wch: 28 },
+        { wch: 11 },
+        { wch: 16 },
+        { wch: 18 }
+      ];
+      wsDetail['!rows'] = [{ hpt: 30 }, { hpt: 22 }, { hpt: 26 }];
 
-      if (reportType === 'DETAILED') {
-        XLSX.utils.book_append_sheet(wb, wsDetail, "Chi Tiết Đơn Đặt");
-        XLSX.utils.book_append_sheet(wb, wsMatrix, "Sổ Nợ Ma Trận");
-      } else {
-        XLSX.utils.book_append_sheet(wb, wsMatrix, "Sổ Nợ Ma Trận");
-        XLSX.utils.book_append_sheet(wb, wsDetail, "Chi Tiết Đơn Đặt");
+      for (let c = 0; c <= 7; c++) {
+        const r0 = XLSX.utils.encode_cell({ r: 0, c });
+        const r1 = XLSX.utils.encode_cell({ r: 1, c });
+        const r2 = XLSX.utils.encode_cell({ r: 2, c });
+        if (wsDetail[r0]) wsDetail[r0].s = styleBannerTitle;
+        if (wsDetail[r1]) wsDetail[r1].s = styleBannerSub;
+        if (wsDetail[r2]) wsDetail[r2].s = (c === 7) ? styleTableHeaderAmber : styleTableHeader;
       }
 
-      const menuRows = [["STT", "Tên Món", "Danh Mục", "Đơn Giá"]];
-      appState.menu.forEach((m, mIdx) => {
-        menuRows.push([mIdx + 1, m.name, m.category, m.price]);
+      const detailStartRow = 3;
+      data.detailedList.forEach((it, idx) => {
+        const r = detailStartRow + idx;
+        wsDetail['!rows'][r] = { hpt: 21 };
+        const rowBg = idx % 2 === 1 ? "F8FAFC" : "FFFFFF";
+        for (let c = 0; c <= 7; c++) {
+          const ref = XLSX.utils.encode_cell({ r, c });
+          if (!wsDetail[ref]) continue;
+          const isMoney = (c === 6 || c === 7);
+          wsDetail[ref].s = {
+            font: { name: "Arial", sz: 10, bold: (c === 2 || c === 7), color: { rgb: c === 7 ? "B45309" : "1E293B" } },
+            fill: { fgColor: { rgb: c === 7 ? "FEF3C7" : rowBg } },
+            alignment: { horizontal: isMoney ? "right" : (c === 0 || c === 1 || c === 5 ? "center" : "left"), vertical: "center" },
+            border: borderThin,
+            numFmt: isMoney ? '#,##0 "đ"' : undefined
+          };
+        }
       });
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(menuRows), "Menu Tham Chiếu");
 
-      const fileName = `BAO_CAO_DAT_NUOC_TU_${startStr}_DEN_${endStr}.xlsx`;
+      const detailTotalR = detailStartRow + data.detailedList.length;
+      wsDetail['!rows'][detailTotalR] = { hpt: 26 };
+      for (let c = 0; c <= 7; c++) {
+        const ref = XLSX.utils.encode_cell({ r: detailTotalR, c });
+        if (!wsDetail[ref]) continue;
+        wsDetail[ref].s = {
+          font: { name: "Arial", sz: 11, bold: true, color: { rgb: "7C2D12" } },
+          fill: { fgColor: { rgb: "FDE68A" } },
+          alignment: { horizontal: c === 7 ? "right" : "center", vertical: "center" },
+          border: borderTotal,
+          numFmt: c === 7 ? '#,##0 "đ"' : undefined
+        };
+      }
+
+      if (reportType === 'DETAILED') {
+        XLSX.utils.book_append_sheet(wb, wsDetail, "1. Chi Tiết Từng Món");
+        XLSX.utils.book_append_sheet(wb, wsSummary, "2. Chốt Tiền Từng Người");
+        XLSX.utils.book_append_sheet(wb, wsMatrix, "3. Sổ Nợ Ma Trận");
+      } else {
+        XLSX.utils.book_append_sheet(wb, wsSummary, "1. Chốt Tiền Từng Người");
+        XLSX.utils.book_append_sheet(wb, wsMatrix, "2. Sổ Nợ Ma Trận");
+        XLSX.utils.book_append_sheet(wb, wsDetail, "3. Chi Tiết Từng Món");
+      }
+
+      const fileName = `BANG_CHOT_TIEN_NUOC_CO_BA_${startStr}_DEN_${endStr}.xlsx`;
       XLSX.writeFile(wb, fileName);
       closeModal('exportReportModal');
-      showToast(`Đã xuất file Excel: ${fileName}!`, "success");
+      showToast(`Đã xuất file Excel mẫu mới đẹp: ${fileName}!`, "success");
+    }
+
+    function quickExportSalaryCycleExcel() {
+      document.getElementById('exportStartDate').value = '2026-10-11';
+      document.getElementById('exportEndDate').value = '2026-11-10';
+      document.getElementById('exportMemberFilter').value = 'ALL';
+      executeExportExcel();
     }
 
     function executeExportCSV() {
@@ -9432,6 +10128,74 @@
     function closeModal(modalId) {
       const el = document.getElementById(modalId);
       if (el) el.classList.add('hidden');
+    }
+
+    function openPublicShareModal() {
+      const origin = (window.location && window.location.origin && window.location.origin.startsWith('http'))
+        ? window.location.origin
+        : 'http://192.168.1.91:8080';
+      const shareUrl = `${origin}/sono`;
+      const urlEl = document.getElementById('publicShareLanUrlText');
+      if (urlEl) urlEl.innerText = shareUrl;
+      const previewBtn = document.getElementById('btnPreviewPublicViewer');
+      if (previewBtn) previewBtn.href = shareUrl;
+
+      // Tính tóm tắt kỳ lương hiện tại
+      const data = getOrdersInRange('2026-10-11', '2026-11-10', 'ALL');
+      const totalStr = data ? formatVND(data.grandTotal) : '2.876.000 đ';
+      const qtyStr = data ? data.grandQty : 149;
+
+      const msgLines = [
+        `🧋 [THÔNG BÁO CHỐT SỔ TIỀN NƯỚC CÔNG TY - CÔ BA CAFE]`,
+        `📅 Kỳ chốt: 11/10/2026 → 10/11/2026 (${qtyStr} ly • Tổng: ${totalStr})`,
+        ``,
+        `👉 Mọi người bấm vào link dưới đây để TỰ XEM SỐ TIỀN CỦA MÌNH nhé (Bấm trực tiếp vào TÊN CỦA MÌNH sẽ hiện ra chi tiết từng ngày uống món nào + Mã QR chuyển khoản ở dưới):`,
+        `🔗 Link xem trên Điện thoại / Máy tính (Wi-Fi Cty): ${shareUrl}`,
+        `📎 Hoặc mở file "Xem_So_No_Tien_Nuoc_Cong_Ty.html" / File Excel mình gửi kèm bên dưới (xem được cả bằng 4G)!`,
+        ``,
+        `🏦 Chuyển khoản: TPBank • STK: 02897118301 • Chủ TK: TRAN NGOC DAO ❤️`
+      ];
+      const txtEl = document.getElementById('publicShareZaloText');
+      if (txtEl) txtEl.value = msgLines.join('\n');
+
+      document.getElementById('publicShareModal').classList.remove('hidden');
+    }
+
+    function copyPublicShareZaloMessage() {
+      const txtEl = document.getElementById('publicShareZaloText');
+      if (!txtEl) return;
+      navigator.clipboard.writeText(txtEl.value).then(() => {
+        showToast("Đã copy tin nhắn + link xem Sổ Nợ! Hãy dán vào nhóm Zalo công ty.", "success");
+      });
+    }
+
+    async function downloadStandalonePublicViewerHtml() {
+      try {
+        showToast("Đang đóng gói file Sổ Nợ tương tác mới nhất để gửi Zalo...", "info");
+        // Đảm bảo lưu dữ liệu mới nhất lên server trước
+        saveToStorage();
+        let htmlText = "";
+        try {
+          const resp = await fetch(`${getApiBase()}/sono?download=1&t=${Date.now()}`);
+          if (resp.ok) {
+            htmlText = await resp.text();
+          }
+        } catch (e) {}
+
+        if (!htmlText) {
+          showToast("Hãy mở qua máy chủ LAN hoặc tải trực tiếp tại http://localhost:8080/sono", "warning");
+          return;
+        }
+
+        const blob = new Blob([htmlText], { type: "text/html;charset=utf-8" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `Xem_So_No_Tien_Nuoc_Cong_Ty.html`;
+        link.click();
+        showToast("Đã tải file Xem_So_No_Tien_Nuoc_Cong_Ty.html! Bạn gửi file này vào nhóm Zalo để ai cũng mở xem được nhé.", "success");
+      } catch (err) {
+        showToast("Không thể tải file: " + err.message, "warning");
+      }
     }
 
     function formatVND(amount) {

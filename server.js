@@ -19,6 +19,7 @@ const DATA_FILE = path.join(__dirname, 'data_app.json');
 const MIRROR_DATA_FILE = path.join('D:\\coba-cafe-app', 'data_app.json');
 const CLIENT_HTML_FILE = path.join(__dirname, 'Menu_DatNuoc_NhanVien.html');
 const ADMIN_HTML_FILE = path.join(__dirname, 'App_DatNuoc_TinhTien_CongTy.html');
+const PUBLIC_VIEWER_HTML_FILE = path.join(__dirname, 'Xem_So_No_Cong_Ty.html');
 
 let dataVersion = Date.now();
 let lastBackupTime = 0;
@@ -342,6 +343,31 @@ const server = http.createServer((req, res) => {
     } else {
       res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
       return res.end('Chưa tìm thấy file App_DatNuoc_TinhTien_CongTy.html');
+    }
+  }
+
+  // --- 2.2. GIAO DIỆN XEM SỔ NỢ & HÓA ĐƠN CHO MỌI NGƯỜI (/sono) ---
+  if (pathname === '/sono' || pathname === '/xem-so-no' || pathname === '/Xem_So_No_Cong_Ty.html') {
+    if (fs.existsSync(PUBLIC_VIEWER_HTML_FILE)) {
+      try {
+        let html = fs.readFileSync(PUBLIC_VIEWER_HTML_FILE, 'utf8');
+        const db = readDatabase();
+        html = html.replace(/let ordersData = \{.*?\};/s, `let ordersData = ${JSON.stringify(db.ordersData || {})};`);
+        html = html.replace(/let membersList = \[.*?\];/s, `let membersList = ${JSON.stringify(db.members || [])};`);
+        html = html.replace(/let memberAliases = \{.*?\};/s, `let memberAliases = ${JSON.stringify(db.memberAliases || {})};`);
+        res.writeHead(200, {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Cache-Control': 'no-cache',
+          'Access-Control-Allow-Origin': '*'
+        });
+        return res.end(html);
+      } catch (e) {
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' });
+        return fs.createReadStream(PUBLIC_VIEWER_HTML_FILE).pipe(res);
+      }
+    } else {
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      return res.end('Chưa tìm thấy file Xem_So_No_Cong_Ty.html');
     }
   }
 
