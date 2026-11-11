@@ -845,6 +845,133 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // --- 8. API: ĐÁNH DẤU ĐÃ CHUYỂN KHOẢN / ĐÃ THANH TOÁN (POST /api/mark_paid) ---
+  if (pathname === '/api/mark_paid' && method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body || '{}');
+        const member = (payload.member || '').trim();
+        const paid = payload.paid !== undefined ? !!payload.paid : true;
+        const cycleKey = payload.cycleKey || '2026-11';
+        if (!member) {
+          return sendJson(res, 400, { success: false, error: 'Thiếu tên thành viên' });
+        }
+
+        const db = readDatabase();
+        if (!db.salaryCyclesPaid) db.salaryCyclesPaid = {};
+        if (!db.salaryCyclesPaid[cycleKey]) db.salaryCyclesPaid[cycleKey] = {};
+        db.salaryCyclesPaid[cycleKey][member] = paid;
+
+        const nowTs = Date.now();
+        ['2026-10', '2026-11'].forEach(ym => {
+          if (db.ordersData && db.ordersData[ym] && db.ordersData[ym][member]) {
+            db.ordersData[ym][member].paid = paid;
+            db.ordersData[ym][member].paidUpdatedAt = nowTs;
+          }
+        });
+
+        saveDatabase(db, true);
+        console.log(`[THANH TOÁN] ${member} -> ${paid ? 'ĐÃ CHUYỂN KHOẢN' : 'CHƯA THANH TOÁN'} (Kỳ ${cycleKey})`);
+        return sendJson(res, 200, {
+          success: true,
+          member,
+          paid,
+          cycleKey,
+          salaryCyclesPaid: db.salaryCyclesPaid,
+          dataVersion
+        });
+      } catch (err) {
+        return sendJson(res, 500, { success: false, error: err.message });
+      }
+    });
+    return;
+  }
+
+  // --- 9. API: WEBHOOK TỰ ĐỘNG GẠCH NỢ KHI NHẬN CHUYỂN KHOẢN (POST /api/bank_webhook) ---
+  if (pathname === '/api/bank_webhook' && method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body || '{}');
+        const db = readDatabase();
+        if (!db.salaryCyclesPaid) db.salaryCyclesPaid = {};
+        if (!db.salaryCyclesPaid['2026-11']) db.salaryCyclesPaid['2026-11'] = {};
+
+        const norm = (s) => String(s || '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/đ/g, 'd')
+          .replace(/Đ/g, 'd')
+          .toLowerCase()
+          .replace(/[^a-z0-9\s]/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        // Hỗ trợ cả mảng giao dịch (Casso) hoặc 1 giao dịch (SePay / SMS text)
+        const txList = Array.isArray(payload.data)
+          ? payload.data
+          : [payload];
+
+        const matchedMembers = [];
+        const members = db.members || [];
+        const aliases = db.memberAliases || {};
+
+        // Sort members by name length descending so "Ngân Mập", "Ngân Nui", "Ngân GD", "Trúc xink" match before shorter names
+        const sortedMembers = [...members].sort((a, b) => b.length - a.length);
+
+        txList.forEach(tx => {
+          const rawText = [
+            tx.content,
+            tx.description,
+            tx.transferContent,
+            tx.addInfo,
+            tx.text
+          ].filter(Boolean).join(' ');
+          const textNorm = norm(rawText);
+          const textCompact = textNorm.replace(/\s+/g, '');
+          if (!textNorm) return;
+
+          for (const m of sortedMembers) {
+            const mNorm = norm(m);
+            const mCompact = mNorm.replace(/\s+/g, '');
+            const mAliases = (aliases[m] || []).map(a => norm(a));
+            const matchedByName = (mNorm && (textNorm.includes('coba ' + mNorm) || textNorm.includes('tien nuoc ' + mNorm) || textCompact.includes('coba' + mCompact) || textCompact.includes('tiennuoc' + mCompact) || textNorm.includes(mNorm)));
+            const matchedByAlias = mAliases.some(a => a && a.length >= 2 && (textNorm.includes('coba ' + a) || textNorm.includes('tien nuoc ' + a)));
+
+            if (matchedByName || matchedByAlias) {
+              db.salaryCyclesPaid['2026-11'][m] = true;
+              ['2026-10', '2026-11'].forEach(ym => {
+                if (db.ordersData && db.ordersData[ym] && db.ordersData[ym][m]) {
+                  db.ordersData[ym][m].paid = true;
+                  db.ordersData[ym][m].paidUpdatedAt = Date.now();
+                }
+              });
+              if (!matchedMembers.includes(m)) matchedMembers.push(m);
+            }
+          }
+        });
+
+        if (matchedMembers.length > 0) {
+          saveDatabase(db, true);
+          console.log(`[AUTO BANK WEBHOOK] Tự động gạch nợ thành công cho: ${matchedMembers.join(', ')}`);
+        }
+
+        return sendJson(res, 200, {
+          success: true,
+          matchedMembers,
+          salaryCyclesPaid: db.salaryCyclesPaid,
+          dataVersion
+        });
+      } catch (err) {
+        return sendJson(res, 500, { success: false, error: err.message });
+      }
+    });
+    return;
+  }
+
   // 404 cho các route khác
   res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
   res.end('Không tìm thấy trang yêu cầu (404 Not Found)');
