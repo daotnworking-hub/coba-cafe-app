@@ -180,13 +180,6 @@ function mergeOrdersData(baseOrders, incOrders, deletedItemIds = []) {
         }
       }
 
-      const incDays = incM.days || {};
-      for (const day of Object.keys(incDays)) {
-        if (!baseM.days[day] && incDays[day] && (!baseM.items[day] || baseM.items[day].length > 0)) {
-          baseM.days[day] = incDays[day] === 30 ? 30000 : incDays[day];
-        }
-      }
-
       // Đảm bảo mọi ngày có items thì days[day] luôn khớp chính xác tổng tiền của items[day]
       for (const day of Object.keys(baseM.items || {})) {
         if (Array.isArray(baseM.items[day])) {
@@ -202,30 +195,39 @@ function mergeOrdersData(baseOrders, incOrders, deletedItemIds = []) {
         }
       }
       for (const day of Object.keys(baseM.days || {})) {
-        if (baseM.days[day] === 30) baseM.days[day] = 30000;
+        if (!baseM.items || !Array.isArray(baseM.items[day]) || baseM.items[day].length === 0) {
+          delete baseM.days[day];
+        } else if (baseM.days[day] === 30) {
+          baseM.days[day] = 30000;
+        }
       }
     }
   }
 
   // Quét lại toàn bộ merged để dọn dẹp các món đã bị xóa
-  if (deletedSet.size > 0) {
-    for (const mKey of Object.keys(merged)) {
-      for (const mem of Object.keys(merged[mKey] || {})) {
-        const memObj = merged[mKey][mem];
-        if (memObj.items) {
-          for (const d of Object.keys(memObj.items)) {
-            if (Array.isArray(memObj.items[d])) {
-              memObj.items[d] = memObj.items[d].filter(it => !it.id || !deletedSet.has(it.id));
-              let s = 0;
-              memObj.items[d].forEach(it => s += (parseInt(it.total) || 0));
-              if (s > 0) {
-                if (!memObj.days) memObj.days = {};
-                memObj.days[d] = s;
-              } else {
-                if (memObj.days) delete memObj.days[d];
-                delete memObj.items[d];
-              }
+  for (const mKey of Object.keys(merged)) {
+    for (const mem of Object.keys(merged[mKey] || {})) {
+      const memObj = merged[mKey][mem];
+      if (memObj.items) {
+        for (const d of Object.keys(memObj.items)) {
+          if (Array.isArray(memObj.items[d])) {
+            memObj.items[d] = memObj.items[d].filter(it => !it.id || !deletedSet.has(it.id));
+            let s = 0;
+            memObj.items[d].forEach(it => s += (parseInt(it.total) || 0));
+            if (s > 0) {
+              if (!memObj.days) memObj.days = {};
+              memObj.days[d] = s;
+            } else {
+              if (memObj.days) delete memObj.days[d];
+              delete memObj.items[d];
             }
+          }
+        }
+      }
+      if (memObj.days) {
+        for (const d of Object.keys(memObj.days)) {
+          if (!memObj.items || !Array.isArray(memObj.items[d]) || memObj.items[d].length === 0) {
+            delete memObj.days[d];
           }
         }
       }

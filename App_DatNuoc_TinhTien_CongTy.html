@@ -4747,26 +4747,37 @@
       matrixPaymentFilter: 'ALL', // 'ALL' | 'UNPAID' | 'PAID'
       matrixHideZeroDebt: false,
       deletedItemIds: [
-        "ord_1793845562457_9qyc",
+        "ord_1792030096343_ugxl",
+        "ord_1792030105292_q4kh",
+        "ord_1792030106867_tjbv",
+        "ord_1792030118297_mf9r",
+        "ord_1792030132822_ykaf",
+        "ord_1792030187682_es95",
+        "ord_1793068022936_dwfb",
+        "ord_1793239869100_4k8r",
+        "ord_1793586662590_2cyc",
+        "ord_1793845382337_pdmg",
+        "ord_1793845387027_6qci",
+        "ord_1793845400613_2c23",
+        "ord_1793845401172_yqav",
         "ord_1793845460812_s3b0",
+        "ord_1793845469473_3wzi",
+        "ord_1793845562457_9qyc",
+        "ord_1793845600001_ngangd",
+        "ord_1793845600002_nga",
+        "ord_1793845600003_truong",
+        "ord_1793845600005_yen",
+        "ord_1793845600006_khoa",
+        "ord_1793845600009_kngan",
+        "ord_1793845600009_ngangd_kn",
         "ord_1793932169448_07k8",
         "ord_1793932170081_n7m3",
         "ord_1793932178300_a0u6",
         "ord_1793932189763_r82w",
         "ord_1793932215660_p4c2",
-        "ord_1793845382337_pdmg",
-        "ord_1793845600001_ngangd",
-        "ord_1793845600009_ngangd_kn",
-        "ord_1793845600009_kngan",
-        "ord_1793845469473_3wzi",
-        "ord_1793845600003_truong",
-        "ord_1793845400613_2c23",
-        "ord_1793845401172_yqav",
-        "ord_1793845600002_nga",
-        "ord_1793845600005_yen",
-        "ord_1793845600006_khoa",
-        "ord_1794304178743_d4d5"
-      ]
+        "ord_1794304178743_d4d5",
+        "ord_sync_202610_25_7194"
+]
     };
 
     /* ==========================================================
@@ -5059,34 +5070,32 @@
               delete baseM.items[day];
             }
           }
-
-          const incDays = incM.days || {};
-          for (const day of Object.keys(incDays)) {
-            if (!baseM.days[day] && incDays[day] && (!baseM.items[day] || baseM.items[day].length > 0)) {
-              baseM.days[day] = incDays[day];
-            }
-          }
         }
       }
 
-      if (deletedSet.size > 0) {
-        for (const mKey of Object.keys(merged)) {
-          for (const mem of Object.keys(merged[mKey] || {})) {
-            const memObj = merged[mKey][mem];
-            if (memObj.items) {
-              for (const d of Object.keys(memObj.items)) {
-                if (Array.isArray(memObj.items[d])) {
-                  memObj.items[d] = memObj.items[d].filter(it => !it.id || !deletedSet.has(it.id));
-                  let s = 0;
-                  memObj.items[d].forEach(it => s += (parseInt(it.total) || 0));
-                  if (s > 0) {
-                    if (!memObj.days) memObj.days = {};
-                    memObj.days[d] = s;
-                  } else {
-                    if (memObj.days) delete memObj.days[d];
-                    delete memObj.items[d];
-                  }
+      for (const mKey of Object.keys(merged)) {
+        for (const mem of Object.keys(merged[mKey] || {})) {
+          const memObj = merged[mKey][mem];
+          if (memObj.items) {
+            for (const d of Object.keys(memObj.items)) {
+              if (Array.isArray(memObj.items[d])) {
+                memObj.items[d] = memObj.items[d].filter(it => !it.id || !deletedSet.has(it.id));
+                let s = 0;
+                memObj.items[d].forEach(it => s += (parseInt(it.total) || 0));
+                if (s > 0) {
+                  if (!memObj.days) memObj.days = {};
+                  memObj.days[d] = s;
+                } else {
+                  if (memObj.days) delete memObj.days[d];
+                  delete memObj.items[d];
                 }
+              }
+            }
+          }
+          if (memObj.days) {
+            for (const d of Object.keys(memObj.days)) {
+              if (!memObj.items || !Array.isArray(memObj.items[d]) || memObj.items[d].length === 0) {
+                delete memObj.days[d];
               }
             }
           }
