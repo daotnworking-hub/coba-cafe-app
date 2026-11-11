@@ -937,7 +937,7 @@
           "12": 30000,
           "13": 30000,
           "14": 30000,
-          "15": 60000,
+          "15": 30000,
           "16": 30000,
           "19": 30000,
           "20": 30000,
@@ -1029,30 +1029,6 @@
             }
           ],
           "15": [
-            {
-              "id": "ord_1792030105292_q4kh",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít ngọt nhiều đá",
-              "total": 18000,
-              "createdAt": "2026-10-15T02:08:25.292Z"
-            },
-            {
-              "id": "ord_1792030106867_tjbv",
-              "name": "Nước chanh đường",
-              "basePrice": 12000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 12000,
-              "qty": 1,
-              "note": "",
-              "total": 12000,
-              "createdAt": "2026-10-15T02:08:26.867Z"
-            },
             {
               "id": "ord_15_chou_1",
               "name": "Nước chanh đường",
@@ -1659,7 +1635,7 @@
           "12": 18000,
           "13": 18000,
           "14": 18000,
-          "15": 36000,
+          "15": 18000,
           "16": 18000,
           "19": 18000,
           "20": 18000,
@@ -1715,18 +1691,6 @@
             }
           ],
           "15": [
-            {
-              "id": "ord_1792030096343_ugxl",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Ít sữa",
-              "total": 18000,
-              "createdAt": "2026-10-15T02:08:16.343Z"
-            },
             {
               "id": "ord_15_duy",
               "name": "Cf sữa đá",
@@ -1885,34 +1849,10 @@
       "Hà": {
         "paid": false,
         "days": {
-          "15": 56000
+          "15": 18000
         },
         "items": {
           "15": [
-            {
-              "id": "ord_1792030118297_mf9r",
-              "name": "Cf sữa đá",
-              "basePrice": 18000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 18000,
-              "qty": 1,
-              "note": "Bình thường, Bth",
-              "total": 18000,
-              "createdAt": "2026-10-15T02:08:38.297Z"
-            },
-            {
-              "id": "ord_1792030132822_ykaf",
-              "name": "Trà Ổi Hồng",
-              "basePrice": 20000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 20000,
-              "qty": 1,
-              "note": "Bình thường, Bth",
-              "total": 20000,
-              "createdAt": "2026-10-15T02:08:52.822Z"
-            },
             {
               "id": "ord_15_ha",
               "name": "Cf sữa đá",
@@ -2310,7 +2250,7 @@
         "days": {
           "13": 25000,
           "14": 25000,
-          "15": 50000,
+          "15": 25000,
           "16": 25000,
           "20": 25000,
           "22": 25000,
@@ -2350,18 +2290,6 @@
             }
           ],
           "15": [
-            {
-              "id": "ord_1792030187682_es95",
-              "name": "Latte Cacao Cafe",
-              "basePrice": 25000,
-              "toppings": [],
-              "toppingsPrice": 0,
-              "singlePrice": 25000,
-              "qty": 1,
-              "note": "",
-              "total": 25000,
-              "createdAt": "2026-10-15T02:09:47.682Z"
-            },
             {
               "id": "ord_15_dao",
               "name": "Latte Cacao Cafe",
@@ -3586,7 +3514,7 @@
   "salaryCyclesPaid": {
     "2026-11": {}
   },
-  "dataVersion": 1794364399288,
+  "dataVersion": 1794366668047,
   "deletedItemIds": [
     "ord_1793068022936_dwfb",
     "ord_1793239869100_4k8r",
@@ -3610,7 +3538,13 @@
     "ord_1793845600005_yen",
     "ord_1793845600006_khoa",
     "ord_1794304178743_d4d5",
-    "ord_1793845387027_6qci"
+    "ord_1793845387027_6qci",
+    "ord_1792030096343_ugxl",
+    "ord_1792030105292_q4kh",
+    "ord_1792030106867_tjbv",
+    "ord_1792030118297_mf9r",
+    "ord_1792030132822_ykaf",
+    "ord_1792030187682_es95"
   ],
   "updatedAt": "2026-11-10T10:38:28.388424+00:00"
 }
